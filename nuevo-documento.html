@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nuevo documento · Casilla Electrónica · ANA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&amp;family=Roboto:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="ana.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-pagina="nuevo-documento">
+  <!-- Íconos: van dentro de la página para que funcionen sin pedir archivos aparte -->
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+<!-- Del sistema de diseño ANA (Figma · Iconografía) -->
+<symbol id="calendario" viewBox="0 0 24 24"><g transform="scale(1.2)"><path d="M15.4166 4.58301H4.58329C3.66282 4.58301 2.91663 5.3292 2.91663 6.24967V15.4163C2.91663 16.3368 3.66282 17.083 4.58329 17.083H15.4166C16.3371 17.083 17.0833 16.3368 17.0833 15.4163V6.24967C17.0833 5.3292 16.3371 4.58301 15.4166 4.58301Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.66663 2.5V6.66667M13.3333 2.5V6.66667M2.91663 9.16667H17.0833" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="enviar" viewBox="0 0 24 24"><g transform="scale(1.0909)"><path d="M19.25 2.75L9.625 12.375M9.625 12.375L2.75 8.70833L19.25 2.75L13.2917 19.25L9.625 12.375Z" stroke="currentColor" stroke-width="1.83333" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="expediente" viewBox="0 0 24 24"><g transform="scale(1.2)"><path d="M2.91663 6.24967C2.91663 5.80765 3.09222 5.38372 3.40478 5.07116C3.71734 4.7586 4.14127 4.58301 4.58329 4.58301H7.24996L8.91663 6.66634H15.4166C15.8587 6.66634 16.2826 6.84194 16.5951 7.1545C16.9077 7.46706 17.0833 7.89098 17.0833 8.33301V14.9997C17.0833 15.4417 16.9077 15.8656 16.5951 16.1782C16.2826 16.4907 15.8587 16.6663 15.4166 16.6663H4.58329C4.14127 16.6663 3.71734 16.4907 3.40478 16.1782C3.09222 15.8656 2.91663 15.4417 2.91663 14.9997V6.24967Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="tramites" viewBox="0 0 24 24"><path d="M6 3H13L18 8V21C18 21.2652 17.8946 21.5196 17.7071 21.7071C17.5196 21.8946 17.2652 22 17 22H6C5.73478 22 5.48043 21.8946 5.29289 21.7071C5.10536 21.5196 5 21.2652 5 21V4C5 3.73478 5.10536 3.48043 5.29289 3.29289C5.48043 3.10536 5.73478 3 6 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3V8H18M8.5 13H15.5M8.5 17H13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="buscar" viewBox="0 0 24 24"><path d="M10.5 17C14.0899 17 17 14.0899 17 10.5C17 6.91015 14.0899 4 10.5 4C6.91015 4 4 6.91015 4 10.5C4 14.0899 6.91015 17 10.5 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.4 15.4L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="usuario" viewBox="0 0 24 24"><path d="M12 12.5C14.2091 12.5 16 10.7091 16 8.5C16 6.29086 14.2091 4.5 12 4.5C9.79086 4.5 8 6.29086 8 8.5C8 10.7091 9.79086 12.5 12 12.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 20C4.5 16.4 7.9 14 12 14C16.1 14 19.5 16.4 19.5 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ayuda" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 9.3C9.5 7.9 10.6 6.9 12 6.9C13.4 6.9 14.5 7.9 14.5 9.2C14.5 11.1 12 11.1 12 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18C12.6627 18 13.2 17.4627 13.2 16.8C13.2 16.1373 12.6627 15.6 12 15.6C11.3372 15.6 10.8 16.1373 10.8 16.8C10.8 17.4627 11.3372 18 12 18Z" fill="currentColor"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M4 12.5L9.5 18L20 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="alerta" viewBox="0 0 24 24"><path d="M12 3.6L22 20.4H2L12 3.6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9.8V13.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18.2C12.6627 18.2 13.2 17.6627 13.2 17C13.2 16.3373 12.6627 15.8 12 15.8C11.3372 15.8 10.8 16.3373 10.8 17C10.8 17.6627 11.3372 18.2 12 18.2Z" fill="currentColor"/></symbol>
+<symbol id="error" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.5C12.6627 17.5 13.2 16.9627 13.2 16.3C13.2 15.6373 12.6627 15.1 12 15.1C11.3372 15.1 10.8 15.6373 10.8 16.3C10.8 16.9627 11.3372 17.5 12 17.5Z" fill="currentColor"/></symbol>
+<symbol id="info" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16.5V11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9.2C12.6627 9.2 13.2 8.66274 13.2 8C13.2 7.33726 12.6627 6.8 12 6.8C11.3373 6.8 10.8 7.33726 10.8 8C10.8 8.66274 11.3373 9.2 12 9.2Z" fill="currentColor"/></symbol>
+<symbol id="chevron-abajo" viewBox="0 0 24 24"><path d="M6 9.5L12 15.5L18 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="chevron-derecha" viewBox="0 0 24 24"><path d="M9.5 6L15.5 12L9.5 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="cerrar" viewBox="0 0 24 24"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="clip" viewBox="0 0 24 24"><path d="M20.5 11.5L12 20C11.0718 20.9283 9.81276 21.4497 8.50001 21.4497C7.18725 21.4497 5.92827 20.9283 5.00001 20C4.07175 19.0717 3.55026 17.8128 3.55026 16.5C3.55026 15.1872 4.07175 13.9283 5.00001 13L13 5C13.6631 4.33695 14.5623 3.96446 15.5 3.96446C16.4377 3.96446 17.337 4.33695 18 5C18.6631 5.66304 19.0355 6.56231 19.0355 7.5C19.0355 8.43768 18.6631 9.33695 18 10L10 18C9.60218 18.3978 9.06262 18.6213 8.50001 18.6213C7.9374 18.6213 7.39783 18.3978 7.00001 18C6.60219 17.6022 6.37869 17.0626 6.37869 16.5C6.37869 15.9374 6.60219 15.3978 7.00001 15L14.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="descargar" viewBox="0 0 24 24"><path d="M12 3.5V14.5M16.5 10L12 14.5L7.5 10M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="subir" viewBox="0 0 24 24"><path d="M12 16V4.5M16.5 9L12 4.5L7.5 9M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="reloj" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12.5L15.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="salir" viewBox="0 0 24 24"><path d="M14.5 4.5H18C18.3978 4.5 18.7794 4.65804 19.0607 4.93934C19.342 5.22064 19.5 5.60218 19.5 6V18C19.5 18.3978 19.342 18.7794 19.0607 19.0607C18.7794 19.342 18.3978 19.5 18 19.5H14.5M10 16L6 12L10 8M6 12H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="filtro" viewBox="0 0 24 24"><path d="M3 6H21L14 14V20L10 22V14L3 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="agregar" viewBox="0 0 24 24"><path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="archivo" viewBox="0 0 24 24"><path d="M13 3H7C6.60218 3 6.22064 3.15804 5.93934 3.43934C5.65804 3.72064 5.5 4.10218 5.5 4.5V19.5C5.5 19.8978 5.65804 20.2794 5.93934 20.5607C6.22064 20.842 6.60218 21 7 21H17C17.3978 21 17.7794 20.842 18.0607 20.5607C18.342 20.2794 18.5 19.8978 18.5 19.5V8.5L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3V8.5H18.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ojo" viewBox="0 0 24 24"><path d="M2 12C2 12 5.6 5 12 5C18.4 5 22 12 22 12C22 12 18.4 19 12 19C5.6 19 2 12 2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="mas-acciones" viewBox="0 0 24 24"><path d="M12 6.5C12.8284 6.5 13.5 5.82843 13.5 5C13.5 4.17157 12.8284 3.5 12 3.5C11.1716 3.5 10.5 4.17157 10.5 5C10.5 5.82843 11.1716 6.5 12 6.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 13.5C12.8284 13.5 13.5 12.8284 13.5 12C13.5 11.1716 12.8284 10.5 12 10.5C11.1716 10.5 10.5 11.1716 10.5 12C10.5 12.8284 11.1716 13.5 12 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20.5C12.8284 20.5 13.5 19.8284 13.5 19C13.5 18.1716 12.8284 17.5 12 17.5C11.1716 17.5 10.5 18.1716 10.5 19C10.5 19.8284 11.1716 20.5 12 20.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="sobre" viewBox="0 0 24 24"><path d="M19.5 5H4.5C3.39543 5 2.5 5.89543 2.5 7V17C2.5 18.1046 3.39543 19 4.5 19H19.5C20.6046 19 21.5 18.1046 21.5 17V7C21.5 5.89543 20.6046 5 19.5 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7L12 13L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="sobre-abierto" viewBox="0 0 24 24"><path d="M19.5 9H4.5C3.39543 9 2.5 9.89543 2.5 11V17C2.5 18.1046 3.39543 19 4.5 19H19.5C20.6046 19 21.5 18.1046 21.5 17V11C21.5 9.89543 20.6046 9 19.5 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 10.5L12 4L21.5 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="orden" viewBox="0 0 24 24"><path d="M14.959 9.5H9.04102L12 5.80078L14.959 9.5Z" fill="currentColor" stroke="currentColor"/><path d="M14.959 14.5L12 18.1992L9.04102 14.5H14.959Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="orden-desc" viewBox="0 0 24 24"><path d="M15.584 9.5L12 15.0742L8.41602 9.5H15.584Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="orden-asc" viewBox="0 0 24 24"><path d="M15.584 14.5L12 8.9258L8.41602 14.5H15.584Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="telefono" viewBox="0 0 24 24"><path d="M19.8881 14.9201V17.9201C19.8892 18.1986 19.8322 18.4743 19.7206 18.7294C19.6091 18.9846 19.4454 19.2137 19.2402 19.402C19.035 19.5902 18.7927 19.7336 18.5289 19.8228C18.265 19.912 17.9855 19.9452 17.7081 19.9201C14.631 19.5857 11.6751 18.5342 9.07812 16.8501C6.66194 15.3148 4.61345 13.2663 3.07812 10.8501C1.38809 8.2413 0.33636 5.27109 0.00811671 2.1801C-0.0168728 1.90356 0.0159916 1.62486 0.104617 1.36172C0.193243 1.09859 0.335688 0.856786 0.522883 0.651718C0.710078 0.44665 0.937922 0.282806 1.19191 0.170619C1.44589 0.0584315 1.72046 0.000358432 1.99812 9.69523e-05H4.99812C5.48342 -0.00467949 5.95391 0.167176 6.32188 0.48363C6.68985 0.800084 6.93019 1.23954 6.99812 1.7201C7.12474 2.68016 7.35957 3.62282 7.69812 4.5301C7.83266 4.88802 7.86178 5.27701 7.78202 5.65098C7.70227 6.02494 7.51698 6.36821 7.24812 6.6401L5.97812 7.9101C7.40167 10.4136 9.47457 12.4865 11.9781 13.9101L13.2481 12.6401C13.52 12.3712 13.8633 12.1859 14.2372 12.1062C14.6112 12.0264 15.0002 12.0556 15.3581 12.1901C16.2654 12.5286 17.2081 12.7635 18.1681 12.8901C18.6539 12.9586 19.0975 13.2033 19.4146 13.5776C19.7318 13.9519 19.9003 14.4297 19.8881 14.9201Z" transform="translate(2 2)" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="whatsapp" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.17 6.14L6.3 7.01V7.17L5.88 7.85L5.91 8.23L5.74 8.41V9.7L5.91 9.89L5.88 10.27L6.05 10.43L6.02 10.69L6.16 10.8L6.45 11.53L6.73 11.79L6.84 12.19L7.12 12.45V12.61L7.41 12.87V13.03L8.37 14.09V14.25L9.77 15.66H9.94L10.31 16.05H10.48L11.16 16.62H11.32L12.26 17.16H12.54L13.24 17.58L13.48 17.55L14.04 17.84H14.46L14.58 17.98H15.56L15.68 17.84L16.5 17.72L17.04 17.3H17.2L17.67 16.83L17.95 16.27L17.93 16.03L18.09 15.84V15.07L17.88 14.86L17.2 14.6L16.95 14.32H16.78L15.28 13.5H15L14.67 13.69V13.85L13.85 14.65V14.79L13.64 15H12.94L12.42 14.6L11.95 14.44L11.72 14.18H11.55L11.3 13.9H11.13L9.84 12.61V12.45L9.45 12.07L9.42 11.88L9.16 11.65L9.02 11.23L8.88 11.11V10.69L9.59 10.01V9.84L9.98 9.35V9.05L9.7 8.65L9.73 8.39L9.56 8.23L9.59 7.97L9.42 7.8L9.45 7.55L9.16 7.15V6.87L9.02 6.75L8.86 6.28H8.7L8.3 6H7.59L7.48 6.14H7.17ZM18.33 4.22L20.44 6.59L21.68 9.47L21.8 10.97L21.96 11.13V12.56L21.8 12.75L21.82 13.66L21.52 14.39L21.54 14.79L20.72 16.69L19.88 17.95L18.02 19.78L16.78 20.6L14.3 21.56L12.66 21.68L12.54 21.82L9.68 21.56L7.99 21L6.66 20.18L2.93 21.14L2.86 20.62L3.14 20.09L3.26 19.15L3.82 17.48L3.4 16.97L2.44 14.91L2.32 13.97L2.16 13.8L2.18 13.15L2.02 12.96V10.73L2.18 10.55L2.3 9.33L2.86 7.8L4.22 5.65L5.79 4.08L7.03 3.26L8.16 2.7L10.76 2.02H13.22L13.34 2.16L14.6 2.3L16.95 3.26L18.33 4.22ZM21.09 4.12L19.8 2.86L17.91 1.5L15.28 0.4L13.12 0H10.85L8.7 0.4L6.07 1.5L4.31 2.72L1.92 5.37L0.96 7.12L0.26 9.21L0 10.92L0.14 13.85L0.82 16.29L1.66 17.88L0.54 21.47L0 23.98L5.95 22.34H6.38L7.99 23.16L9.54 23.58L13.62 23.72L16.92 22.76L19.43 21.23L21.38 19.29L22.48 17.65L23.02 16.57L23.84 13.71L23.98 11.6L23.58 8.79L22.2 5.65L21.09 4.12Z" fill="currentColor"/></symbol>
+<symbol id="correo" viewBox="0 0 24 24"><path d="M19 5.5H5C3.89543 5.5 3 6.39543 3 7.5V16.5C3 17.6046 3.89543 18.5 5 18.5H19C20.1046 18.5 21 17.6046 21 16.5V7.5C21 6.39543 20.1046 5.5 19 5.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7L12 13L20.5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="editar" viewBox="0 0 24 24"><path d="M4 20H8L20 7.99999C20.5016 7.46379 20.7751 6.75364 20.7629 6.01952C20.7507 5.28539 20.4536 4.58476 19.9344 4.06558C19.4152 3.54641 18.7146 3.24933 17.9805 3.23709C17.2463 3.22485 16.5362 3.4984 16 3.99999L4 16V20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<!-- PROVISIONALES: no están en el sistema de diseño todavía -->
+<symbol id="candado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2" stroke="#1F242E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" stroke="#1F242E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="ojo-tachado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.8M6.4 6.4C3.6 8.2 2 12 2 12s3.6 7 10 7a9.9 9.9 0 0 0 5.6-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></g></symbol>
+<symbol id="enlace" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+<symbol id="dnie" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4"/><path d="M14.5 10h4M14.5 13.5h3"/></g></symbol>
+<symbol id="certificado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="m9 13.3-1.5 7.2L12 18l4.5 2.5-1.5-7.2"/></g></symbol>
+<symbol id="rostro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/></g></symbol>
+<symbol id="copiar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></g></symbol>
+</svg>
+            <a class="saltar" href="#contenido">Saltar al contenido principal</a>
+
+  <header class="barra-superior">
+    <div class="barra-superior__interior">
+      <a class="barra-superior__logo" href="bandeja.html">
+        <img src="img/logo-ana.png" alt="Autoridad Nacional del Agua, ir a Mis trámites" width="180" height="85">
+      </a>
+      <p class="barra-superior__servicio">Sistema de Notificación Electrónica</p>
+      <div class="usuario">
+        <button type="button" class="usuario__boton" aria-haspopup="menu" aria-expanded="false"
+                aria-controls="menu-usuario" aria-label="Ana Quispe Mamani, DNI 46810236, menú de tu cuenta">
+          <span class="usuario__avatar" aria-hidden="true">AQ</span>
+          <span class="usuario__datos" aria-hidden="true">
+            <span class="usuario__nombre">Ana Quispe Mamani</span>
+            <span class="usuario__doc">DNI 46810236</span>
+          </span>
+          <svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg>
+        </button>
+        <ul class="menu" role="menu" id="menu-usuario" aria-label="Tu cuenta" hidden>
+          <li role="none"><a class="menu__item" role="menuitem" href="perfil.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>Mi perfil</a></li>
+          <li role="none"><a class="menu__item" role="menuitem" href="ayuda.html" data-fuera-de-alcance="Ayuda y preguntas frecuentes no forma parte de este prototipo.">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>Ayuda y preguntas frecuentes</a></li>
+          <li role="separator" class="menu__separador"></li>
+          <li role="none"><a class="menu__item" role="menuitem" href="ingreso.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="pagina pagina--formulario" id="contenido" tabindex="-1">
+
+    <div class="encabezado-pagina">
+      <div class="encabezado-pagina__texto">
+        <h1 class="t-h1">Nuevo documento</h1>
+        <p class="tramite-elegido">
+          <span class="tramite-elegido__tipo" id="tramite-tipo">TUPA · Procedimiento 2</span>
+          <span class="tramite-elegido__nombre" id="tramite-nombre">Permiso de uso de agua para épocas de superávit hídrico</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="reparto">
+      <div class="pasos">
+
+        <!-- PASO 1 -->
+        <section class="paso" data-paso="inicio" aria-labelledby="titulo-paso-1">
+          <form id="form-paso-1" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">1</span>
+                <h2 class="paso__titulo" id="titulo-paso-1" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>¿Qué quieres hacer?</h2>
+              </div>
+              <p class="paso__intro">Elige el tipo de trámite y el procedimiento. Después te pedimos solo lo que ese trámite necesita.</p>
+              <div class="reticula">
+                <div class="campo col-3">
+                  <label class="campo__etiqueta" for="tipo-tramite">Tipo de trámite</label>
+                  <select class="campo__control" id="tipo-tramite">
+                    <option>TUPA</option>
+                    <option>NO TUPA</option>
+                  </select>
+                </div>
+                <div class="campo col-7">
+                  <label class="campo__etiqueta" for="procedimiento">Procedimiento</label>
+                  <select class="campo__control" id="procedimiento"></select>
+                </div>
+              </div>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+            </div>
+          </form>
+        </section>
+
+
+        <!-- DATOS DEL SOLICITANTE -->
+        <section class="paso" data-paso="solicitante" aria-labelledby="titulo-solicitante" hidden>
+          <form id="form-solicitante" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">2</span>
+                <h2 class="paso__titulo" id="titulo-solicitante" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Datos del solicitante</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-solicitante" tabindex="-1" hidden></div>
+              <p class="paso__intro">Vienen de tu cuenta, verificados con RENIEC. Si algo cambió, actualízalo en tu perfil antes de enviar.</p>
+              <dl class="reticula datos-solicitante">
+                <div class="dato col-10"><dt>Funcionario/a responsable</dt><dd>Responsable de Acceso a la Información Pública</dd></div>
+                <div class="dato col-5"><dt class="js-perfil-doc-tipo">Documento</dt><dd class="js-perfil-doc">DNI 46810236</dd></div>
+                <div class="dato col-5"><dt class="js-perfil-nombre-tipo">Nombres y apellidos</dt><dd class="js-perfil-nombre">Ana Quispe Mamani</dd></div>
+              </dl>
+              <div class="reticula js-solo-juridica" hidden>
+                <div class="campo col-10">
+                  <label class="campo__etiqueta" for="rep-sol">Representante legal</label>
+                  <input class="campo__control" id="rep-sol" type="text" value="" aria-describedby="rep-sol-error" required list="representantes" autocomplete="off" placeholder="Buscar por nombre o apellido">
+                  <p class="campo__error" id="rep-sol-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+              <dl class="reticula datos-solicitante">
+                <div class="dato col-5"><dt>Dirección</dt><dd class="js-perfil-direccion">Jr. Los Sauces 245</dd></div>
+                <div class="dato col-5"><dt>Departamento, provincia y distrito</dt><dd>Lima · Lima · Ate</dd></div>
+                <div class="dato col-5"><dt>Correo electrónico</dt><dd>correo@ejemplo.com</dd></div>
+                <div class="dato col-5"><dt>Teléfono</dt><dd>987654321</dd></div>
+              </dl>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- INFORMACIÓN SOLICITADA -->
+        <section class="paso" data-paso="informacion" aria-labelledby="titulo-informacion" hidden>
+          <form id="form-informacion" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">2</span>
+                <h2 class="paso__titulo" id="titulo-informacion" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Información solicitada</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-informacion" tabindex="-1" hidden></div>
+              <p class="paso__intro">Todos los datos son obligatorios, salvo los que dicen opcional.</p>
+              <div class="reticula">
+                <div class="campo">
+                  <label class="campo__etiqueta" for="pedido">Expresión concreta y precisa del pedido de información, según lo establecido en el art. 13.2 del DS 007-2024-JUS</label>
+                  <textarea class="campo__control campo__control--area" id="pedido" rows="5" maxlength="2000" aria-describedby="pedido-ayuda pedido-error" required></textarea>
+                  <p class="campo__ayuda" id="pedido-ayuda"><span class="contador" id="pedido-contador">0 / 2000</span></p>
+                  <p class="campo__error" id="pedido-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo">
+                  <span class="campo__etiqueta" id="adjunto-etiqueta">Adjunto, si lo tienes <span class="campo__opcional">· opcional</span></span>
+                  <div id="adjunto-zona"></div>
+                  <p class="campo__ayuda" id="adjunto-ayuda">Archivo .pdf, hasta 300 MB.</p>
+                  <p class="campo__error" id="adjunto-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="entrega">Forma de entrega de la información</label>
+                  <select class="campo__control" id="entrega" aria-describedby="entrega-error" required><option value="">Selecciona</option><option>Copia simple</option><option>Copia fedateada</option><option>Correo electrónico</option><option>CD o memoria USB</option></select>
+                  <p class="campo__error" id="entrega-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- REQUISITOS OPCIONALES -->
+        <section class="paso" data-paso="opcionales" aria-labelledby="titulo-opcionales" hidden>
+          <form id="form-opcionales" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">2</span>
+                <h2 class="paso__titulo" id="titulo-opcionales" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Requisitos opcionales</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-opcionales" tabindex="-1" hidden></div>
+              <p class="paso__intro">Solo la dependencia es obligatoria. El resto puedes dejarlo en blanco: la ANA lo usa para sus estadísticas y no cambia la atención de tu pedido.</p>
+              <div class="reticula">
+                <div class="campo col-10">
+                  <label class="campo__etiqueta" for="dependencia">Dependencia que posee la información</label>
+                  <input class="campo__control" id="dependencia" type="text" value="" aria-describedby="dependencia-ayuda dependencia-error" required list="dependencias" autocomplete="off" placeholder="Buscar dependencia…">
+                  <p class="campo__ayuda" id="dependencia-ayuda">Escribe para buscar entre las dependencias de la ANA.</p>
+                  <p class="campo__error" id="dependencia-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="sexo">Sexo <span class="campo__opcional">· opcional</span></label>
+                  <select class="campo__control" id="sexo" aria-describedby="sexo-error"><option value="">Selecciona</option><option>Femenino</option><option>Masculino</option><option>Prefiero no decirlo</option></select>
+                  <p class="campo__error" id="sexo-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="edad">Edad <span class="campo__opcional">· opcional</span></label>
+                  <input class="campo__control" id="edad" type="text" inputmode="numeric" aria-describedby="edad-error">
+                  <p class="campo__error" id="edad-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="etnia">Autoidentificación étnica <span class="campo__opcional">· opcional</span></label>
+                  <select class="campo__control" id="etnia" aria-describedby="etnia-error"><option value="">Selecciona</option><option>Quechua</option><option>Aimara</option><option>Nativo o indígena de la Amazonía</option><option>Parte de otro pueblo indígena u originario</option><option>Afrodescendiente</option><option>Blanco</option><option>Mestizo</option><option>Otro</option><option>Prefiero no decirlo</option></select>
+                  <p class="campo__error" id="etnia-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="discapacidad">Discapacidad <span class="campo__opcional">· opcional</span></label>
+                  <select class="campo__control" id="discapacidad" aria-describedby="discapacidad-error"><option value="">Selecciona</option><option>No</option><option>Sí, para ver</option><option>Sí, para oír</option><option>Sí, para moverse o caminar</option><option>Sí, para entender o aprender</option><option>Sí, para relacionarse con los demás</option><option>Prefiero no decirlo</option></select>
+                  <p class="campo__error" id="discapacidad-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="lengua">Lengua materna <span class="campo__opcional">· opcional</span></label>
+                  <select class="campo__control" id="lengua" aria-describedby="lengua-error"><option value="">Selecciona</option><option>Castellano</option><option>Quechua</option><option>Aimara</option><option>Asháninka</option><option>Awajún</option><option>Shipibo-Konibo</option><option>Otra lengua originaria</option><option>Lengua de señas peruana</option><option>Lengua extranjera</option></select>
+                  <p class="campo__error" id="lengua-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="area">Área geográfica de procedencia <span class="campo__opcional">· opcional</span></label>
+                  <select class="campo__control" id="area" aria-describedby="area-error"><option value="">Selecciona</option><option>Urbana</option><option>Rural</option></select>
+                  <p class="campo__error" id="area-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+              <datalist id="dependencias"><option value="Alta Dirección"><option value="Secretaría General"><option value="Oficina de Asesoría Jurídica"><option value="Oficina de Administración"><option value="Oficina de Planeamiento y Presupuesto"><option value="Unidad de Atención al Ciudadano y Gestión Documentaria"><option value="Dirección de Administración de Recursos Hídricos"><option value="Dirección de Calidad y Evaluación de Recursos Hídricos"><option value="Dirección de Planificación y Desarrollo de los Recursos Hídricos"><option value="Dirección del Sistema Nacional de Información de Recursos Hídricos"><option value="Dirección de Estudios de Proyectos Hidráulicos Multisectoriales"><option value="Dirección de Organizaciones de Usuarios de Agua"><option value="Autoridad Administrativa del Agua Cañete-Fortaleza"><option value="Administración Local de Agua Chillón-Rímac-Lurín"><option value="Administración Local de Agua Mala-Omas-Cañete"><option value="Administración Local de Agua Huaura"></datalist>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- MODALIDAD DE NOTIFICACIÓN -->
+        <section class="paso" data-paso="notificacion" aria-labelledby="titulo-notificacion" hidden>
+          <form id="form-notificacion" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">2</span>
+                <h2 class="paso__titulo" id="titulo-notificacion" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Modalidad de notificación</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-notificacion" tabindex="-1" hidden></div>
+              
+              <div class="reticula">
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="modalidad">Modalidad de notificación</label>
+                  <select class="campo__control" id="modalidad" aria-describedby="modalidad-ayuda modalidad-error" required><option value="">Selecciona</option><option>Por correo electrónico</option><option>Por casilla electrónica</option><option>En mi domicilio</option><option>Por mensajería</option></select>
+                  <p class="campo__ayuda" id="modalidad-ayuda">Si eliges correo, mensajería o domicilio, revisa que ese dato esté en tus datos.</p>
+                  <p class="campo__error" id="modalidad-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta" for="observaciones">Observaciones <span class="campo__opcional">· opcional</span></label>
+                  <textarea class="campo__control campo__control--area" id="observaciones" rows="4" maxlength="1000" aria-describedby="observaciones-ayuda observaciones-error"></textarea>
+                  <p class="campo__ayuda" id="observaciones-ayuda">Si quieres agregar algo sobre tu solicitud. <span class="contador" id="observaciones-contador">0 / 1000</span></p>
+                  <p class="campo__error" id="observaciones-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+              <div class="casillas">
+                <div class="casilla-campo">
+                  <label class="casilla"><input type="checkbox" id="autorizo" aria-describedby="autorizo-ayuda autorizo-error" required>
+                    <span>Autorizo que las comunicaciones de la ANA se remitan a mi correo electrónico.</span></label>
+                  <p class="campo__ayuda" id="autorizo-ayuda">Obligatorio. Es el correo de tu cuenta; para cambiarlo, entra a tu perfil.</p>
+                  <p class="campo__error" id="autorizo-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="casilla-campo">
+                  <label class="casilla"><input type="checkbox" id="consiento" aria-describedby="consiento-ayuda consiento-error" required>
+                    <span>Doy mi consentimiento para el tratamiento de mis datos personales, según la Ley N° 29733.</span></label>
+                  <p class="campo__ayuda" id="consiento-ayuda">Obligatorio. Puedes <a href="https://www.leyes.congreso.gob.pe/Documentos/Leyes/29733.pdf" target="_blank" rel="noopener">leer la ley<span class="visualmente-oculto"> (se abre en otra pestaña)</span></a> antes de aceptar.</p>
+                  <p class="campo__error" id="consiento-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 2 -->
+        <section class="paso" data-paso="datos" aria-labelledby="titulo-paso-2" hidden>
+          <form id="form-paso-2" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">2</span>
+                <h2 class="paso__titulo" id="titulo-paso-2" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Datos del documento</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-paso-2" tabindex="-1" hidden></div>
+              <p class="paso__intro">Todos los datos son obligatorios, salvo los que dicen opcional.</p>
+
+              <div class="reticula">
+                <dl class="dato col-7">
+                  <dt>Entidad</dt>
+                  <dd>Autoridad Nacional del Agua</dd>
+                </dl>
+                <dl class="dato col-3 js-solo-notupa" hidden>
+                  <dt>Sede</dt>
+                  <dd>Sede Central</dd>
+                </dl>
+                <p class="t-ayuda col-10 js-solo-notupa" hidden>La entidad y la sede las define el procedimiento.</p>
+                <div class="campo col-3 js-solo-tupa" id="campo-sede">
+                  <label class="campo__etiqueta" for="sede">Sede</label>
+                  <select class="campo__control" id="sede" aria-describedby="sede-error" required>
+                    <option value="">Selecciona la sede</option>
+                    <option>Sede Central</option>
+                  </select>
+                  <p class="campo__error" id="sede-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+
+                <div class="col-10 js-solo-juridica" hidden><div class="reticula">
+                <div class="campo col-10">
+                  <label class="campo__etiqueta" for="rep-doc">Representante legal</label>
+                  <input class="campo__control" id="rep-doc" type="text" value="" aria-describedby="rep-doc-error" required list="representantes" autocomplete="off" placeholder="Buscar por nombre o apellido">
+                  <p class="campo__error" id="rep-doc-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                </div></div>
+                <h3 class="subtitulo-form col-10 js-bloque" data-bloque="iga" hidden>Datos del Instrumento de Gestión Ambiental (IGA)</h3>
+                <div class="campo col-5 js-bloque" data-bloque="iga" hidden>
+                  <label class="campo__etiqueta" for="iga-sector">Sector</label>
+                  <select class="campo__control" id="iga-sector" aria-describedby="iga-sector-error" required><option value="">Selecciona</option><option selected>Minería</option><option>Energía</option><option>Agricultura</option><option>Industria</option><option>Vivienda y construcción</option><option>Transportes</option></select>
+                  <p class="campo__error" id="iga-sector-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5 js-bloque" data-bloque="iga" hidden>
+                  <label class="campo__etiqueta" for="iga-actividad">Actividad</label>
+                  <select class="campo__control" id="iga-actividad" aria-describedby="iga-actividad-error" required><option value="">Selecciona</option><option selected>Exploración</option><option>Explotación</option><option>Beneficio</option><option>Cierre</option></select>
+                  <p class="campo__error" id="iga-actividad-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5 js-bloque" data-bloque="iga" hidden>
+                  <label class="campo__etiqueta" for="iga-tipo">Tipo de IGA / procedimiento</label>
+                  <select class="campo__control" id="iga-tipo" aria-describedby="iga-tipo-error" required><option value="">Selecciona</option><option selected>Declaración de Impacto Ambiental</option><option>Estudio de Impacto Ambiental semidetallado</option><option>Estudio de Impacto Ambiental detallado</option><option>Informe técnico sustentatorio</option></select>
+                  <p class="campo__error" id="iga-tipo-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5 js-bloque" data-bloque="iga" hidden>
+                  <label class="campo__etiqueta" for="iga-etapa">Etapa</label>
+                  <select class="campo__control" id="iga-etapa" aria-describedby="iga-etapa-error" required><option value="">Selecciona</option><option selected>Evaluación</option><option>Modificación</option><option>Actualización</option></select>
+                  <p class="campo__error" id="iga-etapa-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <p class="chip-plazo col-10 js-bloque" data-bloque="congreso" hidden>CONGRESO · plazo de atención 48 horas hábiles</p>
+                <h3 class="subtitulo-form col-10 js-bloque" data-bloque="congreso" hidden>Datos del Congreso</h3>
+                <p class="t-ayuda col-10 js-bloque" data-bloque="congreso" hidden>Presentas el trámite en nombre de un congresista. La ANA lo atiende en 48 horas hábiles.</p>
+                <div class="campo col-3 js-bloque" data-bloque="congreso" hidden>
+                  <label class="campo__etiqueta" for="cg-camara">Cámara</label>
+                  <select class="campo__control" id="cg-camara" aria-describedby="cg-camara-error" required><option value="">Selecciona</option><option selected>Diputados</option><option>Senadores</option></select>
+                  <p class="campo__error" id="cg-camara-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-7 js-bloque" data-bloque="congreso" hidden>
+                  <label class="campo__etiqueta" for="cg-congresista">Congresista</label>
+                  <input class="campo__control" id="cg-congresista" type="text" value="Nombre del congresista (ejemplo)" aria-describedby="cg-congresista-error" required>
+                  <p class="campo__error" id="cg-congresista-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5 js-bloque" data-bloque="congreso" hidden>
+                  <label class="campo__etiqueta" for="cg-comision">Comisión</label>
+                  <input class="campo__control" id="cg-comision" type="text" value="Comisión de ejemplo" aria-describedby="cg-comision-error" required>
+                  <p class="campo__error" id="cg-comision-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5 js-bloque" data-bloque="congreso" hidden>
+                  <label class="campo__etiqueta" for="cg-peticion">Tipo de petición</label>
+                  <select class="campo__control" id="cg-peticion" aria-describedby="cg-peticion-error" required><option value="">Selecciona</option><option selected>Pedido de información</option><option>Invitación a sesión</option><option>Opinión técnica</option><option>Otro</option></select>
+                  <p class="campo__error" id="cg-peticion-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-4">
+                  <label class="campo__etiqueta" for="tipo-doc">Tipo de documento</label>
+                  <select class="campo__control" id="tipo-doc" aria-describedby="tipo-doc-error" required>
+                    <option value="">Selecciona</option>
+                    <option selected>Solicitud</option>
+                    <option>Carta</option>
+                    <option>Oficio</option>
+                    <option>Informe</option>
+                  </select>
+                  <p class="campo__error" id="tipo-doc-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-4">
+                  <label class="campo__etiqueta" for="num-doc">N° de documento</label>
+                  <input class="campo__control" id="num-doc" type="text" value="001-2026"
+                         aria-describedby="num-doc-ayuda num-doc-error" required>
+                  <p class="campo__ayuda" id="num-doc-ayuda">Ejemplo: 939-2020-MLL</p>
+                  <p class="campo__error" id="num-doc-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-2">
+                  <label class="campo__etiqueta" for="folios">N° de folios</label>
+                  <input class="campo__control" id="folios" type="text" inputmode="numeric" value="3"
+                         aria-describedby="folios-error" required>
+                  <p class="campo__error" id="folios-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+
+                <div class="campo">
+                  <label class="campo__etiqueta" for="asunto">Asunto</label>
+                  <input class="campo__control" id="asunto" type="text" value="Uso de agua, campaña 2026"
+                         aria-describedby="asunto-error" required>
+                  <p class="campo__error" id="asunto-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+
+                <div class="campo col-3 js-bloque" data-bloque="bienes" hidden>
+                  <label class="campo__etiqueta" for="orden-servicio">Orden de servicio</label>
+                  <input class="campo__control" id="orden-servicio" type="text" value="" aria-describedby="orden-servicio-ayuda orden-servicio-error" required placeholder="Ejemplo: 0001-2026">
+                  <p class="campo__ayuda" id="orden-servicio-ayuda">Formato: xxxx-año</p>
+                  <p class="campo__error" id="orden-servicio-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="cut">CUT de referencia <span class="campo__opcional">· opcional</span></label>
+                  <input class="campo__control" id="cut" type="text" inputmode="numeric"
+                         aria-describedby="cut-ayuda cut-error">
+                  <p class="campo__ayuda" id="cut-ayuda">Si tu trámite responde a otro anterior</p>
+                  <p class="campo__error" id="cut-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo col-5">
+                  <label class="campo__etiqueta" for="ref-ana">Documento de referencia ANA <span class="campo__opcional">· opcional</span></label>
+                  <input class="campo__control" id="ref-ana" type="text">
+                </div>
+                <div class="campo col-10 js-solo-notupa" hidden>
+                  <span class="campo__etiqueta" id="digitalizado-etiqueta">Documento digitalizado</span>
+                  <div id="digitalizado-zona"></div>
+                  <p class="campo__ayuda" id="digitalizado-ayuda">Un archivo PDF, hasta 400 MB.</p>
+                  <p class="campo__error" id="digitalizado-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+              </div>
+              <datalist id="representantes"><option value="Carlos Huamán Ríos"><option value="Lucía Paredes Soto"><option value="Jorge Salazar Vega"></datalist>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 3 -->
+        <section class="paso" data-paso="requisitos" aria-labelledby="titulo-paso-3" hidden>
+          <form id="form-paso-3" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">3</span>
+                <h2 class="paso__titulo" id="titulo-paso-3" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Requisitos</h2>
+              </div>
+              <div class="aviso aviso--error" id="errores-paso-3" tabindex="-1" hidden></div>
+              <p class="paso__intro">Sube cada documento en PDF, hasta 400 MB por archivo. Puedes ver lo que subiste antes de enviar.</p>
+              <ul class="requisitos" id="lista-requisitos" role="list"></ul>
+              <p class="t-ayuda" id="peso-total"></p>
+              <p class="t-ayuda">Si el procedimiento es simplificado (D.S. 022-2016-MINAGRI), no pagas derecho de trámite.</p>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 4 -->
+        <section class="paso" data-paso="anexos" aria-labelledby="titulo-paso-4" hidden>
+          <form id="form-paso-4" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">4</span>
+                <h2 class="paso__titulo" id="titulo-paso-4" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Anexos</h2>
+              </div>
+              <p class="paso__intro">Opcional. Archivos complementarios a tu trámite, hasta 400 MB cada uno.</p>
+              <div class="subir">
+                <input type="file" id="anexo-archivo" multiple>
+                <label for="anexo-archivo" class="boton boton--secundario">Seleccionar archivo</label>
+              </div>
+              <ul class="enlaces" id="lista-anexos" role="list" aria-label="Anexos agregados"></ul>
+              <p class="t-ayuda" id="anexos-vacio" hidden>Aún no agregaste anexos.</p>
+
+              <label class="casilla" for="en-nube">
+                <input type="checkbox" id="en-nube" aria-controls="panel-nube" aria-describedby="nube-ayuda">
+                <span>¿Tus anexos están en la nube?</span>
+              </label>
+              <p class="t-ayuda" id="nube-ayuda">Si un archivo pasa los 400 MB, comparte el enlace en lugar de subirlo.</p>
+
+              <div class="nube" id="panel-nube" hidden>
+                <div class="campo">
+                  <label class="campo__etiqueta" for="enlace-url">Enlace del archivo</label>
+                  <input class="campo__control" id="enlace-url" type="url" inputmode="url" placeholder="https://"
+                         aria-describedby="enlace-url-ayuda enlace-url-error">
+                  <p class="campo__ayuda" id="enlace-url-ayuda">Revisa que el enlace se pueda abrir sin pedir permiso.</p>
+                  <p class="campo__error" id="enlace-url-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta" for="enlace-desc">Descripción</label>
+                  <input class="campo__control" id="enlace-desc" type="text" placeholder="Por ejemplo: planos del predio"
+                         aria-describedby="enlace-desc-error">
+                  <p class="campo__error" id="enlace-desc-error" hidden>
+                    <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+                    <span class="campo__error-texto"></span>
+                  </p>
+                </div>
+                <div>
+                  <button type="button" class="boton boton--secundario" id="agregar-enlace">Agregar enlace</button>
+                </div>
+              </div>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Continuar</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 5 -->
+        <section class="paso" data-paso="revision" aria-labelledby="titulo-paso-5" hidden>
+          <form id="form-paso-5" class="paso__form" novalidate>
+            <div class="tarjeta-paso">
+              <div class="paso__encabezado">
+                <span class="marcador marcador--actual js-paso-num" aria-hidden="true">5</span>
+                <h2 class="paso__titulo" id="titulo-paso-5" tabindex="-1"><span class="visualmente-oculto js-paso-prefijo"></span>Revisar y enviar</h2>
+              </div>
+              <p class="paso__intro">Revisa lo que ingresaste. Puedes editar cualquier paso antes de enviar.</p>
+              <div class="resumen" id="revision"></div>
+            </div>
+            <div class="paso__botones">
+              <button type="submit" class="boton boton--primario">Enviar solicitud</button>
+              <button type="button" class="boton boton--secundario" data-volver>Volver</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- CONFIRMACIÓN -->
+        <section class="paso" data-paso="confirmacion" aria-labelledby="titulo-paso-6" hidden>
+          <div class="tarjeta-paso confirmacion">
+            <span class="confirmacion__icono" aria-hidden="true">
+              <svg class="icono" focusable="false"><use href="#check"></use></svg>
+            </span>
+            <h2 class="confirmacion__titulo paso__titulo" id="titulo-paso-6" tabindex="-1">Enviaste tu solicitud</h2>
+            <p class="confirmacion__ticket">Ticket 69501-2026 · <span id="confirmacion-fecha"></span></p>
+            <p class="confirmacion__estados"><span class="estado estado--en-revision">En revisión</span><span class="chip-plazo" id="conf-plazo" hidden>CONGRESO · 48 horas hábiles</span></p>
+            <div class="que-sigue">
+              <h3 class="que-sigue__titulo">Qué sigue</h3>
+              <p>Se descargó tu hoja de envío (Hoja_Envio_69501-2026.pdf). Guárdala: es tu constancia de presentación.</p>
+              <p>El CUT se asigna cuando la ANA valide tu solicitud. Te avisaremos por correo.</p>
+              <p>Si hay observaciones, tendrás 2 días hábiles para subsanarlas desde que recibas el correo.</p>
+            </div>
+            <div class="paso__botones">
+              <a class="boton boton--primario" href="bandeja.html">Ir a Mis trámites</a>
+              <button type="button" class="boton boton--secundario" id="descargar-hoja">Descargar de nuevo la hoja de envío</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="avance" aria-labelledby="avance-titulo">
+        <h2 class="avance__titulo" id="avance-titulo">Tu avance</h2>
+        <p class="visualmente-oculto" id="avance-texto"></p>
+        <div class="avance__barra" aria-hidden="true"><div class="avance__relleno" id="avance-relleno"></div></div>
+        <ol class="avance__lista" id="avance-lista"></ol>
+      </aside>
+    </div>
+  </main>
+
+  <div class="visualmente-oculto" id="anuncio" role="status" aria-live="polite"></div>
+  <aside class="notificacion" id="notificacion" aria-label="Aviso" hidden>
+    <svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg>
+    <p class="notificacion__texto"></p>
+    <button type="button" class="boton boton--icono" data-cerrar aria-label="Cerrar aviso">
+      <svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg>
+    </button>
+  </aside>
+</body>
+</html>

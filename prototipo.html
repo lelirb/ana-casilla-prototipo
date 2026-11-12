@@ -1,0 +1,107 @@
+<title>Prototipo Casilla ANA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&amp;family=Roboto:wght@400;500;700&amp;display=swap">
+<link rel="stylesheet" href="ana.css">
+<script>document.documentElement.lang = 'es';</script>
+
+<main class="portada">
+  <header class="encabezado-pagina__texto" style="gap: 16px">
+    <img src="img/logo-ana.png" alt="Autoridad Nacional del Agua" width="160" height="76">
+    <h1 class="t-h1">Casilla Electrónica · prototipo navegable</h1>
+    <p class="encabezado-pagina__descripcion" style="max-width: 62ch">
+      Tres pantallas del Sistema de Notificación Electrónica armadas en HTML, con los tokens y componentes del sistema de diseño de la ANA. Sirven de referencia de marcado y accesibilidad para desarrollo.
+    </p>
+  </header>
+
+  <ul class="portada__pantallas" role="list">
+    <li>
+      <a class="portada__pantalla" href="ingreso.html">
+        <span class="portada__numero">01</span>
+        <span class="portada__nombre">Ingreso</span>
+        <span class="portada__detalle">DNI o RUC y contraseña, y los tres métodos de ID Perú.</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="bandeja.html">
+        <span class="portada__numero">02</span>
+        <span class="portada__nombre">Bandeja unificada</span>
+        <span class="portada__detalle">Mis trámites, con filtros, estados, nueva respuesta y paginación.</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="nuevo-documento.html">
+        <span class="portada__numero">03</span>
+        <span class="portada__nombre">Nuevo documento</span>
+        <span class="portada__detalle">Todos los flujos: TUPA 1, TUPA 2 y NO TUPA (Bienes y servicios, IGA, Otros, Exploración minera, Congreso).</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="detalle.html#68927-2026">
+        <span class="portada__numero">04</span>
+        <span class="portada__nombre">Detalle del trámite</span>
+        <span class="portada__detalle">El ojo de la bandeja: en revisión, validado, observado y respuesta nueva con acuse.</span>
+      </a>
+    </li>
+  </ul>
+
+  <section class="tarjeta" aria-labelledby="como-probar" style="display: flex; flex-direction: column; gap: 12px">
+    <h2 class="t-h3" id="como-probar">Cómo probarlo</h2>
+    <ul style="display: flex; flex-direction: column; gap: 8px; padding-left: 20px">
+      <li>Para entrar, cualquier DNI de 8 dígitos o RUC de 11, y cualquier contraseña.</li>
+      <li>Los trámites, nombres y números son datos de ejemplo.</li>
+      <li>Todo se recorre con teclado: Tab para avanzar, flechas dentro de los menús, Escape para cerrarlos.</li>
+      <li>Lo que no forma parte del prototipo avisa con un mensaje en lugar de llevar a una página vacía.</li>
+    </ul>
+  </section>
+
+  <section class="tarjeta" aria-labelledby="que-demuestra" style="display: flex; flex-direction: column; gap: 12px">
+    <h2 class="t-h3" id="que-demuestra">Qué demuestra para desarrollo · WCAG 2.2 AA</h2>
+    <ul class="portada__criterios">
+      <li>Cada campo con su etiqueta enlazada, y la ayuda y el error unidos con aria-describedby (1.3.1, 3.3.2)</li>
+      <li>Errores en texto junto al campo, más un resumen al inicio con enlaces a cada uno (3.3.1, 3.3.3)</li>
+      <li>Estados con ícono y texto, nunca solo color (1.4.1)</li>
+      <li>Tabla con encabezados de columna y de fila, y región desplazable alcanzable con teclado (1.3.1, 2.1.1)</li>
+      <li>Menús con el patrón de botón de menú: flechas, Escape y foco que regresa (2.1.1, 4.1.2)</li>
+      <li>Avisos al lector de pantalla por una región de estado, sin mover el foco (4.1.3)</li>
+      <li>Al cambiar de paso, el foco va al título del paso y cambia el título de la página (2.4.2, 2.4.3)</li>
+      <li>Foco visible con contraste 4,5:1 y enlace para saltar al contenido (2.4.1, 2.4.7, 2.4.11)</li>
+      <li>Botones y controles de 44 px de alto como mínimo (2.5.8)</li>
+      <li>Ayuda en el mismo lugar en todas las pantallas con sesión, desde el menú de la cuenta (3.2.6)</li>
+      <li>
+      <a class="portada__pantalla" href="detalle.html#68937-2026">
+        <span class="portada__numero">05</span>
+        <span class="portada__nombre">Subsanar</span>
+        <span class="portada__detalle">Trámite observado: ver qué corregir, reemplazar en el TUPA, revisar y enviar.</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="ingreso.html">
+        <span class="portada__numero">06</span>
+        <span class="portada__nombre">Persona jurídica</span>
+        <span class="portada__detalle">Ingresa con un RUC de 11 dígitos: entras como Empresa Minera Buenafe S.A.C., con representante legal en los formularios.</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="error-404.html">
+        <span class="portada__numero">07</span>
+        <span class="portada__nombre">Estados vacíos y errores</span>
+        <span class="portada__detalle">404, 500, acceso denegado, sesión expirada, ID Perú no disponible, y la bandeja sin trámites (bandeja.html#sin-tramites).</span>
+      </a>
+    </li>
+    <li>
+      <a class="portada__pantalla" href="perfil.html">
+        <span class="portada__numero">08</span>
+        <span class="portada__nombre">Mi perfil</span>
+        <span class="portada__detalle">Tus datos y contraseña. Con RUC, además, representantes legales: agregar, editar y desactivar con confirmación.</span>
+      </a>
+    </li>
+  </ul>
+  </section>
+
+  <section class="tarjeta" aria-labelledby="fuera" style="display: flex; flex-direction: column; gap: 12px">
+    <h2 class="t-h3" id="fuera">Fuera de este prototipo</h2>
+    <p>Registro, recuperación de contraseña, detalle del trámite, subsanación, información complementaria, persona jurídica y los demás procedimientos TUPA y NO TUPA.</p>
+  </section>
+</main>
