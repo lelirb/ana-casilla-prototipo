@@ -564,11 +564,48 @@ select.campo__control {
 .menu__separador { height: 1px; margin: 6px 0; background: var(--borde-sutil); }
 
 /* 3.8 · Migas ------------------------------------------------------------- */
-.migas ol { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; font: var(--t-ayuda); }
-.migas li { display: flex; align-items: center; gap: 6px; color: var(--texto-secundario); }
-.migas a { display: inline-flex; align-items: center; min-height: 24px; }   /* 2.5.8 */
+/* Figma: 15 px; el enlace en azul y subrayado, la página actual en negro */
+.migas { padding-bottom: 4px; }
+.migas ol { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; font: var(--t-cuerpo); }
+.migas li { display: flex; align-items: center; gap: 8px; color: var(--texto-secundario); }
+.migas a { display: inline-flex; align-items: center; min-height: 24px; color: var(--texto-accion); text-decoration: underline; }   /* 2.5.8 */
 .migas li + li::before { content: "/"; color: var(--texto-secundario); }
 .migas [aria-current="page"] { color: var(--texto-principal); font-weight: 500; }
+
+/* 3.x · Combo con buscador (DS: Selector + Menú del selector + Opción de menú) */
+.combo { position: relative; }
+.combo .combo__entrada { padding-right: 44px; text-overflow: ellipsis; }
+.combo__flecha {
+  position: absolute; right: 4px; top: 4px;
+  display: grid; place-items: center;
+  width: 40px; height: calc(var(--alto-control) - 8px);
+  color: var(--texto-principal); cursor: pointer;
+}
+.combo--abierto .combo__flecha .icono { transform: rotate(180deg); }
+.combo__panel {
+  position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px);
+  background: var(--fondo-base);
+  border: 1px solid var(--borde-base);
+  border-radius: var(--radio-control);
+  box-shadow: var(--elevacion-3);
+  padding: 4px 0;
+}
+.combo__cantidad { margin: 0; padding: 8px var(--esp-m); font: var(--t-ayuda); color: var(--texto-secundario); }
+.combo__lista { max-height: 320px; overflow-y: auto; }
+.combo__grupo {
+  padding: 12px var(--esp-m) 6px;
+  font: var(--t-encabezado-tabla); letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--texto-secundario);
+}
+.combo__opcion {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  min-height: 44px; padding: 11px var(--esp-m);
+  font: var(--t-cuerpo); color: var(--texto-principal); cursor: pointer;
+}
+.combo__opcion:hover { background: var(--fondo-accion-suave); }
+.combo__opcion--activa { background: var(--fondo-accion-suave); box-shadow: inset 0 0 0 2px var(--borde-foco); }
+.combo__opcion--elegida { font-weight: 500; }
+.combo__marca { flex: none; margin-top: 2px; color: var(--texto-accion); }
 
 /* 3.9 · Tabla ------------------------------------------------------------- */
 /* Figma: tarjeta blanca con borde sutil y radio 12 que contiene tabla y paginador */
@@ -967,7 +1004,7 @@ select.campo__control {
 .filtros__fila {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));   /* Figma: dos filas de tres campos iguales */
 }
 @media (max-width: 1000px) { .filtros__fila { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px)  { .filtros__fila { grid-template-columns: 1fr; } }
@@ -979,6 +1016,20 @@ select.campo__control {
   gap: var(--esp-m);
 }
 .filtros__botones { display: flex; gap: 12px; }
+/* Móvil (Figma «Filtros · Móvil 360»): los filtros se abren como una vista propia */
+.filtros-movil { display: none; }
+@media (max-width: 720px) {
+  .filtros-movil { display: flex; }
+  .filtros-movil .boton { flex: 1; }
+  .pagina:not(.pagina--filtros) .filtros { display: none; }
+  .pagina--filtros > :not(.migas):not(.filtros) { display: none; }
+  .pagina--filtros .filtros { border: 0; padding: 0; background: none; }
+  .pagina--filtros .filtros__titulo { font: var(--t-h1); }
+  .pagina--filtros .filtros__titulo .icono,
+  .pagina--filtros .filtros__titulo-resto { display: none; }
+  .pagina--filtros .filtros__botones { flex-direction: column-reverse; width: 100%; }
+  .pagina--filtros .filtros__botones .boton { width: 100%; }
+}
 
 /* 4.3 · Nuevo documento --------------------------------------------------- */
 .tramite-elegido {
@@ -1364,3 +1415,53 @@ select.campo__control {
 /* Título de la tarjeta y su descripción: 6 px, como en Figma (la tarjeta separa sus bloques a 20) */
 .tarjeta-paso > .perfil__h2 { margin-bottom: -14px; }
 .perfil__cabecera .perfil__h2 + .paso__intro { margin: 0; }
+
+/* 4.x · Registro (Figma casilla · «crear cuenta») ------------------------- */
+.eleccion { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; border: 0; }
+.eleccion__opcion {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px; min-height: 44px;
+  background: var(--fondo-base); border: 1px solid var(--borde-base); border-radius: var(--radio-control);
+  cursor: pointer;
+}
+.eleccion__opcion:hover { border-color: var(--borde-fuerte); }
+.eleccion__opcion:has(input:checked) { border: 2px solid var(--borde-accion); padding: 15px; background: var(--fondo-accion-suave); }
+.eleccion__opcion input { width: 24px; height: 24px; margin: 0; accent-color: var(--fondo-accion); flex: none; }
+.eleccion__opcion:has(input:focus-visible) { outline: 2px solid var(--borde-foco); outline-offset: 2px; }
+.eleccion__texto { display: flex; flex-direction: column; gap: 2px; }
+.eleccion__titulo { font: var(--t-cuerpo-medio); color: var(--texto-principal); }
+.eleccion__ayuda { font: var(--t-ayuda); color: var(--texto-secundario); }
+
+.rutas { display: flex; flex-direction: column; gap: 12px; list-style: none; margin: 0; padding: 0; }
+.ruta {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 16px 18px; min-height: 64px; text-align: left;
+  background: var(--fondo-base); border: 1px solid var(--borde-sutil); border-radius: var(--radio-tarjeta);
+  color: var(--texto-principal); cursor: pointer;
+}
+.ruta:hover { border-color: var(--borde-fuerte); background: var(--fondo-accion-suave); }
+.ruta:focus-visible { outline: 2px solid var(--borde-foco); outline-offset: 2px; }
+.ruta__texto { display: flex; flex-direction: column; gap: 2px; }
+.ruta__titulo { font: var(--t-cuerpo-medio); }
+.ruta__ayuda { font: var(--t-ayuda); color: var(--texto-secundario); }
+
+.codigo-sms { display: flex; flex-direction: column; gap: 12px; padding: 16px; background: var(--fondo-sutil); border-radius: var(--radio-control); }
+.codigo-sms .subtitulo-form { margin: 0; }
+.campo__control--codigo { max-width: 220px; font: 500 20px/28px var(--fuente); letter-spacing: 0.4em; }
+.codigo-sms__botones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.modal--largo { width: min(640px, 100%); max-height: calc(100vh - 32px); }
+.modal__cuerpo { overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
+.modal__cuerpo p { margin: 0; }
+.modal__cuerpo:focus-visible { outline: 2px solid var(--borde-foco); outline-offset: 2px; }
+
+.cuenta-creada { align-items: center; text-align: center; gap: 16px; }
+.cuenta-creada__icono { width: 32px; height: 32px; color: var(--texto-exito); }
+.cuenta-creada__titulo { margin: 0; font: var(--t-h2); }
+.cuenta-creada__texto { margin: 0; color: var(--texto-secundario); }
+.cuenta-creada__datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 100%; list-style: none; margin: 8px 0; padding: 0; text-align: left; }
+.cuenta-creada__datos li { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--fondo-sutil); border-radius: var(--radio-control); font: var(--t-ayuda); color: var(--texto-secundario); }
+.cuenta-creada__dato { font: var(--t-cuerpo-medio); color: var(--texto-principal); }
+@media (max-width: 720px) { .cuenta-creada__datos { grid-template-columns: 1fr; } }
+.pagina--registro-fin .avance { display: none; }
+.pagina--registro-fin .reparto { grid-template-columns: 1fr; }

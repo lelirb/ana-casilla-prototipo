@@ -13,9 +13,10 @@ No necesita instalar nada.
 | Archivo | Qué es |
 |---|---|
 | `ingreso.html` | Ingreso con documento y contraseña |
-| `bandeja.html` | Mis trámites (bandeja única) |
+| `registro.html` | Crear tu cuenta: 6 pasos, términos y cuenta creada |
+| `bandeja.html` | Mis trámites (bandeja única), con filtro por procedimiento. En celular, los filtros van en su propia vista |
 | `detalle.html` | Detalle de un trámite (VER) |
-| `nuevo-documento.html` | Nuevo documento: TUPA 1, TUPA 2 y NO TUPA |
+| `nuevo-documento.html` | Nuevo documento: los 46 procedimientos TUPA y los 5 NO TUPA (con Congreso). Los TUPA sin flujo propio siguen el del TUPA 2 |
 | `subsanar.html` | Subsanación de un trámite observado |
 | `perfil.html` | Mi perfil: persona natural y persona jurídica |
 | `error-*.html`, `sesion-expirada.html`, `servicio-no-disponible.html` | Estados de error |

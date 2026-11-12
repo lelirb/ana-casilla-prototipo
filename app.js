@@ -179,6 +179,115 @@
   };
   const MAX_BYTES = 400 * 1024 * 1024;
 
+  /* Combo con buscador (patrón combobox de ARIA 1.2, lista con filtro).
+     Toma un <select> como fuente y como guardián del valor: el select queda
+     oculto y recibe el valor elegido con su evento «change», así el resto del
+     código sigue leyendo select.value. Los <optgroup> se pintan como grupos. */
+  const sinTildes = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  function crearCombo(select) {
+    if (select.dataset.combo) return select._combo;
+    select.dataset.combo = '1';
+    const id = select.id;
+    const caja = document.createElement('div');
+    caja.className = 'combo';
+    caja.innerHTML = `
+      <input class="campo__control combo__entrada" id="${id}-entrada" type="text" role="combobox"
+             aria-autocomplete="list" aria-expanded="false" aria-controls="${id}-lista" autocomplete="off"
+             aria-describedby="${id}-instruccion">
+      <span class="combo__flecha" aria-hidden="true">${icono('chevron-abajo')}</span>
+      <div class="combo__panel" hidden>
+        <p class="combo__cantidad" id="${id}-cantidad"></p>
+        <div class="combo__lista" id="${id}-lista" role="listbox" aria-labelledby="${id}-etiqueta"></div>
+      </div>
+      <span class="visualmente-oculto" id="${id}-instruccion">Escribe para filtrar la lista. Usa las flechas para recorrerla y Enter para elegir.</span>`;
+    select.after(caja);
+    select.hidden = true;
+    select.tabIndex = -1;
+    const entrada = $('.combo__entrada', caja), panel = $('.combo__panel', caja), lista = $('.combo__lista', caja), cantidad = $('.combo__cantidad', caja);
+    const label = document.querySelector(`label[for="${id}"]`);
+    if (label) { label.htmlFor = `${id}-entrada`; label.id = label.id || `${id}-etiqueta`; lista.setAttribute('aria-labelledby', label.id); }
+    let activa = -1, visibles = [];
+
+    const opciones = () => Array.from(select.options).map((o) => ({ valor: o.value, texto: o.text, grupo: o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : '' }));
+    const textoElegido = () => (select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : '');
+    function pintar(filtro) {
+      const f = sinTildes(filtro.trim());
+      const todas = opciones();
+      visibles = f ? todas.filter((o) => sinTildes(o.texto).includes(f)) : todas;
+      const grupos = [];
+      visibles.forEach((o) => { let g = grupos.find((x) => x.nombre === o.grupo); if (!g) { g = { nombre: o.grupo, items: [] }; grupos.push(g); } g.items.push(o); });
+      let n = 0;
+      const opcion = (o) => {
+        const i = n++;
+        const sel = o.valor === select.value;
+        return `<div class="combo__opcion${sel ? ' combo__opcion--elegida' : ''}" role="option" id="${id}-op-${i}" data-i="${i}" aria-selected="${sel}">${escapar(o.texto)}${sel ? icono('check', 'combo__marca') : ''}</div>`;
+      };
+      lista.innerHTML = grupos.map((g, gi) => g.nombre
+        ? `<div role="group" aria-labelledby="${id}-g-${gi}"><div class="combo__grupo" id="${id}-g-${gi}" role="presentation">${escapar(g.nombre)}</div>${g.items.map(opcion).join('')}</div>`
+        : g.items.map(opcion).join('')).join('');
+      const reales = visibles.filter((o) => o.valor !== '').length;
+      cantidad.textContent = !visibles.length
+        ? `No hay procedimientos con «${filtro.trim()}». Prueba con otra palabra.`
+        : f ? `${reales} ${reales === 1 ? 'resultado' : 'resultados'} para «${filtro.trim()}»`
+            : `${reales} ${reales === 1 ? 'procedimiento' : 'procedimientos'}`;
+      activa = -1;
+      entrada.removeAttribute('aria-activedescendant');
+    }
+    let tAnuncio = null;
+    const anunciar = () => { clearTimeout(tAnuncio); tAnuncio = setTimeout(() => notificarSoloLector(cantidad.textContent), 500); };
+    function abrir(filtro = '') {
+      pintar(filtro);
+      panel.hidden = false;
+      entrada.setAttribute('aria-expanded', 'true');
+      caja.classList.add('combo--abierto');
+      const elegida = visibles.findIndex((o) => o.valor === select.value);
+      if (!filtro && elegida >= 0) mover(elegida);
+    }
+    function cerrar(restaurar = true) {
+      panel.hidden = true;
+      entrada.setAttribute('aria-expanded', 'false');
+      entrada.removeAttribute('aria-activedescendant');
+      caja.classList.remove('combo--abierto');
+      if (restaurar) entrada.value = textoElegido();
+    }
+    function mover(i) {
+      if (!visibles.length) return;
+      activa = (i + visibles.length) % visibles.length;
+      $$('.combo__opcion', lista).forEach((el) => el.classList.toggle('combo__opcion--activa', Number(el.dataset.i) === activa));
+      const el = $(`#${id}-op-${activa}`);
+      entrada.setAttribute('aria-activedescendant', el.id);
+      el.scrollIntoView({ block: 'nearest' });
+    }
+    function elegir(i) {
+      const o = visibles[i];
+      if (!o) return;
+      const cambio = select.value !== o.valor;
+      select.value = o.valor;
+      cerrar();
+      if (cambio) select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    entrada.addEventListener('click', () => { if (panel.hidden) { abrir(); entrada.select(); } });
+    $('.combo__flecha', caja).addEventListener('click', () => { entrada.focus(); if (panel.hidden) abrir(); else cerrar(); });
+    entrada.addEventListener('input', () => { abrir(entrada.value); anunciar(); });
+    entrada.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (panel.hidden) abrir(); else mover(activa + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); if (panel.hidden) abrir(); else mover(activa - 1); }
+      else if (e.key === 'Home' && !panel.hidden && !entrada.value) { e.preventDefault(); mover(0); }
+      else if (e.key === 'End' && !panel.hidden && !entrada.value) { e.preventDefault(); mover(visibles.length - 1); }
+      else if (e.key === 'Enter') { if (!panel.hidden) { e.preventDefault(); if (activa >= 0) elegir(activa); else if (visibles.length === 1) elegir(0); } }
+      else if (e.key === 'Escape') { if (!panel.hidden) { e.preventDefault(); e.stopPropagation(); cerrar(); } }
+      else if (e.key === 'Tab') { if (!panel.hidden) cerrar(); }
+    });
+    lista.addEventListener('mousedown', (e) => e.preventDefault());   // el foco se queda en la entrada
+    lista.addEventListener('click', (e) => { const op = e.target.closest('[role="option"]'); if (op) elegir(Number(op.dataset.i)); });
+    document.addEventListener('mousedown', (e) => { if (!caja.contains(e.target) && !panel.hidden) cerrar(); });
+    entrada.addEventListener('blur', () => { setTimeout(() => { if (!caja.contains(document.activeElement) && !panel.hidden) cerrar(); }, 0); });
+    const api = { refrescar() { entrada.value = textoElegido(); if (!panel.hidden) pintar(''); }, entrada };
+    select._combo = api;
+    api.refrescar();
+    return api;
+  }
+
   /* ------------------------------------------------------------------------
      2. INGRESO
      ------------------------------------------------------------------------ */
@@ -261,6 +370,13 @@
   ].map(([ticket, tipo, fecha, hora, cut, validacion, asunto, documento, estado, archivos, nueva]) =>
     ({ ticket, tipo, fecha, hora, cut, validacion, asunto, documento, estado, archivos, nueva }))
    .sort((a, b) => aFecha(b.fecha, b.hora) - aFecha(a.fecha, a.hora));
+  /* Procedimiento de cada trámite de ejemplo (para el filtro «Procedimiento») */
+  TRAMITES.forEach((t) => {
+    const a = t.asunto.toLowerCase();
+    t.proc = t.tipo === 'TUPA'
+      ? (a.includes('acceso a la información') ? '1' : a.includes('superávit') ? '2' : '')
+      : (a.includes('bienes y servicios') ? 'bienes' : a.includes('exploración minera') ? 'minera' : a.includes('gestión ambiental') ? 'iga' : 'otros');
+  });
 
   // El acuse se registra en el detalle; la bandeja lo lee al volver (solo en esta pestaña).
   const CLAVE_ACUSES = 'ana-casilla-acuses';
@@ -423,6 +539,7 @@
       e.preventDefault();
       const q = $('#f-buscar').value.trim().toLowerCase();
       const tipo = $('#f-tipo').value;
+      const proc = $('#f-proc').value;
       const estado = $('#f-estado').value;
       const ini = fInicio.value;
       const fin = fFin.value;
@@ -436,6 +553,7 @@
       filtrados = TRAMITES.filter((t) => {
         if (q && ![t.ticket, t.cut || '', t.asunto, t.documento].join(' ').toLowerCase().includes(q)) return false;
         if (tipo && t.tipo !== tipo) return false;
+        if (proc && t.proc !== proc) return false;
         if (estado && t.estado !== estado) return false;
         const f = aFecha(t.fecha);
         if (ini && f < desdeIso(ini)) return false;
@@ -446,8 +564,45 @@
       pintar(true);
     });
 
+    /* Procedimiento depende del tipo: TUPA, NO TUPA o los dos grupos con «Todos» */
+    const fTipo = $('#f-tipo'), fProc = $('#f-proc');
+    function llenarFiltroProc() {
+      const antes = fProc.value;
+      const grupo = (k) => `<optgroup label="${k} · ${PROCEDIMIENTOS[k].length}">${PROCEDIMIENTOS[k].map(([v, t]) => `<option value="${v}">${escapar(t)}</option>`).join('')}</optgroup>`;
+      const tipos = fTipo.value ? [fTipo.value] : Object.keys(PROCEDIMIENTOS);
+      fProc.innerHTML = '<option value="">Todos</option>' + (tipos.length > 1 ? tipos.map(grupo).join('')
+        : PROCEDIMIENTOS[tipos[0]].map(([v, t]) => `<option value="${v}">${escapar(t)}</option>`).join(''));
+      const sigue = Array.from(fProc.options).some((o) => o.value === antes);
+      fProc.value = sigue ? antes : '';
+      crearCombo(fProc).refrescar();
+      return antes && !sigue;
+    }
+    fTipo.addEventListener('change', () => {
+      const volvio = llenarFiltroProc();
+      notificarSoloLector(volvio ? 'El procedimiento elegido no es de este tipo. Procedimiento volvió a «Todos».'
+        : `Procedimiento ahora muestra los de ${fTipo.value || 'TUPA y NO TUPA'}.`);
+    });
+    llenarFiltroProc();
+
+    /* Móvil: «Filtros» abre una vista propia con migas «Mis trámites / Filtros» */
+    const movil = window.matchMedia('(max-width: 720px)');
+    const principal = $('#contenido'), migas = $('#migas-lista'), abrirF = $('#abrir-filtros');
+    const migasBase = migas.innerHTML;
+    function verFiltros(abrir, enfocar = true) {
+      principal.classList.toggle('pagina--filtros', abrir);
+      abrirF.setAttribute('aria-expanded', String(abrir));
+      migas.innerHTML = abrir ? '<li><a href="bandeja.html" data-cerrar-filtros>Mis trámites</a></li><li><span aria-current="page">Filtros</span></li>' : migasBase;
+      document.title = (abrir ? 'Filtros · ' : '') + document.title.replace(/^Filtros · /, '');
+      if (enfocar) (abrir ? $('#filtros-titulo') : abrirF).focus();
+    }
+    abrirF.addEventListener('click', () => verFiltros(true));
+    migas.addEventListener('click', (e) => { if (e.target.closest('[data-cerrar-filtros]')) { e.preventDefault(); verFiltros(false); } });
+    movil.addEventListener('change', () => { if (!movil.matches && principal.classList.contains('pagina--filtros')) verFiltros(false, false); });
+    form.addEventListener('submit', () => { if (movil.matches && principal.classList.contains('pagina--filtros')) setTimeout(() => { if (!$('[aria-invalid="true"]', form)) { verFiltros(false, false); $('#tabla-titulo').focus(); } }, 0); });
+
     form.addEventListener('reset', () => {
       setTimeout(() => {
+        llenarFiltroProc();
         marcarError(fInicio, ''); marcarError(fFin, '');
         filtrados = TRAMITES.slice();
         pagina = 1;
@@ -522,18 +677,71 @@
     minera: ['NO TUPA', 'Opinión técnica vinculante de proyecto de exploración minera'],
     congreso: ['NO TUPA', 'Congreso']
   };
+  // Lista de producción (casilla.ana.gob.pe). El TUPA salta del 9 al 11: el 10 no existe hoy.
   const PROCEDIMIENTOS = {
     TUPA: [
-      ['1', '1. Acceso a la información pública creada u obtenida por la entidad'],
-      ['2', '2. Permiso de uso de agua para épocas de superávit hídrico']
+      ["1", "1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control"],
+      ["2", "2. Permiso de uso de agua para épocas de superávit hídrico"],
+      ["3", "3. Permiso de uso de aguas residuales"],
+      ["4", "4. Autorización de uso de agua"],
+      ["5", "5. Autorización de uso de agua con acreditación de disponibilidad hídrica aprobada"],
+      ["6", "6. Prórroga de autorización de uso de agua"],
+      ["7", "7. Constitución o modificación de servidumbre de agua forzosa"],
+      ["8", "8. Autorización para la ejecución de obras en los bienes naturales asociados al agua y en la infraestructura hidráulica multisectorial"],
+      ["9", "9. Reconocimiento administrativo de junta de usuarios"],
+      ["11", "11. Autorización de ejecución de estudios de disponibilidad hídrica para obtención de licencia de uso de agua superficial o subterránea"],
+      ["12", "12. Autorización para la ejecución de estudios de aprovechamiento hídrico con perforación de pozos exploratorios o para instalación de piezómetros"],
+      ["13", "13. Acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua"],
+      ["14", "14. Modificación de acreditación de disponibilidad hídrica en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas"],
+      ["15", "15. Prórroga de acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas"],
+      ["16", "16. Autorización para la ejecución de obras de aprovechamiento hídrico destinadas a la obtención de derechos de uso de agua"],
+      ["17", "17. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas"],
+      ["18", "18. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua, en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas, con opinión técnica favorable al instrumento de gestión ambiental"],
+      ["19", "19. Prórroga de autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas"],
+      ["20", "20. Licencia de uso de agua provisional"],
+      ["21", "21. Otorgamiento de licencia de uso de agua"],
+      ["22", "22. Otorgamiento de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas"],
+      ["23", "23. Autorización de ejecución de presas integrantes de la infraestructura hidráulica mayor de carácter multisectorial"],
+      ["24", "24. Autorización al titular de derecho de uso de agua para brindar servicio de suministro de agua subterránea a favor de terceros"],
+      ["25", "25. Autorización para la prestación del servicio de agua desalinizada a favor de terceros"],
+      ["26", "26. Autorización de ejecución de obras de aprovechamiento hídrico para la instalación de plantas desalinizadoras"],
+      ["27", "27. Autorización para el uso temporal de las fajas marginales y de las riberas de los ríos amazónicos para la siembra de cultivos"],
+      ["28", "28. Autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua"],
+      ["29", "29. Modificación de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua, por cambio de características técnicas"],
+      ["30", "30. Prórroga de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua"],
+      ["31", "31. Prórroga del plazo de descarga o rebose de las aguas residuales a un cuerpo natural de agua desde los sistemas de saneamiento"],
+      ["32", "32. Autorización de reúso de aguas residuales tratadas"],
+      ["33", "33. Modificación de autorización de reúso de aguas residuales tratadas por cambio de características técnicas"],
+      ["34", "34. Prórroga de autorización de reúso de agua residual tratada"],
+      ["35", "35. Reserva de recursos hídricos"],
+      ["36", "36. Prórroga de reserva de recursos hídricos"],
+      ["37", "37. Acreditación de disponibilidad hídrica para actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)"],
+      ["38", "38. Autorización de ejecución de obras de aprovechamiento hídrico para usos acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)"],
+      ["39", "39. Licencia de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)"],
+      ["40", "40. Permiso de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)"],
+      ["41", "41. Inspección ocular – a distancias de hasta 10 km"],
+      ["42", "42. Inspección ocular – a distancias mayores de 10 km hasta 50 km"],
+      ["43", "43. Inspección ocular – a distancias mayores de 50 km hasta 100 km"],
+      ["44", "44. Inspección ocular – a distancias mayores de 100 km"],
+      ["45", "45. Otorgamiento de licencia de uso de agua en el marco de la formalización del uso de agua"],
+      ["46", "46. Reconocimiento administrativo de las comisiones de usuarios"],
+      ["47", "47. Reconocimiento administrativo de comités de usuarios"]
     ],
     'NO TUPA': [
-      ['bienes', 'Bienes y servicios menores a 8 UIT'],
-      ['iga', 'Opinión técnica vinculante · IGA'],
-      ['otros', 'Otros'],
-      ['minera', 'Opinión técnica vinculante de proyecto de exploración minera'],
-      ['congreso', 'Congreso']
+      ["bienes", "Bienes y servicios menores a 8 UIT"],
+      ["iga", "Opinión técnica vinculante · IGA"],
+      ["otros", "Otros"],
+      ["minera", "Opinión técnica vinculante de proyecto de exploración minera"],
+      ["congreso", "Congreso"]
     ]
+  };
+  // Los TUPA sin flujo propio dibujado siguen el del TUPA 2 (datos, requisitos, anexos)
+  const flujoDe = (clave) => FLUJOS[clave] || FLUJOS['TUPA:2'];
+  const tituloDe = (clave) => {
+    if (TITULO_TRAMITE[clave]) return TITULO_TRAMITE[clave];
+    const n = clave.replace('TUPA:', '');
+    const p = PROCEDIMIENTOS.TUPA.find(([v]) => v === n);
+    return [`TUPA · Procedimiento ${n}`, p ? p[1].replace(/^\d+\. /, '') : ''];
   };
   const REQUISITOS = [
     { id: 'r1', nombre: '1. Solicitud dirigida al Administrador Local de Agua', obligatorio: true, archivo: { nombre: 'solicitud-ala.pdf', bytes: 31457 } },
@@ -642,16 +850,17 @@
       const lista = PROCEDIMIENTOS[tipo.value];
       proc.innerHTML = lista.map(([v, t]) => `<option value="${v}">${escapar(t)}</option>`).join('');
       proc.value = tipo.value === 'TUPA' ? '2' : lista[0][0];
+      crearCombo(proc).refrescar();
     }
-    tipo.addEventListener('change', llenarProcedimientos);
+    tipo.addEventListener('change', () => { llenarProcedimientos(); notificarSoloLector(`Procedimiento: se cargaron los de ${tipo.value}.`); });
     llenarProcedimientos();
 
     function aplicarProcedimiento() {
       const clave = tipo.value === 'TUPA' ? `TUPA:${proc.value}` : 'NO TUPA';
       if (clave !== estado.clave) { estado.hechos = new Set(); }   // otro recorrido: se empieza de nuevo
       estado.clave = clave;
-      estado.flujo = FLUJOS[clave];
-      const [t, nombre] = TITULO_TRAMITE[tipo.value === 'TUPA' ? clave : proc.value];
+      estado.flujo = flujoDe(clave);
+      const [t, nombre] = tipo.value === 'TUPA' ? tituloDe(clave) : TITULO_TRAMITE[proc.value];
       $('#tramite-tipo').textContent = t;
       $('#tramite-nombre').textContent = nombre;
       // Datos del documento: lo que cambia por procedimiento
@@ -1408,7 +1617,6 @@
 
     function ir(vista) {
       $$('[data-vista]').forEach((s) => { s.hidden = s.dataset.vista !== vista; });
-      $('#migas').hidden = vista === 'corregir';            // Figma 03 no lleva migas
       document.title = `${VISTAS[vista]} · Casilla Electrónica · ANA`;
       const h = $(`[data-vista="${vista}"] .vista__titulo`);
       h.focus();
@@ -1764,6 +1972,192 @@
   }
 
   /* ------------------------------------------------------------------------
+     REGISTRO · Crear tu cuenta (Figma casilla · página «crear cuenta»)
+     6 pasos + términos (modal) + cuenta creada. ID Perú y el SMS son simulados.
+     ------------------------------------------------------------------------ */
+  function iniciarRegistro() {
+    const PASOS = ['quien', 'identidad', 'datos', 'contacto', 'clave', 'revision'];
+    const NOMBRE = { quien: '¿Quién va a usar esta casilla?', identidad: 'Identidad', datos: '¿Dónde vives?', contacto: 'Cómo te contactamos', clave: 'Tu contraseña', revision: 'Revisar y crear' };
+    const METODO = { facial: 'reconocimiento facial', dnie: 'DNI electrónico', certificado: 'certificado digital' };
+    const est = { paso: 1, hechos: new Set(), celularVerificado: '' };
+    const titulos = document.title;
+
+    function resumen(id) {
+      if (id === 'quien') return $('input[name="quien"]:checked').value === 'persona' ? 'Yo, como persona' : 'Una empresa o institución';
+      if (id === 'identidad') return 'Verificada con RENIEC';
+      if (id === 'datos') return `${$('#r-dist').value}, ${$('#r-dep').value}`;
+      if (id === 'contacto') return `${$('#r-correo').value.trim()} · ${$('#r-celular').value.trim()}`;
+      if (id === 'clave') return 'Guardada';
+      return '';
+    }
+    function pintarAvance() {
+      const fin = est.paso > PASOS.length;
+      const hechos = fin ? PASOS.length : est.hechos.size;
+      $('#avance-relleno').style.width = `${(hechos / PASOS.length) * 100}%`;
+      $('#avance-texto').textContent = fin ? 'Cuenta creada' : `Paso ${est.paso} de ${PASOS.length}`;
+      $('#avance-lista').innerHTML = PASOS.map((id, i) => {
+        const n = i + 1;
+        const hecho = est.hechos.has(n) && n !== est.paso;
+        const actual = n === est.paso;
+        const clase = hecho ? 'marcador--hecho' : actual ? 'marcador--actual' : 'marcador--pendiente';
+        const cond = hecho ? 'completado' : actual ? 'paso actual' : 'pendiente';
+        const res = hecho ? resumen(id) : actual ? 'En curso' : '';
+        // La identidad verificada no se edita: volver a ID Perú obliga a empezar de nuevo
+        const editar = hecho && id !== 'identidad'
+          ? `<button type="button" class="enlace-editar" data-editar="${n}">${icono('editar')}Editar<span class="visualmente-oculto"> ${NOMBRE[id]}</span></button>` : '';
+        return `<li class="avance__paso${hecho || actual ? ' avance__paso--activo' : ''}"${actual ? ' aria-current="step"' : ''}>
+          <span class="marcador marcador--chico ${clase}" aria-hidden="true">${n}</span>
+          <span class="avance__texto"><span class="avance__nombre">${NOMBRE[id]}<span class="visualmente-oculto">, ${cond}</span></span>
+          ${res ? `<span class="avance__resumen">${escapar(res)}</span>` : ''}</span>${editar}</li>`;
+      }).join('');
+    }
+    function irA(n, enfocar = true) {
+      est.paso = n;
+      const id = n > PASOS.length ? 'creada' : PASOS[n - 1];
+      $$('[data-paso]').forEach((s) => { s.hidden = s.dataset.paso !== id; });
+      $('#contenido').classList.toggle('pagina--registro-fin', id === 'creada');
+      pintarAvance();
+      document.title = id === 'creada' ? `Cuenta creada · ${titulos}` : `Paso ${n} de 6 · ${NOMBRE[id]} · ${titulos}`;
+      if (!enfocar) return;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      $(`[data-paso="${id}"] [tabindex="-1"]`).focus();
+    }
+    const avanzar = () => { est.hechos.add(est.paso); irA(est.paso + 1); };
+    document.addEventListener('click', (e) => {
+      const ed = e.target.closest('[data-editar]'); if (ed) { irA(Number(ed.dataset.editar)); return; }
+      if (e.target.closest('[data-volver]')) irA(est.paso - 1);
+    });
+
+    /* 1 · Quién */
+    $('#f-quien').addEventListener('submit', (e) => { e.preventDefault(); avanzar(); });
+
+    /* 2 · Identidad: el botón del método envía el formulario; se simula la ida y vuelta a ID Perú */
+    $('#r-num-doc').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, ''); });
+    $('#f-identidad').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ok = validar('#errores-identidad', [['r-num-doc', 'Número de documento: el DNI tiene 8 dígitos.', (c) => /^\d{8}$/.test(c.value)]]);
+      if (!ok) return;
+      const dni = $('#r-num-doc').value;
+      const [nom, pat, mat] = (RENIEC[dni] || ['Ana', 'Quispe', 'Mamani']).map((x) => x.toUpperCase());
+      $('#r-nombres').textContent = nom; $('#r-paterno').textContent = pat; $('#r-materno').textContent = mat;
+      const metodo = METODO[(e.submitter && e.submitter.value) || 'facial'];
+      avanzar();
+      notificar(`Volviste de ID Perú. Verificamos tu identidad con ${metodo}.`);
+    });
+
+    /* 3 · Datos */
+    iniciarUbigeo('r', ['', '', '']);
+    $('#f-datos').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (validar('#errores-datos', [
+        ['r-direccion', 'Dirección: escribe la calle y el número.'],
+        ['r-dep', 'Departamento: elige uno.'], ['r-prov', 'Provincia: elige una.'], ['r-dist', 'Distrito: elige uno.']])) avanzar();
+    });
+
+    /* 4 · Contacto + código por SMS */
+    const cel = () => $('#r-celular').value.replace(/\s/g, '');
+    const reglasContacto = () => [
+      ['r-correo', 'Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com', esCorreo],
+      ['r-correo2', 'Confirma tu correo: debe ser igual al correo electrónico.', (c) => c.value.trim() && c.value.trim().toLowerCase() === $('#r-correo').value.trim().toLowerCase()],
+      ['r-celular', 'Celular: tiene 9 dígitos y empieza con 9.', esCelular]
+    ];
+    $('#r-celular').addEventListener('input', () => { if (est.celularVerificado && cel() !== est.celularVerificado) est.celularVerificado = ''; });
+    function pedirCodigo() {
+      $('#codigo-sms').hidden = false;
+      $('#r-codigo').value = '';
+      marcarError($('#r-codigo'), '');
+      $('#r-codigo-ayuda').textContent = `Se lo enviamos al ${cel().slice(0, 3)} *** ${cel().slice(-3)}. Vence en 10 minutos. En este prototipo sirve cualquier código de 6 dígitos.`;
+      $('#t-codigo').focus();
+    }
+    $('#f-contacto').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validar('#errores-contacto', reglasContacto())) return;
+      if (est.celularVerificado === cel()) { avanzar(); return; }
+      pedirCodigo();
+      notificar('Te enviamos un código por SMS. Escríbelo para verificar tu celular.');
+    });
+    $('#r-codigo').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, ''); });
+    $('#verificar-codigo').addEventListener('click', () => {
+      const c = $('#r-codigo');
+      if (!/^\d{6}$/.test(c.value)) { marcarError(c, 'El código tiene 6 dígitos. Revisa el SMS.'); c.focus(); return; }
+      marcarError(c, '');
+      est.celularVerificado = cel();
+      $('#codigo-sms').hidden = true;
+      avanzar();
+      notificar('Verificamos tu celular.');
+    });
+    $('#reenviar-codigo').addEventListener('click', () => { pedirCodigo(); notificar('Te enviamos un código nuevo.'); });
+
+    /* 5 · Contraseña (mismo medidor que Mi perfil) */
+    const REGLAS = { largo: (v) => v.length >= 8, caso: (v) => /[a-záéíóúñ]/.test(v) && /[A-ZÁÉÍÓÚÑ]/.test(v), numero: (v) => /\d/.test(v), simbolo: (v) => /[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]/.test(v) };
+    const NIVEL = ['débil', 'débil', 'media', 'media', 'fuerte'];
+    $('#r-clave').setAttribute('aria-describedby', 'medidor-texto requisitos r-clave-error');
+    function medidor() {
+      const v = $('#r-clave').value;
+      const cumple = Object.keys(REGLAS).filter((k) => REGLAS[k](v));
+      $$('#requisitos li').forEach((li) => {
+        const ok = cumple.includes(li.dataset.req);
+        li.classList.toggle('requisitos__item--ok', ok);
+        li.dataset.estado = ok ? 'cumplido' : 'pendiente';
+        $('.js-req-estado', li).textContent = ok ? ', cumplido' : ', pendiente';
+      });
+      const n = v ? cumple.length : 0;
+      $('.medidor').dataset.nivel = !v ? '0' : n <= 1 ? '1' : n <= 3 ? '2' : '3';
+      $('#medidor-texto').textContent = v ? `Seguridad: ${NIVEL[n]}. Cumple ${n} de 4 requisitos.` : 'Seguridad: escribe tu contraseña';
+      return n;
+    }
+    $('#r-clave').addEventListener('input', medidor); medidor();
+    $$('[data-ver-clave]').forEach((b) => b.addEventListener('click', () => {
+      const c = $('#' + b.dataset.verClave); const ver = c.type === 'password';
+      c.type = ver ? 'text' : 'password'; b.setAttribute('aria-pressed', String(ver));
+      $('use', b).setAttribute('href', ver ? '#ojo-tachado' : '#ojo');
+    }));
+    $('#f-clave').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (validar('#errores-clave', [
+        ['r-clave', 'Contraseña: debe cumplir los 4 requisitos de la lista.', () => medidor() === 4],
+        ['r-clave2', 'Repite la contraseña: no coincide con la que escribiste.', (c) => c.value && c.value === $('#r-clave').value]])) avanzar();
+    });
+
+    /* 6 · Revisar y crear + modal de términos */
+    const capa = $('#modal-terminos');
+    let origen = null;
+    function abrirTerminos(boton) {
+      origen = boton; capa.hidden = false;
+      $$('body > *:not(.modal-capa):not(script)').forEach((el) => { if (!el.hasAttribute('inert')) { el.setAttribute('inert', ''); el.dataset.inertModal = '1'; } });
+      $('#terminos-titulo').focus();
+    }
+    function cerrarTerminos(acepta) {
+      capa.hidden = true;
+      $$('[data-inert-modal]').forEach((el) => { el.removeAttribute('inert'); delete el.dataset.inertModal; });
+      const casilla = $('#r-terminos');
+      if (acepta) { casilla.checked = true; marcarError(casilla, ''); notificar('Aceptaste los Términos y condiciones.'); casilla.focus(); }
+      else if (origen && document.contains(origen)) origen.focus();
+    }
+    $('#abrir-terminos').addEventListener('click', (e) => abrirTerminos(e.currentTarget));
+    // La casilla se marca solo si aceptas en la ventana (Figma): marcarla la abre
+    $('#r-terminos').addEventListener('click', (e) => { if (e.target.checked) { e.preventDefault(); abrirTerminos(e.target); } });
+    $('#terminos-aceptar').addEventListener('click', () => cerrarTerminos(true));
+    $('#terminos-cerrar').addEventListener('click', () => cerrarTerminos(false));
+    capa.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); cerrarTerminos(false); }
+      if (e.key === 'Tab') {
+        const f = $$('button, [tabindex="0"]', capa); const i = f.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+    $('#f-revision').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (validar('#errores-revision', [
+        ['r-terminos', 'Acepta los Términos y condiciones para crear tu cuenta.', (c) => c.checked],
+        ['r-declaro', 'Marca la declaración jurada para crear tu cuenta.', (c) => c.checked]])) { avanzar(); notificar('Creamos tu cuenta.'); }
+    });
+
+    irA(1, false);
+  }
+
+  /* ------------------------------------------------------------------------
      ARRANQUE
      ------------------------------------------------------------------------ */
   document.addEventListener('DOMContentLoaded', () => {
@@ -1784,5 +2178,6 @@
     if (pagina === 'detalle') iniciarDetalle();
     if (pagina === 'subsanar') iniciarSubsanar();
     if (pagina === 'perfil') iniciarPerfil();
+    if (pagina === 'registro') iniciarRegistro();
   });
 })();
