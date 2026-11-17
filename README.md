@@ -22,7 +22,8 @@ No necesita instalar nada.
 | `error-*.html`, `sesion-expirada.html`, `servicio-no-disponible.html` | Estados de error |
 | `ana.css` | Todos los estilos. Arriba están los tokens: colores, tipografía y espacios |
 | `app.js` | Todo el comportamiento de las pantallas |
-| `iconos.svg` | Todos los íconos, uno por símbolo, con su nombre |
+| `iconos.svg` | Todos los íconos (24 × 24), uno por símbolo, con su nombre |
+| `ilustraciones.svg` | Las 8 ilustraciones de los estados vacíos y errores (120 × 120), una por símbolo. Toman sus colores de `ana.css` |
 | `img/` | Logo y fondo del ingreso |
 
 ## Accesibilidad
