@@ -8,6 +8,12 @@ Sirve de referencia para estimar y construir. No se conecta a ningún servicio: 
 Abre `prototipo.html` en el navegador. Es la portada y enlaza todos los flujos.
 No necesita instalar nada.
 
+## Sistema de diseño en HTML
+
+Abre `componentes.html`: cada componente con sus estados, su nota de accesibilidad y el código listo para copiar (botón «Copiar»). También están los colores, la tipografía, los íconos y las ilustraciones. Es el mismo `ana.css` del prototipo; en Figma, el archivo «ANA Design System».
+
+En línea: https://lelirb.github.io/ana-casilla-prototipo/componentes.html
+
 ## Qué hay en cada archivo
 
 | Archivo | Qué es |
@@ -20,6 +26,7 @@ No necesita instalar nada.
 | `subsanar.html` | Subsanación de un trámite observado |
 | `perfil.html` | Mi perfil: persona natural y persona jurídica |
 | `error-*.html`, `sesion-expirada.html`, `servicio-no-disponible.html` | Estados de error |
+| `componentes.html` | Sistema de diseño en HTML: componentes, estados y código para copiar |
 | `ana.css` | Todos los estilos. Arriba están los tokens: colores, tipografía y espacios |
 | `app.js` | Todo el comportamiento de las pantallas |
 | `iconos.svg` | Todos los íconos (24 × 24), uno por símbolo, con su nombre |

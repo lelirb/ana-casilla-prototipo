@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Componentes · Sistema de diseño ANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap">
+<link rel="stylesheet" href="ana.css">
+<style>
+/* Estilos propios de esta página de documentación (prefijo ds-). No forman parte del sistema. */
+.ds { display:grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; max-width: 1440px; margin: 0 auto; padding: 32px max(var(--gutter-der),32px) 64px max(var(--gutter-izq),32px); }
+.ds-indice { position: sticky; top: 16px; align-self: start; }
+.ds-indice ol { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+.ds-indice a { display:block; padding:6px 10px; border-radius:6px; color: var(--texto-principal); text-decoration:none; font: var(--t-etiqueta); }
+.ds-indice a:hover { background: var(--fondo-accion-suave); color: var(--texto-accion); }
+.ds-cabecera { display:flex; flex-direction:column; gap:6px; margin-bottom: 8px; }
+.ds-seccion { display:flex; flex-direction:column; gap:16px; padding-top: 32px; border-top: 1px solid var(--borde-sutil); margin-top: 32px; }
+.ds-seccion > p { max-width: 72ch; margin: 0; }
+.ds-pasos { display:flex; flex-direction:column; gap:8px; max-width: 80ch; padding-left: 20px; margin:0; }
+code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px 5px; border-radius: 4px; overflow-wrap:anywhere; }
+.ds-colores { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 12px; }
+.ds-color { display:flex; gap:12px; align-items:center; }
+.ds-color__muestra { width:48px; height:48px; flex:none; border-radius: var(--radio-control); border:1px solid var(--borde-sutil); }
+.ds-tipos { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+.ds-tipo { display:flex; flex-direction:column; gap:2px; }
+.ds-medidas { display:flex; flex-direction:column; gap:8px; }
+.ds-medida { display:flex; align-items:center; gap:12px; }
+.ds-medida__barra { height:16px; background: var(--fondo-accion); border-radius:2px; }
+.ds-radios { display:flex; flex-wrap:wrap; gap:16px; }
+.ds-radio { width:140px; height:84px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:2px; border:1px solid var(--borde-base); background: var(--fondo-base); }
+.ds-filtro { max-width: 320px; }
+.ds-iconos { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(auto-fill, minmax(112px,1fr)); gap:8px; }
+.ds-iconos--ilu { grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); }
+.ds-icono { width:100%; min-height:88px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:10px 6px; background: var(--fondo-base); border:1px solid var(--borde-sutil); border-radius: var(--radio-control); color: var(--texto-principal); font: var(--t-ayuda); cursor:pointer; }
+.ds-icono .icono { width:24px; height:24px; }
+.ds-icono:hover { border-color: var(--borde-accion); background: var(--fondo-accion-suave); }
+.ds-comp { display:flex; flex-direction:column; gap:10px; padding: 24px; background: var(--fondo-base); border:1px solid var(--borde-sutil); border-radius: var(--radio-tarjeta); }
+.ds-comp > p { margin:0; max-width: 80ch; }
+.ds-a11y { padding: 10px 12px; background: var(--fondo-accion-suave); border-radius: var(--radio-control); font: var(--t-ayuda); }
+.ds-estado { display:flex; flex-direction:column; gap:8px; margin-top: 8px; }
+.ds-estado__nombre { margin:0; font: var(--t-etiqueta); color: var(--texto-secundario); }
+.ds-muestra { position: relative; transform: translateZ(0); overflow: hidden; padding: 24px; background: var(--fondo-sutil); border-radius: var(--radio-control); }
+.ds-muestra__in { width: var(--ancho, auto); max-width: 100%; }
+.ds-codigo summary { cursor:pointer; font: var(--t-etiqueta); color: var(--texto-accion); min-height: 24px; }
+.ds-codigo pre { margin: 8px 0 0; padding: 16px; max-height: 420px; overflow:auto; background: var(--fondo-inverso); color: var(--texto-inverso); border-radius: var(--radio-control); }
+.ds-codigo pre code { background:none; color:inherit; font: var(--t-dato-pequeno); white-space: pre; }
+.ds-copiar { margin-top: 8px; }
+@media (max-width: 900px) { .ds { grid-template-columns: 1fr; } .ds-indice { position: static; } .ds-indice ol { flex-direction: row; flex-wrap: wrap; } }
+</style>
+</head>
+<body data-pagina="componentes">
+<div class="sprite" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<!-- Del sistema de diseño ANA (Figma · Iconografía) -->
+<symbol id="calendario" viewBox="0 0 24 24"><g transform="scale(1.2)"><path d="M15.4166 4.58301H4.58329C3.66282 4.58301 2.91663 5.3292 2.91663 6.24967V15.4163C2.91663 16.3368 3.66282 17.083 4.58329 17.083H15.4166C16.3371 17.083 17.0833 16.3368 17.0833 15.4163V6.24967C17.0833 5.3292 16.3371 4.58301 15.4166 4.58301Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.66663 2.5V6.66667M13.3333 2.5V6.66667M2.91663 9.16667H17.0833" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="enviar" viewBox="0 0 24 24"><g transform="scale(1.0909)"><path d="M19.25 2.75L9.625 12.375M9.625 12.375L2.75 8.70833L19.25 2.75L13.2917 19.25L9.625 12.375Z" stroke="currentColor" stroke-width="1.83333" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="expediente" viewBox="0 0 24 24"><g transform="scale(1.2)"><path d="M2.91663 6.24967C2.91663 5.80765 3.09222 5.38372 3.40478 5.07116C3.71734 4.7586 4.14127 4.58301 4.58329 4.58301H7.24996L8.91663 6.66634H15.4166C15.8587 6.66634 16.2826 6.84194 16.5951 7.1545C16.9077 7.46706 17.0833 7.89098 17.0833 8.33301V14.9997C17.0833 15.4417 16.9077 15.8656 16.5951 16.1782C16.2826 16.4907 15.8587 16.6663 15.4166 16.6663H4.58329C4.14127 16.6663 3.71734 16.4907 3.40478 16.1782C3.09222 15.8656 2.91663 15.4417 2.91663 14.9997V6.24967Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></g></symbol>
+<symbol id="tramites" viewBox="0 0 24 24"><path d="M6 3H13L18 8V21C18 21.2652 17.8946 21.5196 17.7071 21.7071C17.5196 21.8946 17.2652 22 17 22H6C5.73478 22 5.48043 21.8946 5.29289 21.7071C5.10536 21.5196 5 21.2652 5 21V4C5 3.73478 5.10536 3.48043 5.29289 3.29289C5.48043 3.10536 5.73478 3 6 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3V8H18M8.5 13H15.5M8.5 17H13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="buscar" viewBox="0 0 24 24"><path d="M10.5 17C14.0899 17 17 14.0899 17 10.5C17 6.91015 14.0899 4 10.5 4C6.91015 4 4 6.91015 4 10.5C4 14.0899 6.91015 17 10.5 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.4 15.4L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="usuario" viewBox="0 0 24 24"><path d="M12 12.5C14.2091 12.5 16 10.7091 16 8.5C16 6.29086 14.2091 4.5 12 4.5C9.79086 4.5 8 6.29086 8 8.5C8 10.7091 9.79086 12.5 12 12.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 20C4.5 16.4 7.9 14 12 14C16.1 14 19.5 16.4 19.5 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ayuda" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 9.3C9.5 7.9 10.6 6.9 12 6.9C13.4 6.9 14.5 7.9 14.5 9.2C14.5 11.1 12 11.1 12 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18C12.6627 18 13.2 17.4627 13.2 16.8C13.2 16.1373 12.6627 15.6 12 15.6C11.3372 15.6 10.8 16.1373 10.8 16.8C10.8 17.4627 11.3372 18 12 18Z" fill="currentColor"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M4 12.5L9.5 18L20 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="alerta" viewBox="0 0 24 24"><path d="M12 3.6L22 20.4H2L12 3.6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9.8V13.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18.2C12.6627 18.2 13.2 17.6627 13.2 17C13.2 16.3373 12.6627 15.8 12 15.8C11.3372 15.8 10.8 16.3373 10.8 17C10.8 17.6627 11.3372 18.2 12 18.2Z" fill="currentColor"/></symbol>
+<symbol id="error" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.5C12.6627 17.5 13.2 16.9627 13.2 16.3C13.2 15.6373 12.6627 15.1 12 15.1C11.3372 15.1 10.8 15.6373 10.8 16.3C10.8 16.9627 11.3372 17.5 12 17.5Z" fill="currentColor"/></symbol>
+<symbol id="info" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16.5V11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9.2C12.6627 9.2 13.2 8.66274 13.2 8C13.2 7.33726 12.6627 6.8 12 6.8C11.3373 6.8 10.8 7.33726 10.8 8C10.8 8.66274 11.3373 9.2 12 9.2Z" fill="currentColor"/></symbol>
+<symbol id="chevron-abajo" viewBox="0 0 24 24"><path d="M6 9.5L12 15.5L18 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="chevron-derecha" viewBox="0 0 24 24"><path d="M9.5 6L15.5 12L9.5 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="cerrar" viewBox="0 0 24 24"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="clip" viewBox="0 0 24 24"><path d="M20.5 11.5L12 20C11.0718 20.9283 9.81276 21.4497 8.50001 21.4497C7.18725 21.4497 5.92827 20.9283 5.00001 20C4.07175 19.0717 3.55026 17.8128 3.55026 16.5C3.55026 15.1872 4.07175 13.9283 5.00001 13L13 5C13.6631 4.33695 14.5623 3.96446 15.5 3.96446C16.4377 3.96446 17.337 4.33695 18 5C18.6631 5.66304 19.0355 6.56231 19.0355 7.5C19.0355 8.43768 18.6631 9.33695 18 10L10 18C9.60218 18.3978 9.06262 18.6213 8.50001 18.6213C7.9374 18.6213 7.39783 18.3978 7.00001 18C6.60219 17.6022 6.37869 17.0626 6.37869 16.5C6.37869 15.9374 6.60219 15.3978 7.00001 15L14.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="descargar" viewBox="0 0 24 24"><path d="M12 3.5V14.5M16.5 10L12 14.5L7.5 10M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="subir" viewBox="0 0 24 24"><path d="M12 16V4.5M16.5 9L12 4.5L7.5 9M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="reloj" viewBox="0 0 24 24"><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12.5L15.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="salir" viewBox="0 0 24 24"><path d="M14.5 4.5H18C18.3978 4.5 18.7794 4.65804 19.0607 4.93934C19.342 5.22064 19.5 5.60218 19.5 6V18C19.5 18.3978 19.342 18.7794 19.0607 19.0607C18.7794 19.342 18.3978 19.5 18 19.5H14.5M10 16L6 12L10 8M6 12H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="filtro" viewBox="0 0 24 24"><path d="M3 6H21L14 14V20L10 22V14L3 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="agregar" viewBox="0 0 24 24"><path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="archivo" viewBox="0 0 24 24"><path d="M13 3H7C6.60218 3 6.22064 3.15804 5.93934 3.43934C5.65804 3.72064 5.5 4.10218 5.5 4.5V19.5C5.5 19.8978 5.65804 20.2794 5.93934 20.5607C6.22064 20.842 6.60218 21 7 21H17C17.3978 21 17.7794 20.842 18.0607 20.5607C18.342 20.2794 18.5 19.8978 18.5 19.5V8.5L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3V8.5H18.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ojo" viewBox="0 0 24 24"><path d="M2 12C2 12 5.6 5 12 5C18.4 5 22 12 22 12C22 12 18.4 19 12 19C5.6 19 2 12 2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="mas-acciones" viewBox="0 0 24 24"><path d="M12 6.5C12.8284 6.5 13.5 5.82843 13.5 5C13.5 4.17157 12.8284 3.5 12 3.5C11.1716 3.5 10.5 4.17157 10.5 5C10.5 5.82843 11.1716 6.5 12 6.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 13.5C12.8284 13.5 13.5 12.8284 13.5 12C13.5 11.1716 12.8284 10.5 12 10.5C11.1716 10.5 10.5 11.1716 10.5 12C10.5 12.8284 11.1716 13.5 12 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20.5C12.8284 20.5 13.5 19.8284 13.5 19C13.5 18.1716 12.8284 17.5 12 17.5C11.1716 17.5 10.5 18.1716 10.5 19C10.5 19.8284 11.1716 20.5 12 20.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="sobre" viewBox="0 0 24 24"><path d="M19.5 5H4.5C3.39543 5 2.5 5.89543 2.5 7V17C2.5 18.1046 3.39543 19 4.5 19H19.5C20.6046 19 21.5 18.1046 21.5 17V7C21.5 5.89543 20.6046 5 19.5 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7L12 13L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="sobre-abierto" viewBox="0 0 24 24"><path d="M19.5 9H4.5C3.39543 9 2.5 9.89543 2.5 11V17C2.5 18.1046 3.39543 19 4.5 19H19.5C20.6046 19 21.5 18.1046 21.5 17V11C21.5 9.89543 20.6046 9 19.5 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 10.5L12 4L21.5 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="orden" viewBox="0 0 24 24"><path d="M14.959 9.5H9.04102L12 5.80078L14.959 9.5Z" fill="currentColor" stroke="currentColor"/><path d="M14.959 14.5L12 18.1992L9.04102 14.5H14.959Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="orden-desc" viewBox="0 0 24 24"><path d="M15.584 9.5L12 15.0742L8.41602 9.5H15.584Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="orden-asc" viewBox="0 0 24 24"><path d="M15.584 14.5L12 8.9258L8.41602 14.5H15.584Z" fill="currentColor" stroke="currentColor"/></symbol>
+<symbol id="telefono" viewBox="0 0 24 24"><path d="M19.8881 14.9201V17.9201C19.8892 18.1986 19.8322 18.4743 19.7206 18.7294C19.6091 18.9846 19.4454 19.2137 19.2402 19.402C19.035 19.5902 18.7927 19.7336 18.5289 19.8228C18.265 19.912 17.9855 19.9452 17.7081 19.9201C14.631 19.5857 11.6751 18.5342 9.07812 16.8501C6.66194 15.3148 4.61345 13.2663 3.07812 10.8501C1.38809 8.2413 0.33636 5.27109 0.00811671 2.1801C-0.0168728 1.90356 0.0159916 1.62486 0.104617 1.36172C0.193243 1.09859 0.335688 0.856786 0.522883 0.651718C0.710078 0.44665 0.937922 0.282806 1.19191 0.170619C1.44589 0.0584315 1.72046 0.000358432 1.99812 9.69523e-05H4.99812C5.48342 -0.00467949 5.95391 0.167176 6.32188 0.48363C6.68985 0.800084 6.93019 1.23954 6.99812 1.7201C7.12474 2.68016 7.35957 3.62282 7.69812 4.5301C7.83266 4.88802 7.86178 5.27701 7.78202 5.65098C7.70227 6.02494 7.51698 6.36821 7.24812 6.6401L5.97812 7.9101C7.40167 10.4136 9.47457 12.4865 11.9781 13.9101L13.2481 12.6401C13.52 12.3712 13.8633 12.1859 14.2372 12.1062C14.6112 12.0264 15.0002 12.0556 15.3581 12.1901C16.2654 12.5286 17.2081 12.7635 18.1681 12.8901C18.6539 12.9586 19.0975 13.2033 19.4146 13.5776C19.7318 13.9519 19.9003 14.4297 19.8881 14.9201Z" transform="translate(2 2)" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="whatsapp" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.17 6.14L6.3 7.01V7.17L5.88 7.85L5.91 8.23L5.74 8.41V9.7L5.91 9.89L5.88 10.27L6.05 10.43L6.02 10.69L6.16 10.8L6.45 11.53L6.73 11.79L6.84 12.19L7.12 12.45V12.61L7.41 12.87V13.03L8.37 14.09V14.25L9.77 15.66H9.94L10.31 16.05H10.48L11.16 16.62H11.32L12.26 17.16H12.54L13.24 17.58L13.48 17.55L14.04 17.84H14.46L14.58 17.98H15.56L15.68 17.84L16.5 17.72L17.04 17.3H17.2L17.67 16.83L17.95 16.27L17.93 16.03L18.09 15.84V15.07L17.88 14.86L17.2 14.6L16.95 14.32H16.78L15.28 13.5H15L14.67 13.69V13.85L13.85 14.65V14.79L13.64 15H12.94L12.42 14.6L11.95 14.44L11.72 14.18H11.55L11.3 13.9H11.13L9.84 12.61V12.45L9.45 12.07L9.42 11.88L9.16 11.65L9.02 11.23L8.88 11.11V10.69L9.59 10.01V9.84L9.98 9.35V9.05L9.7 8.65L9.73 8.39L9.56 8.23L9.59 7.97L9.42 7.8L9.45 7.55L9.16 7.15V6.87L9.02 6.75L8.86 6.28H8.7L8.3 6H7.59L7.48 6.14H7.17ZM18.33 4.22L20.44 6.59L21.68 9.47L21.8 10.97L21.96 11.13V12.56L21.8 12.75L21.82 13.66L21.52 14.39L21.54 14.79L20.72 16.69L19.88 17.95L18.02 19.78L16.78 20.6L14.3 21.56L12.66 21.68L12.54 21.82L9.68 21.56L7.99 21L6.66 20.18L2.93 21.14L2.86 20.62L3.14 20.09L3.26 19.15L3.82 17.48L3.4 16.97L2.44 14.91L2.32 13.97L2.16 13.8L2.18 13.15L2.02 12.96V10.73L2.18 10.55L2.3 9.33L2.86 7.8L4.22 5.65L5.79 4.08L7.03 3.26L8.16 2.7L10.76 2.02H13.22L13.34 2.16L14.6 2.3L16.95 3.26L18.33 4.22ZM21.09 4.12L19.8 2.86L17.91 1.5L15.28 0.4L13.12 0H10.85L8.7 0.4L6.07 1.5L4.31 2.72L1.92 5.37L0.96 7.12L0.26 9.21L0 10.92L0.14 13.85L0.82 16.29L1.66 17.88L0.54 21.47L0 23.98L5.95 22.34H6.38L7.99 23.16L9.54 23.58L13.62 23.72L16.92 22.76L19.43 21.23L21.38 19.29L22.48 17.65L23.02 16.57L23.84 13.71L23.98 11.6L23.58 8.79L22.2 5.65L21.09 4.12Z" fill="currentColor"/></symbol>
+<symbol id="correo" viewBox="0 0 24 24"><path d="M19 5.5H5C3.89543 5.5 3 6.39543 3 7.5V16.5C3 17.6046 3.89543 18.5 5 18.5H19C20.1046 18.5 21 17.6046 21 16.5V7.5C21 6.39543 20.1046 5.5 19 5.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7L12 13L20.5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="editar" viewBox="0 0 24 24"><path d="M4 20H8L20 7.99999C20.5016 7.46379 20.7751 6.75364 20.7629 6.01952C20.7507 5.28539 20.4536 4.58476 19.9344 4.06558C19.4152 3.54641 18.7146 3.24933 17.9805 3.23709C17.2463 3.22485 16.5362 3.4984 16 3.99999L4 16V20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<!-- PROVISIONALES: no están en el sistema de diseño todavía -->
+<symbol id="candado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10.5H7C5.89543 10.5 5 11.3954 5 12.5V18.5C5 19.6046 5.89543 20.5 7 20.5H17C18.1046 20.5 19 19.6046 19 18.5V12.5C19 11.3954 18.1046 10.5 17 10.5Z"/><path d="M8.5 10.5V8C8.5 7.07174 8.86875 6.1815 9.52513 5.52513C10.1815 4.86875 11.0717 4.5 12 4.5C12.9283 4.5 13.8185 4.86875 14.4749 5.52513C15.1313 6.1815 15.5 7.07174 15.5 8V10.5"/></g></symbol>
+<symbol id="ojo-tachado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.8M6.4 6.4C3.6 8.2 2 12 2 12s3.6 7 10 7a9.9 9.9 0 0 0 5.6-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></g></symbol>
+<symbol id="enlace" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+<symbol id="dnie" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4"/><path d="M14.5 10h4M14.5 13.5h3"/></g></symbol>
+<symbol id="certificado" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="m9 13.3-1.5 7.2L12 18l4.5 2.5-1.5-7.2"/></g></symbol>
+<symbol id="rostro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/></g></symbol>
+<symbol id="copiar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></g></symbol>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+
+<symbol id="sin-tramites" viewBox="0 0 120 120"><path class="ilu-t ilu-r" d="M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z"/><path class="ilu-t ilu-b" d="M70 18v18h18"/><path class="ilu-t" d="M40 46L62 46"/><path class="ilu-t" d="M40 56L76 56"/><path class="ilu-t" d="M40 66L70 66"/><circle class="ilu-t ilu-b" cx="84" cy="86" r="14"/><path class="ilu-t" d="M84 79L84 93"/><path class="ilu-t" d="M77 86L91 86"/></symbol>
+<symbol id="antes-de-buscar" viewBox="0 0 120 120"><path class="ilu-t ilu-r" d="M54 80C68.3594 80 80 68.3594 80 54C80 39.6406 68.3594 28 54 28C39.6406 28 28 39.6406 28 54C28 68.3594 39.6406 80 54 80Z"/><path class="ilu-t ilu-b" d="M54 72C63.9411 72 72 63.9411 72 54C72 44.0589 63.9411 36 54 36C44.0589 36 36 44.0589 36 54C36 63.9411 44.0589 72 54 72Z"/><path class="ilu-t" d="M44 46C45.0192 44.2322 46.4723 42.7534 48.2221 41.7035C49.9719 40.6537 51.9605 40.0674 54 40"/><path class="ilu-t" style="stroke-width:8" d="M73 73L91 91"/><path class="ilu-t" style="stroke:var(--fondo-accion-suave);stroke-width:4" d="M75 75L91 91"/><path class="ilu-t" d="M16 52H24"/><path class="ilu-t" d="M18 58H22"/><path class="ilu-t" d="M86 46H96"/><path class="ilu-t" d="M88 52H92"/></symbol>
+<symbol id="sin-resultados" viewBox="0 0 120 120"><path class="ilu-t ilu-r" d="M22 64l10-28h56l10 28v28a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4z"/><path class="ilu-t ilu-b" d="M22 64h22a16 10 0 0 0 32 0h22"/><path class="ilu-t" d="M48 22L44 16"/><path class="ilu-t" d="M60 20L60 12"/><path class="ilu-t" d="M72 22L76 16"/></symbol>
+<symbol id="error-404" viewBox="0 0 120 120"><path class="ilu-t ilu-r" d="M14 40l28-10 32 10 32-10v56l-32 10-32-10-28 10z"/><path class="ilu-t" d="M42 30L42 86"/><path class="ilu-t" d="M74 40L74 96"/><path class="ilu-t" stroke-dasharray="4 4" d="M24 74c8-6 16 4 26-2s16-8 24 0"/><path class="ilu-t ilu-b" d="M60 64c-10-12-16-20-16-28a16 16 0 0 1 32 0c0 8-6 16-16 28z"/><path class="ilu-t" d="M55 32a5 5 0 1 1 7 5c-2 1-2 2-2 4"/><circle class="ilu-p" cx="60" cy="47" r="1.5"/></symbol>
+<symbol id="error-500" viewBox="0 0 120 120"><rect class="ilu-t ilu-r" x="22" y="26" width="62" height="22" rx="4"/><rect class="ilu-t ilu-r" x="22" y="54" width="62" height="22" rx="4"/><rect class="ilu-t ilu-r" x="22" y="82" width="62" height="16" rx="4"/><circle class="ilu-p" cx="32" cy="37" r="2"/><circle class="ilu-p" cx="40" cy="37" r="2"/><circle class="ilu-p" cx="32" cy="65" r="2"/><circle class="ilu-p" cx="40" cy="65" r="2"/><path class="ilu-t ilu-b" d="M84 52l20 36H64z"/><path class="ilu-t" d="M84 64L84 76"/><circle class="ilu-p" cx="84" cy="82" r="1.5"/><path class="ilu-t" d="M92 24L98 18"/><path class="ilu-t" d="M96 30L104 28"/></symbol>
+<symbol id="acceso-denegado" viewBox="0 0 120 120"><path class="ilu-t" d="M42 54V40a18 18 0 0 1 36 0v14"/><rect class="ilu-t ilu-r" x="32" y="54" width="56" height="44" rx="6"/><circle class="ilu-t ilu-b" cx="60" cy="72" r="6"/><path class="ilu-t" d="M60 78L60 86"/><path class="ilu-t" d="M26 30L20 24"/><path class="ilu-t" d="M94 30L100 24"/></symbol>
+<symbol id="sesion-expirada" viewBox="0 0 120 120"><circle class="ilu-t ilu-r" cx="60" cy="62" r="34"/><circle class="ilu-t ilu-b" cx="60" cy="62" r="26"/><path class="ilu-t" d="M60 62L60 46"/><path class="ilu-t" d="M60 62L72 70"/><circle class="ilu-p" cx="60" cy="62" r="2"/><path class="ilu-t" d="M50 20L70 20"/><path class="ilu-t" d="M60 20L60 28"/><path class="ilu-t" d="M92 32L98 26"/></symbol>
+<symbol id="servicio-no-disponible" viewBox="0 0 120 120"><path class="ilu-t" d="M12 60L30 60"/><rect class="ilu-t ilu-r" x="30" y="46" width="22" height="28" rx="5"/><path class="ilu-t" d="M52 54h8M52 66h8"/><rect class="ilu-t ilu-r" x="72" y="42" width="24" height="36" rx="6"/><path class="ilu-t" d="M79 54h6M79 66h6"/><path class="ilu-t" d="M96 60L108 60"/><path class="ilu-t" d="M64 40L66 32"/><path class="ilu-t" d="M60 42L56 36"/><path class="ilu-t" d="M66 80L64 88"/><path class="ilu-t" d="M70 78L74 84"/></symbol>
+</svg>
+</div>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<div class="ds">
+  <nav class="ds-indice" aria-label="Secciones"><ol><li><a href="#uso">Cómo usar</a></li><li><a href="#color">Color</a></li><li><a href="#tipografia">Tipografía</a></li><li><a href="#medidas">Espaciado, radios y elevación</a></li><li><a href="#iconos">Íconos</a></li><li><a href="#ilustraciones">Ilustraciones</a></li><li><a href="#g-acciones">Acciones</a></li><li><a href="#g-campos">Campos</a></li><li><a href="#g-seleccion">Selección</a></li><li><a href="#g-archivos">Archivos</a></li><li><a href="#g-proceso">Proceso</a></li><li><a href="#g-navegacion">Navegación</a></li><li><a href="#g-datos">Datos</a></li><li><a href="#g-mensajes">Mensajes</a></li></ol></nav>
+  <main id="contenido" tabindex="-1">
+    <header class="ds-cabecera">
+      <p class="t-ayuda">Casilla Electrónica · Autoridad Nacional del Agua</p>
+      <h1 class="t-h1">Sistema de diseño ANA · Componentes</h1>
+      <p>Cada componente con sus estados y el código listo para copiar. Es el mismo HTML y la misma hoja (<code>ana.css</code>) del prototipo; en Figma, el archivo «ANA Design System».</p>
+    </header>
+    <section class="ds-seccion" id="uso" aria-labelledby="uso-t"><h2 class="t-h2" id="uso-t">Cómo usar</h2>
+<ol class="ds-pasos">
+<li>Copia <code>ana.css</code>, <code>app.js</code>, <code>iconos.svg</code> e <code>ilustraciones.svg</code> del repositorio.</li>
+<li>Enlaza la hoja: <code>&lt;link rel="stylesheet" href="ana.css"&gt;</code> y, al final del body, <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code>.</li>
+<li>Pega el contenido de <code>iconos.svg</code> (y de <code>ilustraciones.svg</code> si usas estados vacíos) una sola vez, al inicio del body, dentro de <code>&lt;div class="sprite" aria-hidden="true"&gt;</code>. Así los íconos se usan con <code>&lt;use href="#nombre"&gt;</code> y funcionan también abriendo el archivo sin servidor.</li>
+<li>Copia el código de cada componente. Los componentes usan solo tokens semánticos (<code>var(--texto-accion)</code>, etc.); no pongas colores sueltos.</li>
+</ol>
+<p class="t-ayuda">Todo está hecho para cumplir WCAG 2.2 nivel AA. Las notas de accesibilidad de cada componente dicen qué no se debe quitar.</p></section><section class="ds-seccion" id="color" aria-labelledby="color-t"><h2 class="t-h2" id="color-t">Color</h2><p>Solo tokens semánticos. Los primitivos (<code>--p-…</code>) existen pero no se usan directo en los componentes.</p><ul class="ds-colores"><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-base)"></span><span><code>--fondo-base</code><br><span class="t-ayuda">Fondo/Base · <span data-hex="--fondo-base"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-sutil)"></span><span><code>--fondo-sutil</code><br><span class="t-ayuda">Fondo/Sutil · <span data-hex="--fondo-sutil"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-deshabilitado)"></span><span><code>--fondo-deshabilitado</code><br><span class="t-ayuda">Fondo/Deshabilitado · <span data-hex="--fondo-deshabilitado"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-accion)"></span><span><code>--fondo-accion</code><br><span class="t-ayuda">Fondo/Acción · <span data-hex="--fondo-accion"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-accion-hover)"></span><span><code>--fondo-accion-hover</code><br><span class="t-ayuda">Fondo/Acción-Hover · <span data-hex="--fondo-accion-hover"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-accion-suave)"></span><span><code>--fondo-accion-suave</code><br><span class="t-ayuda">Fondo/Acción-Suave · <span data-hex="--fondo-accion-suave"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-inverso)"></span><span><code>--fondo-inverso</code><br><span class="t-ayuda">Fondo/Inverso · <span data-hex="--fondo-inverso"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-error-suave)"></span><span><code>--fondo-error-suave</code><br><span class="t-ayuda">Fondo/Error-Suave · <span data-hex="--fondo-error-suave"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-alerta-suave)"></span><span><code>--fondo-alerta-suave</code><br><span class="t-ayuda">Fondo/Alerta-Suave · <span data-hex="--fondo-alerta-suave"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-exito-suave)"></span><span><code>--fondo-exito-suave</code><br><span class="t-ayuda">Fondo/Éxito-Suave · <span data-hex="--fondo-exito-suave"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--fondo-encabezado-tabla)"></span><span><code>--fondo-encabezado-tabla</code><br><span class="t-ayuda">Fondo/Encabezado-Tabla · <span data-hex="--fondo-encabezado-tabla"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-principal)"></span><span><code>--texto-principal</code><br><span class="t-ayuda">Texto/Principal · <span data-hex="--texto-principal"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-secundario)"></span><span><code>--texto-secundario</code><br><span class="t-ayuda">Texto/Secundario · <span data-hex="--texto-secundario"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-deshabilitado)"></span><span><code>--texto-deshabilitado</code><br><span class="t-ayuda">Texto/Deshabilitado · <span data-hex="--texto-deshabilitado"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-inverso)"></span><span><code>--texto-inverso</code><br><span class="t-ayuda">Texto/Inverso · <span data-hex="--texto-inverso"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-accion)"></span><span><code>--texto-accion</code><br><span class="t-ayuda">Texto/Acción · <span data-hex="--texto-accion"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-error)"></span><span><code>--texto-error</code><br><span class="t-ayuda">Texto/Error · <span data-hex="--texto-error"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-alerta)"></span><span><code>--texto-alerta</code><br><span class="t-ayuda">Texto/Alerta · <span data-hex="--texto-alerta"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-exito)"></span><span><code>--texto-exito</code><br><span class="t-ayuda">Texto/Éxito · <span data-hex="--texto-exito"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--texto-marcador)"></span><span><code>--texto-marcador</code><br><span class="t-ayuda">Texto/Marcador · <span data-hex="--texto-marcador"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-sutil)"></span><span><code>--borde-sutil</code><br><span class="t-ayuda">Borde/Sutil · <span data-hex="--borde-sutil"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-base)"></span><span><code>--borde-base</code><br><span class="t-ayuda">Borde/Base · <span data-hex="--borde-base"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-fuerte)"></span><span><code>--borde-fuerte</code><br><span class="t-ayuda">Borde/Fuerte · <span data-hex="--borde-fuerte"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-accion)"></span><span><code>--borde-accion</code><br><span class="t-ayuda">Borde/Acción · <span data-hex="--borde-accion"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-error)"></span><span><code>--borde-error</code><br><span class="t-ayuda">Borde/Error · <span data-hex="--borde-error"></span></span></span></li><li class="ds-color"><span class="ds-color__muestra" style="background:var(--borde-foco)"></span><span><code>--borde-foco</code><br><span class="t-ayuda">Borde/Foco · <span data-hex="--borde-foco"></span></span></span></li></ul></section><section class="ds-seccion" id="tipografia" aria-labelledby="tipografia-t"><h2 class="t-h2" id="tipografia-t">Tipografía</h2><p>Roboto (y Roboto Mono para datos). Cada estilo es un token <code>font</code> completo: peso, tamaño e interlineado.</p><ul class="ds-tipos"><li class="ds-tipo"><span style="font:var(--t-cuerpo)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-cuerpo)</code> · Cuerpo/Base · 400 15px/23px</span></li><li class="ds-tipo"><span style="font:var(--t-cuerpo-medio)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-cuerpo-medio)</code> · Título/h5 · 500 15px/23px</span></li><li class="ds-tipo"><span style="font:var(--t-etiqueta)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-etiqueta)</code> · Etiqueta/Base · 500 13.5px/20px</span></li><li class="ds-tipo"><span style="font:var(--t-ayuda)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-ayuda)</code> · Ayuda/Base · 400 12.5px/18px</span></li><li class="ds-tipo"><span style="font:var(--t-encabezado-tabla)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-encabezado-tabla)</code> · Encabezado/Tabla · 700 11px/16px</span></li><li class="ds-tipo"><span style="font:var(--t-dato)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-dato)</code> · Dato/Base · 400 15px/23px mono</span></li><li class="ds-tipo"><span style="font:var(--t-dato-pequeno)">Trámites de la Autoridad Nacional del Agua</span><span class="t-ayuda"><code>font: var(--t-dato-pequeno)</code> · Dato/Pequeño · 400 12.5px/18px mono</span></li></ul></section><section class="ds-seccion" id="medidas" aria-labelledby="medidas-t"><h2 class="t-h2" id="medidas-t">Espaciado, radios y elevación</h2><div class="ds-medidas"><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-xs)"></span><code>--esp-xs</code> <span class="t-ayuda">4px</span></div><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-s)"></span><code>--esp-s</code> <span class="t-ayuda">8px</span></div><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-m)"></span><code>--esp-m</code> <span class="t-ayuda">16px</span></div><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-l)"></span><code>--esp-l</code> <span class="t-ayuda">24px</span></div><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-xl)"></span><code>--esp-xl</code> <span class="t-ayuda">32px</span></div><div class="ds-medida"><span class="ds-medida__barra" style="width:var(--esp-xxl)"></span><code>--esp-xxl</code> <span class="t-ayuda">48px</span></div></div><div class="ds-radios"><div class="ds-radio" style="border-radius:var(--radio-control)"><code>--radio-control</code><span class="t-ayuda">8px</span></div><div class="ds-radio" style="border-radius:var(--radio-tarjeta)"><code>--radio-tarjeta</code><span class="t-ayuda">12px</span></div><div class="ds-radio" style="border-radius:var(--radio-etiqueta)"><code>--radio-etiqueta</code><span class="t-ayuda">6px</span></div><div class="ds-radio" style="border-radius:var(--radio-chip)"><code>--radio-chip</code><span class="t-ayuda">999px</span></div><div class="ds-radio" style="box-shadow:var(--elevacion-1);border-color:transparent"><code>--elevacion-1</code></div><div class="ds-radio" style="box-shadow:var(--elevacion-2);border-color:transparent"><code>--elevacion-2</code></div><div class="ds-radio" style="box-shadow:var(--elevacion-3);border-color:transparent"><code>--elevacion-3</code></div></div></section><section class="ds-seccion" id="iconos" aria-labelledby="iconos-t"><h2 class="t-h2" id="iconos-t">Íconos</h2><p>40 íconos de 24 × 24 con trazo de 2, en <code>iconos.svg</code>. Toman el color del texto (<code>currentColor</code>). Son decorativos: si un botón solo tiene ícono, el botón lleva <code>aria-label</code>. Tamaños: <code>icono</code> (20), <code>icono--16</code>, <code>icono--14</code>. Toca uno para copiar su código.</p>
+<div class="campo ds-filtro"><label class="campo__etiqueta" for="ds-buscar-icono">Buscar ícono</label><input class="campo__control" id="ds-buscar-icono" type="search" autocomplete="off"></div>
+<ul class="ds-iconos" id="ds-lista-iconos"><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#calendario"></use></svg>' aria-label="Copiar ícono calendario"><svg class="icono" aria-hidden="true" focusable="false"><use href="#calendario"></use></svg><span>calendario</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#enviar"></use></svg>' aria-label="Copiar ícono enviar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#enviar"></use></svg><span>enviar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#expediente"></use></svg>' aria-label="Copiar ícono expediente"><svg class="icono" aria-hidden="true" focusable="false"><use href="#expediente"></use></svg><span>expediente</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg>' aria-label="Copiar ícono tramites"><svg class="icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg><span>tramites</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>' aria-label="Copiar ícono buscar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg><span>buscar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>' aria-label="Copiar ícono usuario"><svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg><span>usuario</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>' aria-label="Copiar ícono ayuda"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg><span>ayuda</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg>' aria-label="Copiar ícono check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg><span>check</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>' aria-label="Copiar ícono alerta"><svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span>alerta</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg>' aria-label="Copiar ícono error"><svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg><span>error</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg>' aria-label="Copiar ícono info"><svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg><span>info</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg>' aria-label="Copiar ícono chevron-abajo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg><span>chevron-abajo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-derecha"></use></svg>' aria-label="Copiar ícono chevron-derecha"><svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-derecha"></use></svg><span>chevron-derecha</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg>' aria-label="Copiar ícono cerrar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg><span>cerrar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#clip"></use></svg>' aria-label="Copiar ícono clip"><svg class="icono" aria-hidden="true" focusable="false"><use href="#clip"></use></svg><span>clip</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>' aria-label="Copiar ícono descargar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#descargar"></use></svg><span>descargar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#subir"></use></svg>' aria-label="Copiar ícono subir"><svg class="icono" aria-hidden="true" focusable="false"><use href="#subir"></use></svg><span>subir</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#reloj"></use></svg>' aria-label="Copiar ícono reloj"><svg class="icono" aria-hidden="true" focusable="false"><use href="#reloj"></use></svg><span>reloj</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>' aria-label="Copiar ícono salir"><svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg><span>salir</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg>' aria-label="Copiar ícono filtro"><svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg><span>filtro</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#agregar"></use></svg>' aria-label="Copiar ícono agregar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#agregar"></use></svg><span>agregar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#archivo"></use></svg>' aria-label="Copiar ícono archivo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#archivo"></use></svg><span>archivo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg>' aria-label="Copiar ícono ojo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg><span>ojo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg>' aria-label="Copiar ícono mas-acciones"><svg class="icono" aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg><span>mas-acciones</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre"></use></svg>' aria-label="Copiar ícono sobre"><svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre"></use></svg><span>sobre</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre-abierto"></use></svg>' aria-label="Copiar ícono sobre-abierto"><svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre-abierto"></use></svg><span>sobre-abierto</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg>' aria-label="Copiar ícono orden"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg><span>orden</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-desc"></use></svg>' aria-label="Copiar ícono orden-desc"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-desc"></use></svg><span>orden-desc</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-asc"></use></svg>' aria-label="Copiar ícono orden-asc"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-asc"></use></svg><span>orden-asc</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#telefono"></use></svg>' aria-label="Copiar ícono telefono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#telefono"></use></svg><span>telefono</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#whatsapp"></use></svg>' aria-label="Copiar ícono whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#whatsapp"></use></svg><span>whatsapp</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#correo"></use></svg>' aria-label="Copiar ícono correo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#correo"></use></svg><span>correo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#editar"></use></svg>' aria-label="Copiar ícono editar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#editar"></use></svg><span>editar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#candado"></use></svg>' aria-label="Copiar ícono candado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#candado"></use></svg><span>candado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo-tachado"></use></svg>' aria-label="Copiar ícono ojo-tachado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo-tachado"></use></svg><span>ojo-tachado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#enlace"></use></svg>' aria-label="Copiar ícono enlace"><svg class="icono" aria-hidden="true" focusable="false"><use href="#enlace"></use></svg><span>enlace</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#dnie"></use></svg>' aria-label="Copiar ícono dnie"><svg class="icono" aria-hidden="true" focusable="false"><use href="#dnie"></use></svg><span>dnie</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#certificado"></use></svg>' aria-label="Copiar ícono certificado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#certificado"></use></svg><span>certificado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#rostro"></use></svg>' aria-label="Copiar ícono rostro"><svg class="icono" aria-hidden="true" focusable="false"><use href="#rostro"></use></svg><span>rostro</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>' aria-label="Copiar ícono copiar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg><span>copiar</span></button></li></ul></section><section class="ds-seccion" id="ilustraciones" aria-labelledby="ilustraciones-t"><h2 class="t-h2" id="ilustraciones-t">Ilustraciones</h2><p>8 ilustraciones de 120 × 120 para estados vacíos y errores, en <code>ilustraciones.svg</code>. Sus colores salen de <code>ana.css</code> (<code>.ilu-t</code>, <code>.ilu-r</code>, <code>.ilu-b</code>, <code>.ilu-p</code>).</p><ul class="ds-iconos ds-iconos--ilu"><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-tramites"></use></svg>' aria-label="Copiar ilustración sin-tramites"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-tramites"></use></svg><span>sin-tramites</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#antes-de-buscar"></use></svg>' aria-label="Copiar ilustración antes-de-buscar"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#antes-de-buscar"></use></svg><span>antes-de-buscar</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-resultados"></use></svg>' aria-label="Copiar ilustración sin-resultados"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-resultados"></use></svg><span>sin-resultados</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-404"></use></svg>' aria-label="Copiar ilustración error-404"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-404"></use></svg><span>error-404</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-500"></use></svg>' aria-label="Copiar ilustración error-500"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-500"></use></svg><span>error-500</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#acceso-denegado"></use></svg>' aria-label="Copiar ilustración acceso-denegado"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#acceso-denegado"></use></svg><span>acceso-denegado</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sesion-expirada"></use></svg>' aria-label="Copiar ilustración sesion-expirada"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sesion-expirada"></use></svg><span>sesion-expirada</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#servicio-no-disponible"></use></svg>' aria-label="Copiar ilustración servicio-no-disponible"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#servicio-no-disponible"></use></svg><span>servicio-no-disponible</span></button></li></ul></section><section class="ds-seccion" id="g-acciones" aria-labelledby="g-acciones-t"><h2 class="t-h2" id="g-acciones-t">Acciones</h2><article class="ds-comp" id="c-boton" aria-labelledby="c-boton-t"><h3 class="t-h3" id="c-boton-t">Botón</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Botón</strong></p><p>Primario para la acción principal de la pantalla (una sola). Secundario para acciones alternativas. Terciario y Enlace para acciones de bajo peso. Alto mínimo 44 px.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Usa &lt;button&gt; para acciones y &lt;a&gt; para ir a otra página. Si el botón solo tiene ícono, lleva aria-label. Deshabilitado: atributo disabled (no solo color).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Primario</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--primario">Continuar</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-1"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-1">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot;&gt;Continuar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Secundario</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--secundario">Volver</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-2">&lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot;&gt;Volver&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Terciario</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--terciario">Limpiar</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-3"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-3">&lt;button type=&quot;button&quot; class=&quot;boton boton--terciario&quot;&gt;Limpiar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Enlace</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--enlace">Ver detalle</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-4"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-4">&lt;button type=&quot;button&quot; class=&quot;boton boton--enlace&quot;&gt;Ver detalle&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Con ícono</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="submit" class="boton boton--primario boton--buscar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>Buscar</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-5"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-5">&lt;button type=&quot;submit&quot; class=&quot;boton boton--primario boton--buscar&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Buscar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Solo ícono</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--icono" aria-label="Cerrar aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-6"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-6">&lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; aria-label=&quot;Cerrar aviso&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Deshabilitado</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--primario" disabled>Enviar</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-7"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-7">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot; disabled&gt;Enviar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">A todo el ancho (móvil)</h4>
+<div class="ds-muestra" style="--ancho:328px"><div class="ds-muestra__in"><button type="button" class="boton boton--primario boton--bloque">Buscar</button></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-8"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-8">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario boton--bloque&quot;&gt;Buscar&lt;/button&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-campos" aria-labelledby="g-campos-t"><h2 class="t-h2" id="g-campos-t">Campos</h2><article class="ds-comp" id="c-campo-de-texto" aria-labelledby="c-campo-de-texto-t"><h3 class="t-h3" id="c-campo-de-texto-t">Campo de texto</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de texto</strong></p><p>Etiqueta arriba, siempre visible. La ayuda va debajo; el error reemplaza el borde y se describe con texto e ícono.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La etiqueta usa for. La ayuda y el error se enlazan con aria-describedby; el campo con error lleva aria-invalid=&quot;true&quot;. Los opcionales se marcan con texto «(opcional)».</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal, con ayuda</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
+                  <label class="campo__etiqueta" for="m9-r-celular">Celular</label>
+                  <input class="campo__control" id="m9-r-celular" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="m9-r-celular-ayuda m9-r-celular-error" required="">
+                  <p class="campo__ayuda" id="m9-r-celular-ayuda">Si no tienes celular, puedes usar el de un familiar.</p>
+                  <p class="campo__error" id="m9-r-celular-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
+                </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-9"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-9">&lt;div class=&quot;campo col-5&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-celular&quot;&gt;Celular&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;r-celular&quot; type=&quot;tel&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;tel-national&quot; aria-describedby=&quot;r-celular-ayuda r-celular-error&quot; required=&quot;&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-celular-ayuda&quot;&gt;Si no tienes celular, puedes usar el de un familiar.&lt;/p&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;r-celular-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Opcional</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
+                  <label class="campo__etiqueta" for="m10-r-fijo">Teléfono fijo <span class="campo__opcional">(opcional)</span></label>
+                  <input class="campo__control" id="m10-r-fijo" type="tel" inputmode="numeric" autocomplete="off" aria-describedby="m10-r-fijo-ayuda">
+                  <p class="campo__ayuda" id="m10-r-fijo-ayuda">Si en tu zona hay teléfono comunitario, puedes ponerlo.</p>
+                </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-10"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-10">&lt;div class=&quot;campo col-5&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-fijo&quot;&gt;Teléfono fijo &lt;span class=&quot;campo__opcional&quot;&gt;(opcional)&lt;/span&gt;&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;r-fijo&quot; type=&quot;tel&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;off&quot; aria-describedby=&quot;r-fijo-ayuda&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-fijo-ayuda&quot;&gt;Si en tu zona hay teléfono comunitario, puedes ponerlo.&lt;/p&gt;
+&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Con error</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
+                  <label class="campo__etiqueta" for="m11-r-correo">Correo electrónico</label>
+                  <input class="campo__control" id="m11-r-correo" type="email" autocomplete="email" aria-describedby="m11-r-correo-error" required="" aria-invalid="true">
+                  <p class="campo__error" id="m11-r-correo-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com</span></p>
+                </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-11"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-11">&lt;div class=&quot;campo col-5&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;r-correo&quot; type=&quot;email&quot; autocomplete=&quot;email&quot; aria-describedby=&quot;r-correo-error&quot; required=&quot;&quot; aria-invalid=&quot;true&quot;&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;r-correo-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-contrasena-con-medidor" aria-labelledby="c-contrasena-con-medidor-t"><h3 class="t-h3" id="c-contrasena-con-medidor-t">Contraseña con medidor</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de contraseña · Medidor de contraseña</strong></p><p>Botón para mostrar u ocultar. El medidor indica la seguridad con barras y con texto, y lista los requisitos.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> El botón de ver contraseña cambia su aria-label. El nivel del medidor también está en texto, no solo en color (1.4.1).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Escribiendo</h4>
+<div class="ds-muestra" style="--ancho:420px"><div class="ds-muestra__in"><div class="campo col-5">
+                  <label class="campo__etiqueta" for="m12-r-clave">Contraseña</label>
+                  <div class="campo__envoltura">
+                    <input class="campo__control" id="m12-r-clave" type="password" autocomplete="new-password" aria-describedby="m12-medidor-texto m12-requisitos m12-r-clave-error" required="">
+                    <button type="button" class="boton boton--icono" data-ver-clave="r-clave" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="m12-r-clave">
+                      <svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg>
+                    </button>
+                  </div>
+                  <p class="campo__error" id="m12-r-clave-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
+                </div>
+<div class="col-5 medidor-zona">
+                  <div class="medidor" aria-hidden="true" data-nivel="3"><span></span><span></span><span></span></div>
+                  <p class="medidor__texto" id="m12-medidor-texto">Seguridad: fuerte. Cumple 4 de 4 requisitos.</p>
+                  <ul class="requisitos" id="m12-requisitos">
+                    <li data-req="largo" data-estado="cumplido" class="requisitos__item--ok">Al menos 8 caracteres<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
+                    <li data-req="caso" data-estado="cumplido" class="requisitos__item--ok">Una mayúscula y una minúscula<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
+                    <li data-req="numero" data-estado="cumplido" class="requisitos__item--ok">Un número<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
+                    <li data-req="simbolo" data-estado="cumplido" class="requisitos__item--ok">Un símbolo, como # o @<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
+                  </ul>
+                </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-12"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-12">&lt;div class=&quot;campo col-5&quot;&gt;
+                  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-clave&quot;&gt;Contraseña&lt;/label&gt;
+                  &lt;div class=&quot;campo__envoltura&quot;&gt;
+                    &lt;input class=&quot;campo__control&quot; id=&quot;r-clave&quot; type=&quot;password&quot; autocomplete=&quot;new-password&quot; aria-describedby=&quot;medidor-texto requisitos r-clave-error&quot; required=&quot;&quot;&gt;
+                    &lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; data-ver-clave=&quot;r-clave&quot; aria-label=&quot;Mostrar contraseña&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;r-clave&quot;&gt;
+                      &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ojo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+                    &lt;/button&gt;
+                  &lt;/div&gt;
+                  &lt;p class=&quot;campo__error&quot; id=&quot;r-clave-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+                &lt;/div&gt;
+&lt;div class=&quot;col-5 medidor-zona&quot;&gt;
+                  &lt;div class=&quot;medidor&quot; aria-hidden=&quot;true&quot; data-nivel=&quot;3&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+                  &lt;p class=&quot;medidor__texto&quot; id=&quot;medidor-texto&quot;&gt;Seguridad: fuerte. Cumple 4 de 4 requisitos.&lt;/p&gt;
+                  &lt;ul class=&quot;requisitos&quot; id=&quot;requisitos&quot;&gt;
+                    &lt;li data-req=&quot;largo&quot; data-estado=&quot;cumplido&quot; class=&quot;requisitos__item--ok&quot;&gt;Al menos 8 caracteres&lt;span class=&quot;visualmente-oculto js-req-estado&quot;&gt;, cumplido&lt;/span&gt;&lt;/li&gt;
+                    &lt;li data-req=&quot;caso&quot; data-estado=&quot;cumplido&quot; class=&quot;requisitos__item--ok&quot;&gt;Una mayúscula y una minúscula&lt;span class=&quot;visualmente-oculto js-req-estado&quot;&gt;, cumplido&lt;/span&gt;&lt;/li&gt;
+                    &lt;li data-req=&quot;numero&quot; data-estado=&quot;cumplido&quot; class=&quot;requisitos__item--ok&quot;&gt;Un número&lt;span class=&quot;visualmente-oculto js-req-estado&quot;&gt;, cumplido&lt;/span&gt;&lt;/li&gt;
+                    &lt;li data-req=&quot;simbolo&quot; data-estado=&quot;cumplido&quot; class=&quot;requisitos__item--ok&quot;&gt;Un símbolo, como # o @&lt;span class=&quot;visualmente-oculto js-req-estado&quot;&gt;, cumplido&lt;/span&gt;&lt;/li&gt;
+                  &lt;/ul&gt;
+                &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-busqueda" aria-labelledby="c-busqueda-t"><h3 class="t-h3" id="c-busqueda-t">Búsqueda</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de búsqueda</strong></p><p>Campo con lupa a la izquierda para buscar por ticket, CUT o asunto.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La lupa es decorativa; el nombre lo da la etiqueta.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:420px"><div class="ds-muestra__in"><div class="campo">
+            <label class="campo__etiqueta" for="m13-f-buscar">Buscar</label>
+            <div class="campo__envoltura campo__envoltura--icono">
+              <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
+              <input class="campo__control" id="m13-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+            </div>
+          </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-13"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-13">&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-buscar&quot;&gt;Buscar&lt;/label&gt;
+  &lt;div class=&quot;campo__envoltura campo__envoltura--icono&quot;&gt;
+    &lt;svg class=&quot;icono campo__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+    &lt;input class=&quot;campo__control&quot; id=&quot;f-buscar&quot; type=&quot;search&quot; placeholder=&quot;Busca por N° de ticket, CUT o asunto&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-selector" aria-labelledby="c-selector-t"><h3 class="t-h3" id="c-selector-t">Selector</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Selector</strong></p><p>Lista corta de opciones. Para listas largas, usar Combo con buscador.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Es un &lt;select&gt; nativo: funciona con teclado y lector sin código extra.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
+            <label class="campo__etiqueta" for="m14-f-estado">Estado</label>
+            <select class="campo__control" id="m14-f-estado">
+              <option value="">Todos</option>
+              <option>En revisión</option>
+              <option>Validado</option>
+              <option>Observado</option>
+              <option>Archivado</option>
+              <option>Finalizado</option>
+            </select>
+          </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-14"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-14">&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-estado&quot;&gt;Estado&lt;/label&gt;
+  &lt;select class=&quot;campo__control&quot; id=&quot;f-estado&quot;&gt;
+    &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
+    &lt;option&gt;En revisión&lt;/option&gt;
+    &lt;option&gt;Validado&lt;/option&gt;
+    &lt;option&gt;Observado&lt;/option&gt;
+    &lt;option&gt;Archivado&lt;/option&gt;
+    &lt;option&gt;Finalizado&lt;/option&gt;
+  &lt;/select&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-fecha" aria-labelledby="c-fecha-t"><h3 class="t-h3" id="c-fecha-t">Fecha</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de fecha</strong></p><p>Selector de fecha del navegador. El formato se explica en la ayuda del formulario (día/mes/año).</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;date&quot; nativo.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
+            <label class="campo__etiqueta" for="m15-f-inicio">Fecha inicio</label>
+            <input class="campo__control campo__control--fecha" id="m15-f-inicio" type="date" aria-describedby="m15-f-inicio-error">
+            <p class="campo__error" id="m15-f-inicio-error" hidden="">
+              <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+              <span class="campo__error-texto"></span>
+            </p>
+          </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-15"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-15">&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
+  &lt;input class=&quot;campo__control campo__control--fecha&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; aria-describedby=&quot;fechas-ayuda f-inicio-error&quot;&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;f-inicio-error&quot; hidden=&quot;&quot;&gt;
+    &lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+    &lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-combo-con-buscador" aria-labelledby="c-combo-con-buscador-t"><h3 class="t-h3" id="c-combo-con-buscador-t">Combo con buscador</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Combo con buscador</strong></p><p>Para listas largas, como los 46 procedimientos TUPA. Escribir filtra; las opciones pueden ir en grupos.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Patrón combobox de ARIA 1.2. Se escribe un &lt;select&gt; normal con data-combo-auto (o se llama crearCombo(select) en app.js) y el script arma el combo: flechas recorren, Enter elige, Escape cierra y la cantidad de resultados se anuncia.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Funcional (prueba escribir «licencia»)</h4>
+<div class="ds-muestra" style="--ancho:480px;min-height:380px"><div class="ds-muestra__in"><div class="campo">
+  <label class="campo__etiqueta" for="m16-procedimiento">Procedimiento</label>
+  <select class="campo__control" id="m16-procedimiento" data-combo-auto>
+    <option value="">Todos</option>
+    <optgroup label="TUPA">
+      <option value="1">1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control</option>
+      <option value="2">2. Permiso de uso de agua para épocas de superávit hídrico</option>
+      <option value="20">20. Licencia de uso de agua provisional</option>
+      <option value="21">21. Otorgamiento de licencia de uso de agua</option>
+    </optgroup>
+    <optgroup label="NO TUPA">
+      <option value="bienes">Bienes y servicios menores a 8 UIT</option>
+      <option value="congreso">Congreso</option>
+    </optgroup>
+  </select>
+</div></div></div><p class="t-ayuda">Código de partida: el &lt;select&gt;. El combo lo arma app.js.</p>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-16"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-16">&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;procedimiento&quot;&gt;Procedimiento&lt;/label&gt;
+  &lt;select class=&quot;campo__control&quot; id=&quot;procedimiento&quot; data-combo-auto&gt;
+    &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
+    &lt;optgroup label=&quot;TUPA&quot;&gt;
+      &lt;option value=&quot;1&quot;&gt;1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control&lt;/option&gt;
+      &lt;option value=&quot;2&quot;&gt;2. Permiso de uso de agua para épocas de superávit hídrico&lt;/option&gt;
+      &lt;option value=&quot;20&quot;&gt;20. Licencia de uso de agua provisional&lt;/option&gt;
+      &lt;option value=&quot;21&quot;&gt;21. Otorgamiento de licencia de uso de agua&lt;/option&gt;
+    &lt;/optgroup&gt;
+    &lt;optgroup label=&quot;NO TUPA&quot;&gt;
+      &lt;option value=&quot;bienes&quot;&gt;Bienes y servicios menores a 8 UIT&lt;/option&gt;
+      &lt;option value=&quot;congreso&quot;&gt;Congreso&lt;/option&gt;
+    &lt;/optgroup&gt;
+  &lt;/select&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-codigo-de-verificacion" aria-labelledby="c-codigo-de-verificacion-t"><h3 class="t-h3" id="c-codigo-de-verificacion-t">Código de verificación</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de código</strong></p><p>Código de 6 dígitos que llega por SMS o correo.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> inputmode=&quot;numeric&quot; y autocomplete=&quot;one-time-code&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
+                  <label class="campo__etiqueta" for="m17-r-codigo">Código de verificación</label>
+                  <input class="campo__control campo__control--codigo" id="m17-r-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-describedby="m17-r-codigo-ayuda m17-r-codigo-error">
+                  <p class="campo__ayuda" id="m17-r-codigo-ayuda">Se lo enviamos al 987 *** 321. Vence en 10 minutos. En este prototipo sirve cualquier código de 6 dígitos.</p>
+                  <p class="campo__error" id="m17-r-codigo-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
+                </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-17"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-17">&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-codigo&quot;&gt;Código de verificación&lt;/label&gt;
+  &lt;input class=&quot;campo__control campo__control--codigo&quot; id=&quot;r-codigo&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; maxlength=&quot;6&quot; aria-describedby=&quot;r-codigo-ayuda r-codigo-error&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-codigo-ayuda&quot;&gt;Se lo enviamos al 987 *** 321. Vence en 10 minutos. En este prototipo sirve cualquier código de 6 dígitos.&lt;/p&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;r-codigo-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-datos-que-no-se-editan" aria-labelledby="c-datos-que-no-se-editan-t"><h3 class="t-h3" id="c-datos-que-no-se-editan-t">Datos que no se editan</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Dato de solo lectura</strong></p><p>Datos que vienen de RENIEC o SUNAT: van como texto (etiqueta + valor) dentro de un recuadro con su origen. Nunca como campo deshabilitado.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Es texto: el lector lo lee completo y no aparece como un control que no se puede usar.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:520px"><div class="ds-muestra__in"><dl class="reticula datos-fijos">
+                <div class="dato-fijo col-5"><dt class="js-etq-doc">RUC</dt><dd class="js-val-doc">20512345678</dd></div>
+                <div class="dato-fijo col-5"><dt class="js-etq-nombre">Razón social</dt><dd class="js-val-nombre">Empresa Minera Buenafe S.A.C.</dd></div>
+              </dl></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-18"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-18">&lt;dl class=&quot;reticula datos-fijos&quot;&gt;
+  &lt;div class=&quot;dato-fijo col-5&quot;&gt;&lt;dt class=&quot;js-etq-doc&quot;&gt;RUC&lt;/dt&gt;&lt;dd class=&quot;js-val-doc&quot;&gt;20512345678&lt;/dd&gt;&lt;/div&gt;
+  &lt;div class=&quot;dato-fijo col-5&quot;&gt;&lt;dt class=&quot;js-etq-nombre&quot;&gt;Razón social&lt;/dt&gt;&lt;dd class=&quot;js-val-nombre&quot;&gt;Empresa Minera Buenafe S.A.C.&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-seleccion" aria-labelledby="g-seleccion-t"><h2 class="t-h2" id="g-seleccion-t">Selección</h2><article class="ds-comp" id="c-casilla-de-verificacion" aria-labelledby="c-casilla-de-verificacion-t"><h3 class="t-h3" id="c-casilla-de-verificacion-t">Casilla de verificación</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Casilla de verificación</strong></p><p>Para aceptar o marcar una opción independiente.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;checkbox&quot; real dentro de su label; área de clic de 24 px o más.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:520px"><div class="ds-muestra__in"><label class="casilla"><input type="checkbox" id="m19-r-declaro" >
+                    <span>Declaro bajo juramento que los datos que entregué son ciertos</span></label></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-19"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-19">&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;r-declaro&quot; aria-describedby=&quot;r-declaro-ayuda r-declaro-error&quot;&gt;
+&lt;span&gt;Declaro bajo juramento que los datos que entregué son ciertos&lt;/span&gt;&lt;/label&gt;</code></pre></details></div></article><article class="ds-comp" id="c-opcion-en-tarjeta" aria-labelledby="c-opcion-en-tarjeta-t"><h3 class="t-h3" id="c-opcion-en-tarjeta-t">Opción en tarjeta</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Opción en tarjeta</strong></p><p>Una sola opción entre pocas alternativas, con explicación. Toda la tarjeta es clicable.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Cada tarjeta es un &lt;label&gt; con un input radio real; el grupo va en &lt;fieldset&gt; con &lt;legend&gt;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Grupo</h4>
+<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><fieldset class="eleccion">
+                <legend class="visualmente-oculto">¿Quién va a usar esta casilla?</legend>
+                <label class="eleccion__opcion"><input type="radio" name="quien" value="persona" checked="">
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Yo, como persona</span><span class="eleccion__ayuda">Las notificaciones llegan a tu nombre.</span></span></label>
+                <label class="eleccion__opcion"><input type="radio" name="quien" value="empresa">
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Una empresa o institución</span><span class="eleccion__ayuda">Tú la representas.</span></span></label>
+              </fieldset></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-20"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-20">&lt;fieldset class=&quot;eleccion&quot;&gt;
+  &lt;legend class=&quot;visualmente-oculto&quot;&gt;¿Quién va a usar esta casilla?&lt;/legend&gt;
+  &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;persona&quot; checked=&quot;&quot;&gt;
+    &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Yo, como persona&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Las notificaciones llegan a tu nombre.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+  &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;empresa&quot;&gt;
+    &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Una empresa o institución&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Tú la representas.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-archivos" aria-labelledby="g-archivos-t"><h2 class="t-h2" id="g-archivos-t">Archivos</h2><article class="ds-comp" id="c-subir-archivo" aria-labelledby="c-subir-archivo-t"><h3 class="t-h3" id="c-subir-archivo-t">Subir archivo</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Control de adjunto</strong></p><p>Botón que abre el selector de archivos del sistema.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> El input file es real y enfocable (visualmente oculto); el label lleva el nombre del requisito para el lector.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><span class="subir"><input type="file" id="m21-rq1" accept="application/pdf,.pdf" data-req="1" >
+           <label for="m21-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-21"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-21">&lt;span class=&quot;subir&quot;&gt;&lt;input type=&quot;file&quot; id=&quot;rq1&quot; accept=&quot;application/pdf,.pdf&quot; data-req=&quot;1&quot; aria-describedby=&quot;rq1-motivo rq1-error&quot;&gt;
+&lt;label for=&quot;rq1&quot; class=&quot;boton boton--secundario&quot;&gt;Reemplazar archivo&lt;span class=&quot;visualmente-oculto&quot;&gt;: Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;&lt;/label&gt;&lt;/span&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-proceso" aria-labelledby="g-proceso-t"><h2 class="t-h2" id="g-proceso-t">Proceso</h2><article class="ds-comp" id="c-avance-por-pasos" aria-labelledby="c-avance-por-pasos-t"><h3 class="t-h3" id="c-avance-por-pasos-t">Avance por pasos</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Avance del formulario · Paso</strong></p><p>Recorrido del formulario: paso actual, pasos hechos con resumen y enlace Editar, pasos pendientes.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Lista ordenada; el paso actual lleva aria-current=&quot;step&quot;. Al cambiar de paso el foco va al título.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Paso 1 de 5</h4>
+<div class="ds-muestra" style="--ancho:340px"><div class="ds-muestra__in"><aside class="avance" aria-labelledby="m22-avance-titulo">
+        <h2 class="avance__titulo" id="m22-avance-titulo">Tu avance</h2>
+        <p class="visualmente-oculto" id="m22-avance-texto">Paso 1 de 5</p>
+        <div class="avance__barra" aria-hidden="true"><div class="avance__relleno" id="m22-avance-relleno" style="width: 0%;"></div></div>
+        <ol class="avance__lista" id="m22-avance-lista"><li class="avance__paso avance__paso--activo" aria-current="step">
+          <span class="marcador marcador--chico marcador--actual" aria-hidden="true">1</span>
+          <span class="avance__texto">
+            <span class="avance__nombre">¿Qué quieres hacer?<span class="visualmente-oculto">, paso actual</span></span>
+            
+          </span>
+          
+        </li><li class="avance__paso">
+          <span class="marcador marcador--chico marcador--pendiente" aria-hidden="true">2</span>
+          <span class="avance__texto">
+            <span class="avance__nombre">Datos del documento<span class="visualmente-oculto">, pendiente</span></span>
+            
+          </span>
+          
+        </li><li class="avance__paso">
+          <span class="marcador marcador--chico marcador--pendiente" aria-hidden="true">3</span>
+          <span class="avance__texto">
+            <span class="avance__nombre">Requisitos<span class="visualmente-oculto">, pendiente</span></span>
+            
+          </span>
+          
+        </li><li class="avance__paso">
+          <span class="marcador marcador--chico marcador--pendiente" aria-hidden="true">4</span>
+          <span class="avance__texto">
+            <span class="avance__nombre">Anexos<span class="visualmente-oculto">, pendiente</span></span>
+            
+          </span>
+          
+        </li><li class="avance__paso">
+          <span class="marcador marcador--chico marcador--pendiente" aria-hidden="true">5</span>
+          <span class="avance__texto">
+            <span class="avance__nombre">Revisar y enviar<span class="visualmente-oculto">, pendiente</span></span>
+            
+          </span>
+          
+        </li></ol>
+      </aside></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-22"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-22">&lt;aside class=&quot;avance&quot; aria-labelledby=&quot;avance-titulo&quot;&gt;
+  &lt;h2 class=&quot;avance__titulo&quot; id=&quot;avance-titulo&quot;&gt;Tu avance&lt;/h2&gt;
+  &lt;p class=&quot;visualmente-oculto&quot; id=&quot;avance-texto&quot;&gt;Paso 1 de 5&lt;/p&gt;
+  &lt;div class=&quot;avance__barra&quot; aria-hidden=&quot;true&quot;&gt;&lt;div class=&quot;avance__relleno&quot; id=&quot;avance-relleno&quot; style=&quot;width: 0%;&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;ol class=&quot;avance__lista&quot; id=&quot;avance-lista&quot;&gt;&lt;li class=&quot;avance__paso avance__paso--activo&quot; aria-current=&quot;step&quot;&gt;
+    &lt;span class=&quot;marcador marcador--chico marcador--actual&quot; aria-hidden=&quot;true&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;avance__texto&quot;&gt;
+      &lt;span class=&quot;avance__nombre&quot;&gt;¿Qué quieres hacer?&lt;span class=&quot;visualmente-oculto&quot;&gt;, paso actual&lt;/span&gt;&lt;/span&gt;
+
+    &lt;/span&gt;
+
+  &lt;/li&gt;&lt;li class=&quot;avance__paso&quot;&gt;
+    &lt;span class=&quot;marcador marcador--chico marcador--pendiente&quot; aria-hidden=&quot;true&quot;&gt;2&lt;/span&gt;
+    &lt;span class=&quot;avance__texto&quot;&gt;
+      &lt;span class=&quot;avance__nombre&quot;&gt;Datos del documento&lt;span class=&quot;visualmente-oculto&quot;&gt;, pendiente&lt;/span&gt;&lt;/span&gt;
+
+    &lt;/span&gt;
+
+  &lt;/li&gt;&lt;li class=&quot;avance__paso&quot;&gt;
+    &lt;span class=&quot;marcador marcador--chico marcador--pendiente&quot; aria-hidden=&quot;true&quot;&gt;3&lt;/span&gt;
+    &lt;span class=&quot;avance__texto&quot;&gt;
+      &lt;span class=&quot;avance__nombre&quot;&gt;Requisitos&lt;span class=&quot;visualmente-oculto&quot;&gt;, pendiente&lt;/span&gt;&lt;/span&gt;
+
+    &lt;/span&gt;
+
+  &lt;/li&gt;&lt;li class=&quot;avance__paso&quot;&gt;
+    &lt;span class=&quot;marcador marcador--chico marcador--pendiente&quot; aria-hidden=&quot;true&quot;&gt;4&lt;/span&gt;
+    &lt;span class=&quot;avance__texto&quot;&gt;
+      &lt;span class=&quot;avance__nombre&quot;&gt;Anexos&lt;span class=&quot;visualmente-oculto&quot;&gt;, pendiente&lt;/span&gt;&lt;/span&gt;
+
+    &lt;/span&gt;
+
+  &lt;/li&gt;&lt;li class=&quot;avance__paso&quot;&gt;
+    &lt;span class=&quot;marcador marcador--chico marcador--pendiente&quot; aria-hidden=&quot;true&quot;&gt;5&lt;/span&gt;
+    &lt;span class=&quot;avance__texto&quot;&gt;
+      &lt;span class=&quot;avance__nombre&quot;&gt;Revisar y enviar&lt;span class=&quot;visualmente-oculto&quot;&gt;, pendiente&lt;/span&gt;&lt;/span&gt;
+
+    &lt;/span&gt;
+
+  &lt;/li&gt;&lt;/ol&gt;
+&lt;/aside&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-navegacion" aria-labelledby="g-navegacion-t"><h2 class="t-h2" id="g-navegacion-t">Navegación</h2><article class="ds-comp" id="c-barra-superior" aria-labelledby="c-barra-superior-t"><h3 class="t-h3" id="c-barra-superior-t">Barra superior</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Barra superior · casilla</strong></p><p>Logotipo, título del sistema con estilo h3 y, con sesión, el menú de la cuenta. Fondo claro: el manual prohíbe el logotipo azul sobre fondo oscuro.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> El título NO es un encabezado (&lt;p&gt;), para no poner un h3 antes del h1. Prueba el menú con el teclado: Enter abre, flechas recorren, Escape cierra.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Con sesión (menú funcional)</h4>
+<div class="ds-muestra" style="--ancho:100%;min-height:330px"><div class="ds-muestra__in"><header class="barra-superior">
+    <div class="barra-superior__interior">
+      <a class="barra-superior__logo" href="bandeja.html">
+        <img src="img/logo-ana.png" alt="Autoridad Nacional del Agua, ir a Mis trámites" width="180" height="85">
+      </a>
+      <p class="barra-superior__servicio">Sistema de Notificación Electrónica</p>
+      <div class="usuario">
+        <button type="button" class="usuario__boton" aria-haspopup="menu" aria-expanded="false" aria-controls="m23-menu-usuario" aria-label="Ana Quispe Mamani, DNI 46810236, menú de tu cuenta">
+          <span class="usuario__avatar" aria-hidden="true">AQ</span>
+          <span class="usuario__datos" aria-hidden="true">
+            <span class="usuario__nombre">Ana Quispe Mamani</span>
+            <span class="usuario__doc">DNI 46810236</span>
+          </span>
+          <svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg>
+        </button>
+        <ul class="menu" role="menu" id="m23-menu-usuario" aria-label="Tu cuenta" hidden="">
+          <li role="none" class="menu__cabecera" aria-hidden="true">
+            <span class="usuario__avatar">AQ</span>
+            <span><span class="menu__cabecera-nombre usuario__nombre">Ana Quispe Mamani</span><span class="usuario__doc">DNI 46810236</span></span>
+          </li>
+          <li role="none"><a class="menu__item" role="menuitem" href="perfil.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>Mi perfil</a></li>
+          <li role="none"><a class="menu__item" role="menuitem" href="ayuda.html" data-fuera-de-alcance="Ayuda y preguntas frecuentes no forma parte de este prototipo.">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>Ayuda y preguntas frecuentes</a></li>
+          <li role="separator" class="menu__separador"></li>
+          <li role="none"><a class="menu__item menu__item--secundario" role="menuitem" href="ingreso.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </header></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-23"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-23">&lt;header class=&quot;barra-superior&quot;&gt;
+  &lt;div class=&quot;barra-superior__interior&quot;&gt;
+    &lt;a class=&quot;barra-superior__logo&quot; href=&quot;bandeja.html&quot;&gt;
+      &lt;img src=&quot;img/logo-ana.png&quot; alt=&quot;Autoridad Nacional del Agua, ir a Mis trámites&quot; width=&quot;180&quot; height=&quot;85&quot;&gt;
+    &lt;/a&gt;
+    &lt;p class=&quot;barra-superior__servicio&quot;&gt;Sistema de Notificación Electrónica&lt;/p&gt;
+    &lt;div class=&quot;usuario&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;usuario__boton&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;menu-usuario&quot; aria-label=&quot;Ana Quispe Mamani, DNI 46810236, menú de tu cuenta&quot;&gt;
+        &lt;span class=&quot;usuario__avatar&quot; aria-hidden=&quot;true&quot;&gt;AQ&lt;/span&gt;
+        &lt;span class=&quot;usuario__datos&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;span class=&quot;usuario__nombre&quot;&gt;Ana Quispe Mamani&lt;/span&gt;
+          &lt;span class=&quot;usuario__doc&quot;&gt;DNI 46810236&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#chevron-abajo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+      &lt;/button&gt;
+      &lt;ul class=&quot;menu&quot; role=&quot;menu&quot; id=&quot;menu-usuario&quot; aria-label=&quot;Tu cuenta&quot; hidden=&quot;&quot;&gt;
+        &lt;li role=&quot;none&quot; class=&quot;menu__cabecera&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;span class=&quot;usuario__avatar&quot;&gt;AQ&lt;/span&gt;
+          &lt;span&gt;&lt;span class=&quot;menu__cabecera-nombre usuario__nombre&quot;&gt;Ana Quispe Mamani&lt;/span&gt;&lt;span class=&quot;usuario__doc&quot;&gt;DNI 46810236&lt;/span&gt;&lt;/span&gt;
+        &lt;/li&gt;
+        &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;perfil.html&quot;&gt;
+          &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#usuario&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Mi perfil&lt;/a&gt;&lt;/li&gt;
+        &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;ayuda.html&quot; data-fuera-de-alcance=&quot;Ayuda y preguntas frecuentes no forma parte de este prototipo.&quot;&gt;
+          &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ayuda&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Ayuda y preguntas frecuentes&lt;/a&gt;&lt;/li&gt;
+        &lt;li role=&quot;separator&quot; class=&quot;menu__separador&quot;&gt;&lt;/li&gt;
+        &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item menu__item--secundario&quot; role=&quot;menuitem&quot; href=&quot;ingreso.html&quot;&gt;
+          &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#salir&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Cerrar sesión&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Sin sesión</h4>
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><header class="barra-superior">
+    <div class="barra-superior__interior">
+      <a class="barra-superior__logo" href="bandeja.html">
+        <img src="img/logo-ana.png" alt="Autoridad Nacional del Agua, ir a Mis trámites" width="180" height="85">
+      </a>
+      <p class="barra-superior__servicio">Sistema de Notificación Electrónica</p>
+    </div>
+  </header></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-24"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-24">&lt;header class=&quot;barra-superior&quot;&gt;
+  &lt;div class=&quot;barra-superior__interior&quot;&gt;
+    &lt;a class=&quot;barra-superior__logo&quot; href=&quot;bandeja.html&quot;&gt;
+      &lt;img src=&quot;img/logo-ana.png&quot; alt=&quot;Autoridad Nacional del Agua, ir a Mis trámites&quot; width=&quot;180&quot; height=&quot;85&quot;&gt;
+    &lt;/a&gt;
+    &lt;p class=&quot;barra-superior__servicio&quot;&gt;Sistema de Notificación Electrónica&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre></details></div></article><article class="ds-comp" id="c-menu-de-cuenta" aria-labelledby="c-menu-de-cuenta-t"><h3 class="t-h3" id="c-menu-de-cuenta-t">Menú de cuenta</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Menú de cuenta</strong></p><p>Se abre desde el avatar. Escritorio: desplegable de 300 px. Móvil (≤ 520 px): panel a todo el alto con quién está en la cuenta. «Cerrar sesión» va aparte, en gris.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Botón con aria-expanded y aria-controls; menú con role=&quot;menu&quot;, flechas para recorrer, Escape cierra y devuelve el foco.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Ver en «Barra superior · Con sesión»</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><p class="t-ayuda">El menú vive dentro de la barra superior: ábrelo en la muestra de arriba.</p></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-25"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-25">&lt;p class=&quot;t-ayuda&quot;&gt;El menú vive dentro de la barra superior: ábrelo en la muestra de arriba.&lt;/p&gt;</code></pre></details></div></article><article class="ds-comp" id="c-migas" aria-labelledby="c-migas-t"><h3 class="t-h3" id="c-migas-t">Migas</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Migas</strong></p><p>En todas las pantallas internas, antes del título. Enlace en azul subrayado, a 15 px; la página actual en negro.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> &lt;nav aria-label=&quot;Estás en&quot;&gt; con lista ordenada; la página actual lleva aria-current=&quot;page&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">1 nivel</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><nav class="migas" aria-label="Estás en">
+      <ol id="m26-migas-lista">
+        <li><span aria-current="page">Mis trámites</span></li>
+      </ol>
+    </nav></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-26"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-26">&lt;nav class=&quot;migas&quot; aria-label=&quot;Estás en&quot;&gt;
+  &lt;ol id=&quot;migas-lista&quot;&gt;
+    &lt;li&gt;&lt;span aria-current=&quot;page&quot;&gt;Mis trámites&lt;/span&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">2 niveles</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><nav class="migas" aria-label="Estás en">
+      <ol>
+        <li><a href="bandeja.html">Mis trámites</a></li>
+        <li><span aria-current="page">Nuevo documento</span></li>
+      </ol>
+    </nav></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-27"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-27">&lt;nav class=&quot;migas&quot; aria-label=&quot;Estás en&quot;&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href=&quot;bandeja.html&quot;&gt;Mis trámites&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;span aria-current=&quot;page&quot;&gt;Nuevo documento&lt;/span&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre></details></div></article><article class="ds-comp" id="c-navegacion-de-perfil" aria-labelledby="c-navegacion-de-perfil-t"><h3 class="t-h3" id="c-navegacion-de-perfil-t">Navegación de perfil</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Ítem de navegación</strong></p><p>Secciones de Mi perfil.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La sección actual lleva aria-current=&quot;page&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:280px"><div class="ds-muestra__in"><nav class="perfil-nav" aria-label="Secciones de Mi perfil">
+        <ul>
+          <li><a class="perfil-nav__item" href="#datos" data-ir="datos" aria-current="page"><span class="js-nav-datos">Datos de la empresa</span></a></li>
+          <li><a class="perfil-nav__item" href="#contrasena" data-ir="contrasena">Contraseña</a></li>
+          <li class="js-solo-juridica"><a class="perfil-nav__item" href="#representantes" data-ir="representantes">Representantes legales</a></li>
+        </ul>
+      </nav></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-28"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-28">&lt;nav class=&quot;perfil-nav&quot; aria-label=&quot;Secciones de Mi perfil&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a class=&quot;perfil-nav__item&quot; href=&quot;#datos&quot; data-ir=&quot;datos&quot; aria-current=&quot;page&quot;&gt;&lt;span class=&quot;js-nav-datos&quot;&gt;Datos de la empresa&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class=&quot;perfil-nav__item&quot; href=&quot;#contrasena&quot; data-ir=&quot;contrasena&quot;&gt;Contraseña&lt;/a&gt;&lt;/li&gt;
+    &lt;li class=&quot;js-solo-juridica&quot;&gt;&lt;a class=&quot;perfil-nav__item&quot; href=&quot;#representantes&quot; data-ir=&quot;representantes&quot;&gt;Representantes legales&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-datos" aria-labelledby="g-datos-t"><h2 class="t-h2" id="g-datos-t">Datos</h2><article class="ds-comp" id="c-etiqueta-de-estado" aria-labelledby="c-etiqueta-de-estado-t"><h3 class="t-h3" id="c-etiqueta-de-estado-t">Etiqueta de estado</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Etiqueta de estado</strong></p><p>Estado de un trámite. Los nombres y colores no se cambian.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Siempre con texto; el color solo refuerza (1.4.1).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Trámite</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="estado estado--en-revision">En revisión</span><span class="estado estado--validado">Validado</span><span class="estado estado--observado">Observado</span><span class="estado estado--archivado">Archivado</span><span class="estado estado--finalizado">Finalizado</span></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-29"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-29">&lt;div style=&quot;display:flex;flex-wrap:wrap;gap:8px&quot;&gt;&lt;span class=&quot;estado estado--en-revision&quot;&gt;En revisión&lt;/span&gt;&lt;span class=&quot;estado estado--validado&quot;&gt;Validado&lt;/span&gt;&lt;span class=&quot;estado estado--observado&quot;&gt;Observado&lt;/span&gt;&lt;span class=&quot;estado estado--archivado&quot;&gt;Archivado&lt;/span&gt;&lt;span class=&quot;estado estado--finalizado&quot;&gt;Finalizado&lt;/span&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Marca «Nueva respuesta»</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><span class="marca-nueva"><svg class="icono " aria-hidden="true" focusable="false"><use href="#sobre"></use></svg>Nueva respuesta</span></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-30"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-30">&lt;span class=&quot;marca-nueva&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#sobre&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Nueva respuesta&lt;/span&gt;</code></pre></details></div></article><article class="ds-comp" id="c-etiqueta-de-actividad" aria-labelledby="c-etiqueta-de-actividad-t"><h3 class="t-h3" id="c-etiqueta-de-actividad-t">Etiqueta de actividad</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Etiqueta de actividad</strong></p><p>Activo / Inactivo de un representante legal.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Ícono + texto.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Activo e Inactivo</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div style="display:flex;gap:8px"><span class="estado estado--validado"><svg class="icono " aria-hidden="true" focusable="false"><use href="#check"></use></svg>Activo</span><span class="estado estado--archivado"><svg class="icono " aria-hidden="true" focusable="false"><use href="#archivo"></use></svg>Inactivo</span></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-31"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-31">&lt;div style=&quot;display:flex;gap:8px&quot;&gt;&lt;span class=&quot;estado estado--validado&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Activo&lt;/span&gt;&lt;span class=&quot;estado estado--archivado&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#archivo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Inactivo&lt;/span&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-fila-de-requisito" aria-labelledby="c-fila-de-requisito-t"><h3 class="t-h3" id="c-fila-de-requisito-t">Fila de requisito</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Fila de requisito</strong></p><p>Requisito del trámite en la subsanación: requiere subsanación (con motivo y botón) o conforme.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> El motivo y el error se enlazan al input con aria-describedby.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Requiere subsanación</h4>
+<div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><ul class="req-lista"><li class="req-obs" id="m32-fila-rq1">
+      <span class="req-obs__texto"><span class="req-obs__nombre" id="m32-rq1-nombre">1. Solicitud dirigida al Administrador Local de Agua</span>
+        <span class="req-obs__motivo" id="m32-rq1-motivo">Motivo: el archivo adjunto es una carta, no la solicitud.</span>
+        <span class="req-obs__archivo">Archivo actual: solicitud.pdf</span>
+        <span class="campo__error" id="m32-rq1-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></span>
+      </span>
+      <span class="pildora pildora--observado">Requiere subsanación</span>
+      <span class="subir"><input type="file" id="m32-rq1" accept="application/pdf,.pdf" data-req="1" aria-describedby="m32-rq1-motivo m32-rq1-error">
+           <label for="m32-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span>
+    </li></ul></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-32"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-32">&lt;ul class=&quot;req-lista&quot;&gt;&lt;li class=&quot;req-obs&quot; id=&quot;fila-rq1&quot;&gt;
+  &lt;span class=&quot;req-obs__texto&quot;&gt;&lt;span class=&quot;req-obs__nombre&quot; id=&quot;rq1-nombre&quot;&gt;1. Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;
+    &lt;span class=&quot;req-obs__motivo&quot; id=&quot;rq1-motivo&quot;&gt;Motivo: el archivo adjunto es una carta, no la solicitud.&lt;/span&gt;
+    &lt;span class=&quot;req-obs__archivo&quot;&gt;Archivo actual: solicitud.pdf&lt;/span&gt;
+    &lt;span class=&quot;campo__error&quot; id=&quot;rq1-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;pildora pildora--observado&quot;&gt;Requiere subsanación&lt;/span&gt;
+  &lt;span class=&quot;subir&quot;&gt;&lt;input type=&quot;file&quot; id=&quot;rq1&quot; accept=&quot;application/pdf,.pdf&quot; data-req=&quot;1&quot; aria-describedby=&quot;rq1-motivo rq1-error&quot;&gt;
+       &lt;label for=&quot;rq1&quot; class=&quot;boton boton--secundario&quot;&gt;Reemplazar archivo&lt;span class=&quot;visualmente-oculto&quot;&gt;: Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;&lt;/label&gt;&lt;/span&gt;
+&lt;/li&gt;&lt;/ul&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Conforme</h4>
+<div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><ul class="req-lista"><li class="req-obs req-obs--conforme">
+        <span class="req-obs__texto"><span class="req-obs__nombre" id="m33-rq4-nombre">4. Copia del documento que acredite obras de aprovechamiento hídrico</span><span class="req-obs__archivo">obras.pdf · 0,05 MB</span></span>
+        <span class="pildora pildora--conforme">Conforme</span>
+      </li></ul></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-33"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-33">&lt;ul class=&quot;req-lista&quot;&gt;&lt;li class=&quot;req-obs req-obs--conforme&quot;&gt;
+  &lt;span class=&quot;req-obs__texto&quot;&gt;&lt;span class=&quot;req-obs__nombre&quot; id=&quot;rq4-nombre&quot;&gt;4. Copia del documento que acredite obras de aprovechamiento hídrico&lt;/span&gt;&lt;span class=&quot;req-obs__archivo&quot;&gt;obras.pdf · 0,05 MB&lt;/span&gt;&lt;/span&gt;
+  &lt;span class=&quot;pildora pildora--conforme&quot;&gt;Conforme&lt;/span&gt;
+&lt;/li&gt;&lt;/ul&gt;</code></pre></details></div></article><article class="ds-comp" id="c-fila-de-documento" aria-labelledby="c-fila-de-documento-t"><h3 class="t-h3" id="c-fila-de-documento-t">Fila de documento</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Fila de documento</strong></p><p>Documento del trámite en el detalle, con su estado y acción.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La acción incluye el nombre del documento para el lector.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><div class="documentos"><li class="documento">
+              <svg class="icono documento__icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg>
+              <span class="documento__texto"><span class="documento__nombre">anexo1</span><span class="documento__sub">Enlace externo</span></span>
+              <span class="pildora pildora--conforme">Conforme</span>
+              <button type="button" class="boton boton--secundario" id="m34-doc-anexo1" data-abrir="anexo1">Abrir enlace<span class="visualmente-oculto"> de anexo1 (se abre en otra pestaña)</span></button>
+            </li></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-34"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-34">&lt;div class=&quot;documentos&quot;&gt;&lt;li class=&quot;documento&quot;&gt;
+  &lt;svg class=&quot;icono documento__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#tramites&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+  &lt;span class=&quot;documento__texto&quot;&gt;&lt;span class=&quot;documento__nombre&quot;&gt;anexo1&lt;/span&gt;&lt;span class=&quot;documento__sub&quot;&gt;Enlace externo&lt;/span&gt;&lt;/span&gt;
+  &lt;span class=&quot;pildora pildora--conforme&quot;&gt;Conforme&lt;/span&gt;
+  &lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot; id=&quot;doc-anexo1&quot; data-abrir=&quot;anexo1&quot;&gt;Abrir enlace&lt;span class=&quot;visualmente-oculto&quot;&gt; de anexo1 (se abre en otra pestaña)&lt;/span&gt;&lt;/button&gt;
+&lt;/li&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-historial-del-tramite" aria-labelledby="c-historial-del-tramite-t"><h3 class="t-h3" id="c-historial-del-tramite-t">Historial del trámite</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Paso del historial</strong></p><p>Cuatro hitos: presentaste, validación, notificación, respuesta leída.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Lista ordenada; el estado de cada hito está en texto.</p><div class="ds-estado"><h4 class="ds-estado__nombre">En curso</h4>
+<div class="ds-muestra" style="--ancho:900px"><div class="ds-muestra__in"><ol class="historial">
+        <li class="hito hito--hecho">
+          <span class="hito__circulo"><svg class="icono " aria-hidden="true" focusable="false"><use href="#enviar"></use></svg></span>
+          <span class="hito__nombre">Presentado<span class="visualmente-oculto">. Completado.</span></span>
+          <span class="hito__fecha">03/10/2026 · 19:51:14</span>
+        </li><li class="hito hito--observado" aria-current="step">
+          <span class="hito__circulo"><svg class="icono " aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></span>
+          <span class="hito__nombre">Observado<span class="visualmente-oculto">. Paso actual, con observación.</span></span>
+          <span class="hito__fecha">03/10/2026 · 19:54:14</span>
+        </li><li class="hito hito--pendiente">
+          <span class="hito__circulo"><svg class="icono " aria-hidden="true" focusable="false"><use href="#tramites"></use></svg></span>
+          <span class="hito__nombre">Subsanación<span class="visualmente-oculto">. Pendiente.</span></span>
+          <span class="hito__fecha">Pendiente · hasta el 06/10/2026</span>
+        </li><li class="hito hito--pendiente">
+          <span class="hito__circulo"><svg class="icono " aria-hidden="true" focusable="false"><use href="#check"></use></svg></span>
+          <span class="hito__nombre">Subsanado<span class="visualmente-oculto">. Pendiente.</span></span>
+          <span class="hito__fecha">Pendiente</span>
+        </li>
+      </ol></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-35"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-35">&lt;ol class=&quot;historial&quot;&gt;
+  &lt;li class=&quot;hito hito--hecho&quot;&gt;
+    &lt;span class=&quot;hito__circulo&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#enviar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__nombre&quot;&gt;Presentado&lt;span class=&quot;visualmente-oculto&quot;&gt;. Completado.&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__fecha&quot;&gt;03/10/2026 · 19:51:14&lt;/span&gt;
+  &lt;/li&gt;&lt;li class=&quot;hito hito--observado&quot; aria-current=&quot;step&quot;&gt;
+    &lt;span class=&quot;hito__circulo&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__nombre&quot;&gt;Observado&lt;span class=&quot;visualmente-oculto&quot;&gt;. Paso actual, con observación.&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__fecha&quot;&gt;03/10/2026 · 19:54:14&lt;/span&gt;
+  &lt;/li&gt;&lt;li class=&quot;hito hito--pendiente&quot;&gt;
+    &lt;span class=&quot;hito__circulo&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#tramites&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__nombre&quot;&gt;Subsanación&lt;span class=&quot;visualmente-oculto&quot;&gt;. Pendiente.&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__fecha&quot;&gt;Pendiente · hasta el 06/10/2026&lt;/span&gt;
+  &lt;/li&gt;&lt;li class=&quot;hito hito--pendiente&quot;&gt;
+    &lt;span class=&quot;hito__circulo&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__nombre&quot;&gt;Subsanado&lt;span class=&quot;visualmente-oculto&quot;&gt;. Pendiente.&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;hito__fecha&quot;&gt;Pendiente&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</code></pre></details></div></article><article class="ds-comp" id="c-tabla-y-paginador" aria-labelledby="c-tabla-y-paginador-t"><h3 class="t-h3" id="c-tabla-y-paginador-t">Tabla y paginador</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Tabla · Paginador</strong></p><p>Mis trámites en escritorio. Las acciones van al inicio de la fila.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> &lt;table&gt; real con &lt;caption&gt; oculto, encabezados con scope y botones para ordenar con aria-sort.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Dos filas</h4>
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="tabla-tarjeta" aria-labelledby="m36-tabla-titulo">
+      <h2 class="visualmente-oculto" id="m36-tabla-titulo" tabindex="-1">Lista de trámites</h2>
+      <div class="tabla-region" role="region" aria-labelledby="m36-tabla-titulo" tabindex="0">
+        <table class="tabla">
+          <caption class="visualmente-oculto">Mis trámites. Las columnas con botón se pueden ordenar.</caption>
+          <colgroup>
+            <col style="width:100px"><col style="width:108px"><col style="width:116px"><col style="width:112px">
+            <col style="width:124px"><col><col style="width:144px"><col style="width:112px"><col style="width:74px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Acciones</th>
+              <th scope="col" data-orden="ticket"><button type="button" class="tabla__ordenar">N° Ticket<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col" data-orden="registro" aria-sort="descending"><button type="button" class="tabla__ordenar">Registro<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-desc"></use></svg></button></th>
+              <th scope="col" data-orden="cut"><button type="button" class="tabla__ordenar">N° CUT<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col" data-orden="validacion"><button type="button" class="tabla__ordenar">Validación<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col" data-orden="asunto"><button type="button" class="tabla__ordenar">Asunto<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col" data-orden="documento"><button type="button" class="tabla__ordenar">N° documento<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col" data-orden="estado"><button type="button" class="tabla__ordenar">Estado<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg></button></th>
+              <th scope="col">Archivos</th>
+            </tr>
+          </thead>
+          <tbody id="m36-tabla-cuerpo"><tr class="fila--nueva" data-ticket="68927-2026">
+        <td>
+          <div class="tabla__acciones">
+            <a class="accion accion--ver" href="detalle.html#68927-2026" aria-label="Ver trámite 68927-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#ojo"></use></svg></a>
+            <div class="acciones-fila">
+              <button type="button" class="accion" aria-label="Más acciones del trámite 68927-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m36-menu-68927-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
+              <ul class="menu" role="menu" id="m36-menu-68927-2026" aria-label="Acciones del trámite 68927-2026" hidden="">
+                <li role="none"><button type="button" role="menuitem" class="menu__item" data-hoja=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>Descargar hoja de envío</button></li>
+                <li role="none"><button type="button" role="menuitem" class="menu__item" data-copiar=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar N° de ticket</button></li>
+              </ul>
+            </div>
+          </div>
+        </td>
+        <th scope="row" class="tabla__ticket">68927-2026</th>
+        <td><span class="tabla__fecha">03/10/2026</span><span class="tabla__hora">13:53:48</span></td>
+        <td><span class="tabla__cut">104330-2026</span></td>
+        <td><span class="tabla__fecha">03/10/2026</span><span class="tabla__hora">13:56:23</span></td>
+        <td><div class="tabla__asunto"><span>Solicitud de constancia de uso de agua</span><span class="marca-nueva"><svg class="icono " aria-hidden="true" focusable="false"><use href="#sobre"></use></svg>Nueva respuesta</span></div></td>
+        <td class="tabla__documento">Carta CART5464</td>
+        <td><span class="estado estado--validado">Validado</span></td>
+        <td><span class="tabla__archivos">2<span class="visualmente-oculto"> archivos</span><svg class="icono " aria-hidden="true" focusable="false"><use href="#clip"></use></svg></span></td>
+      </tr><tr class="" data-ticket="68942-2026">
+        <td>
+          <div class="tabla__acciones">
+            <a class="accion accion--ver" href="detalle.html#68942-2026" aria-label="Ver trámite 68942-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#ojo"></use></svg></a>
+            <div class="acciones-fila">
+              <button type="button" class="accion" aria-label="Más acciones del trámite 68942-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m36-menu-68942-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
+              <ul class="menu" role="menu" id="m36-menu-68942-2026" aria-label="Acciones del trámite 68942-2026" hidden="">
+                <li role="none"><button type="button" role="menuitem" class="menu__item" data-hoja=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>Descargar hoja de envío</button></li>
+                <li role="none"><button type="button" role="menuitem" class="menu__item" data-copiar=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar N° de ticket</button></li>
+              </ul>
+            </div>
+          </div>
+        </td>
+        <th scope="row" class="tabla__ticket">68942-2026</th>
+        <td><span class="tabla__fecha">04/10/2026</span><span class="tabla__hora">20:20:35</span></td>
+        <td><span class="tabla__sin">Aún sin CUT</span></td>
+        <td><span class="tabla__sin">Sin validar</span></td>
+        <td><div class="tabla__asunto"><span>Remisión de información complementaria del expediente 102998-2026</span></div></td>
+        <td class="tabla__documento">Carta S/N</td>
+        <td><span class="estado estado--en-revision">En revisión</span></td>
+        <td><span class="tabla__archivos">4<span class="visualmente-oculto"> archivos</span><svg class="icono " aria-hidden="true" focusable="false"><use href="#clip"></use></svg></span></td>
+      </tr></tbody>
+        </table>
+      </div>
+
+      <nav class="paginador" aria-label="Paginación de trámites">
+        <p class="paginador__resumen" id="m36-paginador-resumen">Mostrando 1–10 de 19 trámites</p>
+        <div class="paginador__grupo">
+          <div class="paginador__por-pagina">
+            <label for="m36-por-pagina">Filas por página</label>
+            <select class="campo__control" id="m36-por-pagina">
+              <option>10</option>
+              <option>20</option>
+              <option>50</option>
+            </select>
+          </div>
+          <ul class="paginador__paginas" id="m36-paginador-paginas"><li><button type="button" class="paginador__pagina" data-ir="0" disabled="">Anterior</button></li><li><button type="button" class="paginador__pagina" data-ir="1" aria-current="page" aria-label="Página 1">1</button></li><li><button type="button" class="paginador__pagina" data-ir="2" aria-label="Página 2">2</button></li><li><button type="button" class="paginador__pagina" data-ir="2">Siguiente</button></li></ul>
+        </div>
+      </nav>
+    </section></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-36"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-36">&lt;section class=&quot;tabla-tarjeta&quot; aria-labelledby=&quot;tabla-titulo&quot;&gt;
+  &lt;h2 class=&quot;visualmente-oculto&quot; id=&quot;tabla-titulo&quot; tabindex=&quot;-1&quot;&gt;Lista de trámites&lt;/h2&gt;
+  &lt;div class=&quot;tabla-region&quot; role=&quot;region&quot; aria-labelledby=&quot;tabla-titulo&quot; tabindex=&quot;0&quot;&gt;
+    &lt;table class=&quot;tabla&quot;&gt;
+      &lt;caption class=&quot;visualmente-oculto&quot;&gt;Mis trámites. Las columnas con botón se pueden ordenar.&lt;/caption&gt;
+      &lt;colgroup&gt;
+        &lt;col style=&quot;width:100px&quot;&gt;&lt;col style=&quot;width:108px&quot;&gt;&lt;col style=&quot;width:116px&quot;&gt;&lt;col style=&quot;width:112px&quot;&gt;
+        &lt;col style=&quot;width:124px&quot;&gt;&lt;col&gt;&lt;col style=&quot;width:144px&quot;&gt;&lt;col style=&quot;width:112px&quot;&gt;&lt;col style=&quot;width:74px&quot;&gt;
+      &lt;/colgroup&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th scope=&quot;col&quot;&gt;Acciones&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;ticket&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;N° Ticket&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;registro&quot; aria-sort=&quot;descending&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;Registro&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden-desc&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;cut&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;N° CUT&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;validacion&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;Validación&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;asunto&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;Asunto&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;documento&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;N° documento&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot; data-orden=&quot;estado&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tabla__ordenar&quot;&gt;Estado&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#orden&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+          &lt;th scope=&quot;col&quot;&gt;Archivos&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody id=&quot;tabla-cuerpo&quot;&gt;&lt;tr class=&quot;fila--nueva&quot; data-ticket=&quot;68927-2026&quot;&gt;
+    &lt;td&gt;
+      &lt;div class=&quot;tabla__acciones&quot;&gt;
+        &lt;a class=&quot;accion accion--ver&quot; href=&quot;detalle.html#68927-2026&quot; aria-label=&quot;Ver trámite 68927-2026&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ojo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/a&gt;
+        &lt;div class=&quot;acciones-fila&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;accion&quot; aria-label=&quot;Más acciones del trámite 68927-2026&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;menu-68927-2026&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#mas-acciones&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;
+          &lt;ul class=&quot;menu&quot; role=&quot;menu&quot; id=&quot;menu-68927-2026&quot; aria-label=&quot;Acciones del trámite 68927-2026&quot; hidden=&quot;&quot;&gt;
+            &lt;li role=&quot;none&quot;&gt;&lt;button type=&quot;button&quot; role=&quot;menuitem&quot; class=&quot;menu__item&quot; data-hoja=&quot;&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#descargar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Descargar hoja de envío&lt;/button&gt;&lt;/li&gt;
+            &lt;li role=&quot;none&quot;&gt;&lt;button type=&quot;button&quot; role=&quot;menuitem&quot; class=&quot;menu__item&quot; data-copiar=&quot;&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#copiar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Copiar N° de ticket&lt;/button&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/td&gt;
+    &lt;th scope=&quot;row&quot; class=&quot;tabla__ticket&quot;&gt;68927-2026&lt;/th&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__fecha&quot;&gt;03/10/2026&lt;/span&gt;&lt;span class=&quot;tabla__hora&quot;&gt;13:53:48&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__cut&quot;&gt;104330-2026&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__fecha&quot;&gt;03/10/2026&lt;/span&gt;&lt;span class=&quot;tabla__hora&quot;&gt;13:56:23&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;div class=&quot;tabla__asunto&quot;&gt;&lt;span&gt;Solicitud de constancia de uso de agua&lt;/span&gt;&lt;span class=&quot;marca-nueva&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#sobre&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Nueva respuesta&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;td class=&quot;tabla__documento&quot;&gt;Carta CART5464&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;estado estado--validado&quot;&gt;Validado&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__archivos&quot;&gt;2&lt;span class=&quot;visualmente-oculto&quot;&gt; archivos&lt;/span&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#clip&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/td&gt;
+  &lt;/tr&gt;&lt;tr class=&quot;&quot; data-ticket=&quot;68942-2026&quot;&gt;
+    &lt;td&gt;
+      &lt;div class=&quot;tabla__acciones&quot;&gt;
+        &lt;a class=&quot;accion accion--ver&quot; href=&quot;detalle.html#68942-2026&quot; aria-label=&quot;Ver trámite 68942-2026&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ojo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/a&gt;
+        &lt;div class=&quot;acciones-fila&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;accion&quot; aria-label=&quot;Más acciones del trámite 68942-2026&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;menu-68942-2026&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#mas-acciones&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;
+          &lt;ul class=&quot;menu&quot; role=&quot;menu&quot; id=&quot;menu-68942-2026&quot; aria-label=&quot;Acciones del trámite 68942-2026&quot; hidden=&quot;&quot;&gt;
+            &lt;li role=&quot;none&quot;&gt;&lt;button type=&quot;button&quot; role=&quot;menuitem&quot; class=&quot;menu__item&quot; data-hoja=&quot;&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#descargar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Descargar hoja de envío&lt;/button&gt;&lt;/li&gt;
+            &lt;li role=&quot;none&quot;&gt;&lt;button type=&quot;button&quot; role=&quot;menuitem&quot; class=&quot;menu__item&quot; data-copiar=&quot;&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#copiar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Copiar N° de ticket&lt;/button&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/td&gt;
+    &lt;th scope=&quot;row&quot; class=&quot;tabla__ticket&quot;&gt;68942-2026&lt;/th&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__fecha&quot;&gt;04/10/2026&lt;/span&gt;&lt;span class=&quot;tabla__hora&quot;&gt;20:20:35&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__sin&quot;&gt;Aún sin CUT&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__sin&quot;&gt;Sin validar&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;div class=&quot;tabla__asunto&quot;&gt;&lt;span&gt;Remisión de información complementaria del expediente 102998-2026&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;td class=&quot;tabla__documento&quot;&gt;Carta S/N&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;estado estado--en-revision&quot;&gt;En revisión&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tabla__archivos&quot;&gt;4&lt;span class=&quot;visualmente-oculto&quot;&gt; archivos&lt;/span&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#clip&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/td&gt;
+  &lt;/tr&gt;&lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;paginador&quot; aria-label=&quot;Paginación de trámites&quot;&gt;
+    &lt;p class=&quot;paginador__resumen&quot; id=&quot;paginador-resumen&quot;&gt;Mostrando 1–10 de 19 trámites&lt;/p&gt;
+    &lt;div class=&quot;paginador__grupo&quot;&gt;
+      &lt;div class=&quot;paginador__por-pagina&quot;&gt;
+        &lt;label for=&quot;por-pagina&quot;&gt;Filas por página&lt;/label&gt;
+        &lt;select class=&quot;campo__control&quot; id=&quot;por-pagina&quot;&gt;
+          &lt;option&gt;10&lt;/option&gt;
+          &lt;option&gt;20&lt;/option&gt;
+          &lt;option&gt;50&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;ul class=&quot;paginador__paginas&quot; id=&quot;paginador-paginas&quot;&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;0&quot; disabled=&quot;&quot;&gt;Anterior&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;1&quot; aria-current=&quot;page&quot; aria-label=&quot;Página 1&quot;&gt;1&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot; aria-label=&quot;Página 2&quot;&gt;2&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot;&gt;Siguiente&lt;/button&gt;&lt;/li&gt;&lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+&lt;/section&gt;</code></pre></details></div></article><article class="ds-comp" id="c-panel-de-filtros" aria-labelledby="c-panel-de-filtros-t"><h3 class="t-h3" id="c-panel-de-filtros-t">Panel de filtros</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Panel de filtros</strong></p><p>Tres columnas iguales en escritorio. Procedimiento depende del tipo de trámite. En móvil abre en su propia vista.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Formulario con título; «Buscar» envía.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Escritorio</h4>
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="filtros" id="m37-panel-filtros" aria-labelledby="m37-filtros-titulo">
+      <form class="filtros__form" id="m37-form-filtros" role="search" aria-labelledby="m37-filtros-titulo" novalidate="">
+        <h2 class="filtros__titulo" id="m37-filtros-titulo" tabindex="-1">
+          <svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg>
+          <span>Filtros<span class="filtros__titulo-resto"> de búsqueda</span></span>
+        </h2>
+
+        <div class="filtros__fila">
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-buscar">Buscar</label>
+            <div class="campo__envoltura campo__envoltura--icono">
+              <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
+              <input class="campo__control" id="m37-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+            </div>
+          </div>
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-tipo">Tipo de trámite</label>
+            <select class="campo__control" id="m37-f-tipo">
+              <option value="">Todos</option>
+              <option value="TUPA">TUPA</option>
+              <option value="NO TUPA">NO TUPA</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-proc-entrada" id="m37-f-proc-etiqueta">Procedimiento</label>
+            <select class="campo__control" id="m37-f-proc" data-combo="1" hidden="" tabindex="-1"><option value="">Todos</option><optgroup label="TUPA · 46"><option value="1">1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control</option><option value="2">2. Permiso de uso de agua para épocas de superávit hídrico</option><option value="3">3. Permiso de uso de aguas residuales</option><option value="4">4. Autorización de uso de agua</option><option value="5">5. Autorización de uso de agua con acreditación de disponibilidad hídrica aprobada</option><option value="6">6. Prórroga de autorización de uso de agua</option><option value="7">7. Constitución o modificación de servidumbre de agua forzosa</option><option value="8">8. Autorización para la ejecución de obras en los bienes naturales asociados al agua y en la infraestructura hidráulica multisectorial</option><option value="9">9. Reconocimiento administrativo de junta de usuarios</option><option value="11">11. Autorización de ejecución de estudios de disponibilidad hídrica para obtención de licencia de uso de agua superficial o subterránea</option><option value="12">12. Autorización para la ejecución de estudios de aprovechamiento hídrico con perforación de pozos exploratorios o para instalación de piezómetros</option><option value="13">13. Acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua</option><option value="14">14. Modificación de acreditación de disponibilidad hídrica en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="15">15. Prórroga de acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="16">16. Autorización para la ejecución de obras de aprovechamiento hídrico destinadas a la obtención de derechos de uso de agua</option><option value="17">17. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="18">18. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua, en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas, con opinión técnica favorable al instrumento de gestión ambiental</option><option value="19">19. Prórroga de autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="20">20. Licencia de uso de agua provisional</option><option value="21">21. Otorgamiento de licencia de uso de agua</option><option value="22">22. Otorgamiento de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="23">23. Autorización de ejecución de presas integrantes de la infraestructura hidráulica mayor de carácter multisectorial</option><option value="24">24. Autorización al titular de derecho de uso de agua para brindar servicio de suministro de agua subterránea a favor de terceros</option><option value="25">25. Autorización para la prestación del servicio de agua desalinizada a favor de terceros</option><option value="26">26. Autorización de ejecución de obras de aprovechamiento hídrico para la instalación de plantas desalinizadoras</option><option value="27">27. Autorización para el uso temporal de las fajas marginales y de las riberas de los ríos amazónicos para la siembra de cultivos</option><option value="28">28. Autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="29">29. Modificación de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua, por cambio de características técnicas</option><option value="30">30. Prórroga de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="31">31. Prórroga del plazo de descarga o rebose de las aguas residuales a un cuerpo natural de agua desde los sistemas de saneamiento</option><option value="32">32. Autorización de reúso de aguas residuales tratadas</option><option value="33">33. Modificación de autorización de reúso de aguas residuales tratadas por cambio de características técnicas</option><option value="34">34. Prórroga de autorización de reúso de agua residual tratada</option><option value="35">35. Reserva de recursos hídricos</option><option value="36">36. Prórroga de reserva de recursos hídricos</option><option value="37">37. Acreditación de disponibilidad hídrica para actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="38">38. Autorización de ejecución de obras de aprovechamiento hídrico para usos acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="39">39. Licencia de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="40">40. Permiso de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="41">41. Inspección ocular – a distancias de hasta 10 km</option><option value="42">42. Inspección ocular – a distancias mayores de 10 km hasta 50 km</option><option value="43">43. Inspección ocular – a distancias mayores de 50 km hasta 100 km</option><option value="44">44. Inspección ocular – a distancias mayores de 100 km</option><option value="45">45. Otorgamiento de licencia de uso de agua en el marco de la formalización del uso de agua</option><option value="46">46. Reconocimiento administrativo de las comisiones de usuarios</option><option value="47">47. Reconocimiento administrativo de comités de usuarios</option></optgroup><optgroup label="NO TUPA · 5"><option value="bienes">Bienes y servicios menores a 8 UIT</option><option value="iga">Opinión técnica vinculante · IGA</option><option value="otros">Otros</option><option value="minera">Opinión técnica vinculante de proyecto de exploración minera</option><option value="congreso">Congreso</option></optgroup></select><div class="combo">
+      <input class="campo__control combo__entrada" id="m37-f-proc-entrada" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="m37-f-proc-lista" autocomplete="off" aria-describedby="m37-f-proc-instruccion">
+      <span class="combo__flecha" aria-hidden="true"><svg class="icono " aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg></span>
+      <div class="combo__panel" hidden="">
+        <p class="combo__cantidad" id="m37-f-proc-cantidad"></p>
+        <div class="combo__lista" id="m37-f-proc-lista" role="listbox" aria-labelledby="m37-f-proc-etiqueta"></div>
+      </div>
+      <span class="visualmente-oculto" id="m37-f-proc-instruccion">Escribe para filtrar la lista. Usa las flechas para recorrerla y Enter para elegir.</span></div>
+          </div>
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-estado">Estado</label>
+            <select class="campo__control" id="m37-f-estado">
+              <option value="">Todos</option>
+              <option>En revisión</option>
+              <option>Validado</option>
+              <option>Observado</option>
+              <option>Archivado</option>
+              <option>Finalizado</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-inicio">Fecha inicio</label>
+            <input class="campo__control campo__control--fecha" id="m37-f-inicio" type="date" aria-describedby="m37-fechas-ayuda m37-f-inicio-error">
+            <p class="campo__error" id="m37-f-inicio-error" hidden="">
+              <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+              <span class="campo__error-texto"></span>
+            </p>
+          </div>
+          <div class="campo">
+            <label class="campo__etiqueta" for="m37-f-fin">Fecha fin</label>
+            <input class="campo__control campo__control--fecha" id="m37-f-fin" type="date" aria-describedby="m37-fechas-ayuda m37-f-fin-error">
+            <p class="campo__error" id="m37-f-fin-error" hidden="">
+              <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
+              <span class="campo__error-texto"></span>
+            </p>
+          </div>
+        </div>
+
+        <div class="filtros__pie">
+          <p class="t-ayuda" id="m37-fechas-ayuda">Las fechas van en día/mes/año.</p>
+          <div class="filtros__botones">
+            <button type="reset" class="boton boton--terciario">Limpiar</button>
+            <button type="submit" class="boton boton--primario boton--buscar">
+              <svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>Buscar</button>
+          </div>
+        </div>
+      </form>
+    </section></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-37"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-37">&lt;section class=&quot;filtros&quot; id=&quot;panel-filtros&quot; aria-labelledby=&quot;filtros-titulo&quot;&gt;
+  &lt;form class=&quot;filtros__form&quot; id=&quot;form-filtros&quot; role=&quot;search&quot; aria-labelledby=&quot;filtros-titulo&quot; novalidate=&quot;&quot;&gt;
+    &lt;h2 class=&quot;filtros__titulo&quot; id=&quot;filtros-titulo&quot; tabindex=&quot;-1&quot;&gt;
+      &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#filtro&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+      &lt;span&gt;Filtros&lt;span class=&quot;filtros__titulo-resto&quot;&gt; de búsqueda&lt;/span&gt;&lt;/span&gt;
+    &lt;/h2&gt;
+
+    &lt;div class=&quot;filtros__fila&quot;&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-buscar&quot;&gt;Buscar&lt;/label&gt;
+        &lt;div class=&quot;campo__envoltura campo__envoltura--icono&quot;&gt;
+          &lt;svg class=&quot;icono campo__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+          &lt;input class=&quot;campo__control&quot; id=&quot;f-buscar&quot; type=&quot;search&quot; placeholder=&quot;Busca por N° de ticket, CUT o asunto&quot;&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-tipo&quot;&gt;Tipo de trámite&lt;/label&gt;
+        &lt;select class=&quot;campo__control&quot; id=&quot;f-tipo&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
+          &lt;option value=&quot;TUPA&quot;&gt;TUPA&lt;/option&gt;
+          &lt;option value=&quot;NO TUPA&quot;&gt;NO TUPA&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-proc-entrada&quot; id=&quot;f-proc-etiqueta&quot;&gt;Procedimiento&lt;/label&gt;
+        &lt;select class=&quot;campo__control&quot; id=&quot;f-proc&quot; data-combo=&quot;1&quot; hidden=&quot;&quot; tabindex=&quot;-1&quot;&gt;&lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;&lt;optgroup label=&quot;TUPA · 46&quot;&gt;&lt;option value=&quot;1&quot;&gt;1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;2. Permiso de uso de agua para épocas de superávit hídrico&lt;/option&gt;&lt;option value=&quot;3&quot;&gt;3. Permiso de uso de aguas residuales&lt;/option&gt;&lt;option value=&quot;4&quot;&gt;4. Autorización de uso de agua&lt;/option&gt;&lt;option value=&quot;5&quot;&gt;5. Autorización de uso de agua con acreditación de disponibilidad hídrica aprobada&lt;/option&gt;&lt;option value=&quot;6&quot;&gt;6. Prórroga de autorización de uso de agua&lt;/option&gt;&lt;option value=&quot;7&quot;&gt;7. Constitución o modificación de servidumbre de agua forzosa&lt;/option&gt;&lt;option value=&quot;8&quot;&gt;8. Autorización para la ejecución de obras en los bienes naturales asociados al agua y en la infraestructura hidráulica multisectorial&lt;/option&gt;&lt;option value=&quot;9&quot;&gt;9. Reconocimiento administrativo de junta de usuarios&lt;/option&gt;&lt;option value=&quot;11&quot;&gt;11. Autorización de ejecución de estudios de disponibilidad hídrica para obtención de licencia de uso de agua superficial o subterránea&lt;/option&gt;&lt;option value=&quot;12&quot;&gt;12. Autorización para la ejecución de estudios de aprovechamiento hídrico con perforación de pozos exploratorios o para instalación de piezómetros&lt;/option&gt;&lt;option value=&quot;13&quot;&gt;13. Acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua&lt;/option&gt;&lt;option value=&quot;14&quot;&gt;14. Modificación de acreditación de disponibilidad hídrica en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas&lt;/option&gt;&lt;option value=&quot;15&quot;&gt;15. Prórroga de acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas&lt;/option&gt;&lt;option value=&quot;16&quot;&gt;16. Autorización para la ejecución de obras de aprovechamiento hídrico destinadas a la obtención de derechos de uso de agua&lt;/option&gt;&lt;option value=&quot;17&quot;&gt;17. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas&lt;/option&gt;&lt;option value=&quot;18&quot;&gt;18. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua, en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas, con opinión técnica favorable al instrumento de gestión ambiental&lt;/option&gt;&lt;option value=&quot;19&quot;&gt;19. Prórroga de autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas&lt;/option&gt;&lt;option value=&quot;20&quot;&gt;20. Licencia de uso de agua provisional&lt;/option&gt;&lt;option value=&quot;21&quot;&gt;21. Otorgamiento de licencia de uso de agua&lt;/option&gt;&lt;option value=&quot;22&quot;&gt;22. Otorgamiento de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas&lt;/option&gt;&lt;option value=&quot;23&quot;&gt;23. Autorización de ejecución de presas integrantes de la infraestructura hidráulica mayor de carácter multisectorial&lt;/option&gt;&lt;option value=&quot;24&quot;&gt;24. Autorización al titular de derecho de uso de agua para brindar servicio de suministro de agua subterránea a favor de terceros&lt;/option&gt;&lt;option value=&quot;25&quot;&gt;25. Autorización para la prestación del servicio de agua desalinizada a favor de terceros&lt;/option&gt;&lt;option value=&quot;26&quot;&gt;26. Autorización de ejecución de obras de aprovechamiento hídrico para la instalación de plantas desalinizadoras&lt;/option&gt;&lt;option value=&quot;27&quot;&gt;27. Autorización para el uso temporal de las fajas marginales y de las riberas de los ríos amazónicos para la siembra de cultivos&lt;/option&gt;&lt;option value=&quot;28&quot;&gt;28. Autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua&lt;/option&gt;&lt;option value=&quot;29&quot;&gt;29. Modificación de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua, por cambio de características técnicas&lt;/option&gt;&lt;option value=&quot;30&quot;&gt;30. Prórroga de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua&lt;/option&gt;&lt;option value=&quot;31&quot;&gt;31. Prórroga del plazo de descarga o rebose de las aguas residuales a un cuerpo natural de agua desde los sistemas de saneamiento&lt;/option&gt;&lt;option value=&quot;32&quot;&gt;32. Autorización de reúso de aguas residuales tratadas&lt;/option&gt;&lt;option value=&quot;33&quot;&gt;33. Modificación de autorización de reúso de aguas residuales tratadas por cambio de características técnicas&lt;/option&gt;&lt;option value=&quot;34&quot;&gt;34. Prórroga de autorización de reúso de agua residual tratada&lt;/option&gt;&lt;option value=&quot;35&quot;&gt;35. Reserva de recursos hídricos&lt;/option&gt;&lt;option value=&quot;36&quot;&gt;36. Prórroga de reserva de recursos hídricos&lt;/option&gt;&lt;option value=&quot;37&quot;&gt;37. Acreditación de disponibilidad hídrica para actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)&lt;/option&gt;&lt;option value=&quot;38&quot;&gt;38. Autorización de ejecución de obras de aprovechamiento hídrico para usos acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)&lt;/option&gt;&lt;option value=&quot;39&quot;&gt;39. Licencia de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)&lt;/option&gt;&lt;option value=&quot;40&quot;&gt;40. Permiso de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)&lt;/option&gt;&lt;option value=&quot;41&quot;&gt;41. Inspección ocular – a distancias de hasta 10 km&lt;/option&gt;&lt;option value=&quot;42&quot;&gt;42. Inspección ocular – a distancias mayores de 10 km hasta 50 km&lt;/option&gt;&lt;option value=&quot;43&quot;&gt;43. Inspección ocular – a distancias mayores de 50 km hasta 100 km&lt;/option&gt;&lt;option value=&quot;44&quot;&gt;44. Inspección ocular – a distancias mayores de 100 km&lt;/option&gt;&lt;option value=&quot;45&quot;&gt;45. Otorgamiento de licencia de uso de agua en el marco de la formalización del uso de agua&lt;/option&gt;&lt;option value=&quot;46&quot;&gt;46. Reconocimiento administrativo de las comisiones de usuarios&lt;/option&gt;&lt;option value=&quot;47&quot;&gt;47. Reconocimiento administrativo de comités de usuarios&lt;/option&gt;&lt;/optgroup&gt;&lt;optgroup label=&quot;NO TUPA · 5&quot;&gt;&lt;option value=&quot;bienes&quot;&gt;Bienes y servicios menores a 8 UIT&lt;/option&gt;&lt;option value=&quot;iga&quot;&gt;Opinión técnica vinculante · IGA&lt;/option&gt;&lt;option value=&quot;otros&quot;&gt;Otros&lt;/option&gt;&lt;option value=&quot;minera&quot;&gt;Opinión técnica vinculante de proyecto de exploración minera&lt;/option&gt;&lt;option value=&quot;congreso&quot;&gt;Congreso&lt;/option&gt;&lt;/optgroup&gt;&lt;/select&gt;&lt;div class=&quot;combo&quot;&gt;
+  &lt;input class=&quot;campo__control combo__entrada&quot; id=&quot;f-proc-entrada&quot; type=&quot;text&quot; role=&quot;combobox&quot; aria-autocomplete=&quot;list&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;f-proc-lista&quot; autocomplete=&quot;off&quot; aria-describedby=&quot;f-proc-instruccion&quot;&gt;
+  &lt;span class=&quot;combo__flecha&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#chevron-abajo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/span&gt;
+  &lt;div class=&quot;combo__panel&quot; hidden=&quot;&quot;&gt;
+    &lt;p class=&quot;combo__cantidad&quot; id=&quot;f-proc-cantidad&quot;&gt;&lt;/p&gt;
+    &lt;div class=&quot;combo__lista&quot; id=&quot;f-proc-lista&quot; role=&quot;listbox&quot; aria-labelledby=&quot;f-proc-etiqueta&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;span class=&quot;visualmente-oculto&quot; id=&quot;f-proc-instruccion&quot;&gt;Escribe para filtrar la lista. Usa las flechas para recorrerla y Enter para elegir.&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-estado&quot;&gt;Estado&lt;/label&gt;
+        &lt;select class=&quot;campo__control&quot; id=&quot;f-estado&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
+          &lt;option&gt;En revisión&lt;/option&gt;
+          &lt;option&gt;Validado&lt;/option&gt;
+          &lt;option&gt;Observado&lt;/option&gt;
+          &lt;option&gt;Archivado&lt;/option&gt;
+          &lt;option&gt;Finalizado&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
+        &lt;input class=&quot;campo__control campo__control--fecha&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; aria-describedby=&quot;fechas-ayuda f-inicio-error&quot;&gt;
+        &lt;p class=&quot;campo__error&quot; id=&quot;f-inicio-error&quot; hidden=&quot;&quot;&gt;
+          &lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+          &lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;campo&quot;&gt;
+        &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-fin&quot;&gt;Fecha fin&lt;/label&gt;
+        &lt;input class=&quot;campo__control campo__control--fecha&quot; id=&quot;f-fin&quot; type=&quot;date&quot; aria-describedby=&quot;fechas-ayuda f-fin-error&quot;&gt;
+        &lt;p class=&quot;campo__error&quot; id=&quot;f-fin-error&quot; hidden=&quot;&quot;&gt;
+          &lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+          &lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;filtros__pie&quot;&gt;
+      &lt;p class=&quot;t-ayuda&quot; id=&quot;fechas-ayuda&quot;&gt;Las fechas van en día/mes/año.&lt;/p&gt;
+      &lt;div class=&quot;filtros__botones&quot;&gt;
+        &lt;button type=&quot;reset&quot; class=&quot;boton boton--terciario&quot;&gt;Limpiar&lt;/button&gt;
+        &lt;button type=&quot;submit&quot; class=&quot;boton boton--primario boton--buscar&quot;&gt;
+          &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Buscar&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/section&gt;</code></pre></details></div></article><article class="ds-comp" id="c-estado-vacio" aria-labelledby="c-estado-vacio-t"><h3 class="t-h3" id="c-estado-vacio-t">Estado vacío</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Estado vacío</strong></p><p>Sin trámites, sin resultados y páginas de error, con su ilustración (sprite ilustraciones.svg).</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La ilustración es decorativa (aria-hidden).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Sección</h4>
+<div class="ds-muestra" style="--ancho:640px"><div class="ds-muestra__in"><div class="vacio vacio--seccion"><svg class="vacio__ilustracion" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true" focusable="false"><path class="ilu-t ilu-r" d="M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z"></path><path class="ilu-t ilu-b" d="M70 18v18h18"></path><path class="ilu-t" d="M40 46L62 46"></path><path class="ilu-t" d="M40 56L76 56"></path><path class="ilu-t" d="M40 66L70 66"></path><circle class="ilu-t ilu-b" cx="84" cy="86" r="14"></circle><path class="ilu-t" d="M84 79L84 93"></path><path class="ilu-t" d="M77 86L91 86"></path></svg><p class="vacio__texto"><strong class="vacio__titulo vacio__titulo--seccion">Aún no tienes trámites</strong>Aquí verás el listado de tus trámites. Puedes empezar presentando un nuevo documento.</p></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-38"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-38">&lt;div class=&quot;vacio vacio--seccion&quot;&gt;&lt;svg class=&quot;vacio__ilustracion&quot; viewBox=&quot;0 0 120 120&quot; width=&quot;120&quot; height=&quot;120&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;path class=&quot;ilu-t ilu-r&quot; d=&quot;M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t ilu-b&quot; d=&quot;M70 18v18h18&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 46L62 46&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 56L76 56&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 66L70 66&quot;&gt;&lt;/path&gt;&lt;circle class=&quot;ilu-t ilu-b&quot; cx=&quot;84&quot; cy=&quot;86&quot; r=&quot;14&quot;&gt;&lt;/circle&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M84 79L84 93&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M77 86L91 86&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;p class=&quot;vacio__texto&quot;&gt;&lt;strong class=&quot;vacio__titulo vacio__titulo--seccion&quot;&gt;Aún no tienes trámites&lt;/strong&gt;Aquí verás el listado de tus trámites. Puedes empezar presentando un nuevo documento.&lt;/p&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Página (404)</h4>
+<div class="ds-muestra" style="--ancho:640px"><div class="ds-muestra__in"><div class="vacio vacio--pagina">
+      <svg class="vacio__ilustracion" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true" focusable="false"><path class="ilu-t ilu-r" d="M14 40l28-10 32 10 32-10v56l-32 10-32-10-28 10z"></path><path class="ilu-t" d="M42 30L42 86"></path><path class="ilu-t" d="M74 40L74 96"></path><path class="ilu-t" stroke-dasharray="4 4" d="M24 74c8-6 16 4 26-2s16-8 24 0"></path><path class="ilu-t ilu-b" d="M60 64c-10-12-16-20-16-28a16 16 0 0 1 32 0c0 8-6 16-16 28z"></path><path class="ilu-t" d="M55 32a5 5 0 1 1 7 5c-2 1-2 2-2 4"></path><circle class="ilu-p" cx="60" cy="47" r="1.5"></circle></svg>
+      <p class="vacio__titulo">No encontramos esta página</p>
+      <p class="vacio__texto">Puede que el enlace esté mal escrito, o que la página ya no exista. Tus trámites y tus notificaciones siguen en su sitio.</p>
+      <div class="vacio__acciones">
+        <a class="boton boton--primario" href="bandeja.html">Ir a Mis trámites</a>
+        <button type="button" class="boton boton--secundario" data-atras="">Volver a la página anterior</button>
+      </div>
+    </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-39"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-39">&lt;div class=&quot;vacio vacio--pagina&quot;&gt;
+  &lt;svg class=&quot;vacio__ilustracion&quot; viewBox=&quot;0 0 120 120&quot; width=&quot;120&quot; height=&quot;120&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;path class=&quot;ilu-t ilu-r&quot; d=&quot;M14 40l28-10 32 10 32-10v56l-32 10-32-10-28 10z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M42 30L42 86&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M74 40L74 96&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; stroke-dasharray=&quot;4 4&quot; d=&quot;M24 74c8-6 16 4 26-2s16-8 24 0&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t ilu-b&quot; d=&quot;M60 64c-10-12-16-20-16-28a16 16 0 0 1 32 0c0 8-6 16-16 28z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M55 32a5 5 0 1 1 7 5c-2 1-2 2-2 4&quot;&gt;&lt;/path&gt;&lt;circle class=&quot;ilu-p&quot; cx=&quot;60&quot; cy=&quot;47&quot; r=&quot;1.5&quot;&gt;&lt;/circle&gt;&lt;/svg&gt;
+  &lt;h1 class=&quot;vacio__titulo&quot;&gt;No encontramos esta página&lt;/h1&gt;
+  &lt;p class=&quot;vacio__texto&quot;&gt;Puede que el enlace esté mal escrito, o que la página ya no exista. Tus trámites y tus notificaciones siguen en su sitio.&lt;/p&gt;
+  &lt;div class=&quot;vacio__acciones&quot;&gt;
+    &lt;a class=&quot;boton boton--primario&quot; href=&quot;bandeja.html&quot;&gt;Ir a Mis trámites&lt;/a&gt;
+    &lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot; data-atras=&quot;&quot;&gt;Volver a la página anterior&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-mensajes" aria-labelledby="g-mensajes-t"><h2 class="t-h2" id="g-mensajes-t">Mensajes</h2><article class="ds-comp" id="c-aviso" aria-labelledby="c-aviso-t"><h3 class="t-h3" id="c-aviso-t">Aviso</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Aviso</strong></p><p>Mensaje fijo dentro de la página, en cuatro tonos.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> role=&quot;note&quot; para avisos fijos; ícono decorativo; el tono también está en el título.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Informativo</h4>
+<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--info" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg><div><p class="aviso__titulo">Tu sesión se cierra en 5 minutos</p><p>Guarda lo que estás haciendo.</p></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-40"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-40">&lt;div class=&quot;aviso aviso--info&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#info&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Tu sesión se cierra en 5 minutos&lt;/p&gt;&lt;p&gt;Guarda lo que estás haciendo.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Alerta</h4>
+<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--alerta" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><div><p class="aviso__titulo">Revisa tus datos de contacto</p><p>Ahí te llegan los avisos de cada notificación.</p></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-41"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-41">&lt;div class=&quot;aviso aviso--alerta&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Revisa tus datos de contacto&lt;/p&gt;&lt;p&gt;Ahí te llegan los avisos de cada notificación.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Error</h4>
+<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--error" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg><div><p class="aviso__titulo">No pudimos enviar tu solicitud</p><p>Vuelve a intentar en unos minutos.</p></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-42"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-42">&lt;div class=&quot;aviso aviso--error&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#error&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;No pudimos enviar tu solicitud&lt;/p&gt;&lt;p&gt;Vuelve a intentar en unos minutos.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Éxito</h4>
+<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--exito" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg><div><p class="aviso__titulo">Enviaste tu solicitud</p><p>Te avisaremos por correo cuando la ANA la revise.</p></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-43"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-43">&lt;div class=&quot;aviso aviso--exito&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Enviaste tu solicitud&lt;/p&gt;&lt;p&gt;Te avisaremos por correo cuando la ANA la revise.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-resumen-de-errores" aria-labelledby="c-resumen-de-errores-t"><h3 class="t-h3" id="c-resumen-de-errores-t">Resumen de errores</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Resumen de errores</strong></p><p>Aparece arriba del formulario al enviar con errores. Cada error es un enlace al campo.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Recibe el foco al aparecer (tabindex=&quot;-1&quot;).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Tres errores</h4>
+<div class="ds-muestra" style="--ancho:600px"><div class="ds-muestra__in"><div class="aviso aviso--error" id="m44-errores-contacto" tabindex="-1"><svg class="icono " aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><div><p class="aviso__titulo">Hay 3 datos por corregir</p><ul><li><a href="#r-correo">Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com</a></li><li><a href="#r-correo2">Confirma tu correo: debe ser igual al correo electrónico.</a></li><li><a href="#r-celular">Celular: tiene 9 dígitos y empieza con 9.</a></li></ul></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-44"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-44">&lt;div class=&quot;aviso aviso--error&quot; id=&quot;errores-contacto&quot; tabindex=&quot;-1&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Hay 3 datos por corregir&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#r-correo&quot;&gt;Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-correo2&quot;&gt;Confirma tu correo: debe ser igual al correo electrónico.&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-celular&quot;&gt;Celular: tiene 9 dígitos y empieza con 9.&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-aviso-temporal" aria-labelledby="c-aviso-temporal-t"><h3 class="t-h3" id="c-aviso-temporal-t">Aviso temporal</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Aviso temporal</strong></p><p>Confirmación breve que aparece abajo. Se pausa con el mouse o el foco y se cierra con Escape.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> El texto también se anuncia en una región role=&quot;status&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Visible</h4>
+<div class="ds-muestra" style="--ancho:520px;min-height:120px"><div class="ds-muestra__in"><aside class="notificacion" id="m45-notificacion" aria-label="Aviso">
+    <svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg>
+    <p class="notificacion__texto">Guardamos tus cambios.</p>
+    <button type="button" class="boton boton--icono" data-cerrar="" aria-label="Cerrar aviso">
+      <svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg>
+    </button>
+  </aside></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-45"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-45">&lt;aside class=&quot;notificacion&quot; id=&quot;notificacion&quot; aria-label=&quot;Aviso&quot;&gt;
+  &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#info&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+  &lt;p class=&quot;notificacion__texto&quot;&gt;Guardamos tus cambios.&lt;/p&gt;
+  &lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; data-cerrar=&quot;&quot; aria-label=&quot;Cerrar aviso&quot;&gt;
+    &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+  &lt;/button&gt;
+&lt;/aside&gt;</code></pre></details></div></article><article class="ds-comp" id="c-modal" aria-labelledby="c-modal-t"><h3 class="t-h3" id="c-modal-t">Modal</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Modal</strong></p><p>Confirmación de una acción que no se deshace fácilmente.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> role=&quot;dialog&quot; con aria-modal; foco atrapado, Escape cierra y el foco vuelve al botón que lo abrió.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Desactivar representante</h4>
+<div class="ds-muestra" style="--ancho:100%;min-height:360px"><div class="ds-muestra__in"><div class="modal-capa" id="m46-modal-desactivar">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m46-modal-titulo" aria-describedby="m46-modal-texto">
+      <h2 class="modal__titulo" id="m46-modal-titulo">¿Desactivar a Carlos Huamán Ríos?</h2>
+      <p class="modal__texto" id="m46-modal-texto">Ya no podrá presentar trámites en nombre de la empresa ni recibirá avisos. Sus trámites anteriores se mantienen. Puedes volver a activarlo cuando quieras.</p>
+      <div class="modal__botones">
+        <button type="button" class="boton boton--primario" id="m46-modal-confirmar">Desactivar</button>
+        <button type="button" class="boton boton--secundario" id="m46-modal-cancelar">Cancelar</button>
+      </div>
+    </div>
+  </div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-46"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-46">&lt;div class=&quot;modal-capa&quot; id=&quot;modal-desactivar&quot;&gt;
+  &lt;div class=&quot;modal&quot; role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;modal-titulo&quot; aria-describedby=&quot;modal-texto&quot;&gt;
+    &lt;h2 class=&quot;modal__titulo&quot; id=&quot;modal-titulo&quot;&gt;¿Desactivar a Carlos Huamán Ríos?&lt;/h2&gt;
+    &lt;p class=&quot;modal__texto&quot; id=&quot;modal-texto&quot;&gt;Ya no podrá presentar trámites en nombre de la empresa ni recibirá avisos. Sus trámites anteriores se mantienen. Puedes volver a activarlo cuando quieras.&lt;/p&gt;
+    &lt;div class=&quot;modal__botones&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot; id=&quot;modal-confirmar&quot;&gt;Desactivar&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot; id=&quot;modal-cancelar&quot;&gt;Cancelar&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></article></section>
+  </main>
+</div>
+<div class="visualmente-oculto" id="anuncio" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+<script>
+/* Solo de esta página: copiar código, buscar íconos y mostrar el valor de cada color. */
+(function () {
+  var anuncio = document.getElementById('anuncio');
+  function avisar(t) { anuncio.textContent = ''; setTimeout(function () { anuncio.textContent = t; }, 50); }
+  function copiar(texto, origen) {
+    function respaldo() { var r = document.createRange(); if (origen) { r.selectNodeContents(origen); var s = getSelection(); s.removeAllRanges(); s.addRange(r); } avisar('Selecciona y copia con Ctrl + C.'); }
+    try { navigator.clipboard.writeText(texto).then(function () { avisar('Código copiado.'); }, respaldo); } catch (e) { respaldo(); }
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copiar]');
+    if (b) { var c = document.getElementById(b.dataset.copiar); copiar(c.textContent, c); return; }
+    var i = e.target.closest('[data-copiar-texto]');
+    if (i) copiar(i.dataset.copiarTexto, null);
+  });
+  var f = document.getElementById('ds-buscar-icono');
+  f.addEventListener('input', function () {
+    var q = f.value.trim().toLowerCase(), n = 0;
+    document.querySelectorAll('#ds-lista-iconos li').forEach(function (li) { var ok = li.textContent.toLowerCase().indexOf(q) > -1; li.hidden = !ok; if (ok) n++; });
+    avisar(n + (n === 1 ? ' ícono' : ' íconos'));
+  });
+  var est = getComputedStyle(document.documentElement);
+  document.querySelectorAll('[data-hex]').forEach(function (s) {
+    var d = document.createElement('div'); d.style.color = 'var(' + s.dataset.hex + ')'; document.body.appendChild(d);
+    var c = getComputedStyle(d).color; d.remove(); var v;
+    if (c.indexOf('color(') === 0) { v = c.match(/[\d.]+/g).slice(0, 3).map(function (x) { return Math.round(parseFloat(x) * 255); }); }
+    else { v = c.match(/\d+/g).slice(0, 3).map(Number); }
+    s.textContent = '#' + v.map(function (x) { return x.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+  });
+})();
+</script>
+</body>
+</html>

@@ -2165,6 +2165,8 @@
     iniciarFueraDeAlcance();
     iniciarMenus();
     iniciarDesplegables();
+    // Combos declarados en el HTML (p. ej. componentes.html): <select data-combo-auto>
+    $$('select[data-combo-auto]').forEach((s) => crearCombo(s).refrescar());
     const pagina = document.body.dataset.pagina;
     if (pagina === 'ingreso') iniciarIngreso();
     if (pagina === 'bandeja') iniciarBandeja();
