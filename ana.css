@@ -284,12 +284,29 @@ h1, h2, h3 { text-wrap: balance; }
   color: var(--texto-accion);
 }
 .boton--icono:hover { background: var(--fondo-accion-suave); }
+/* Presionado (DS «Botón», estado Presionado) */
+.boton--primario:active { background: var(--fondo-inverso); border-color: var(--fondo-inverso); }
+.boton--secundario:active { background: var(--fondo-accion-suave); border-color: var(--fondo-accion-hover); }
+.boton--terciario:active, .boton--icono:active { background: var(--fondo-accion-suave); }
+/* Cargando (DS «Botón», estado Cargando): aria-busy + aria-disabled, el texto dice qué pasa */
+.boton[aria-busy="true"] { cursor: progress; }
+.boton[aria-busy="true"]::before {
+  content: ""; width: 16px; height: 16px; flex: none;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  animation: boton-giro .8s linear infinite;
+}
+@keyframes boton-giro { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .boton[aria-busy="true"]::before { animation: none; border-right-color: currentColor; opacity: .6; } }
 .boton[disabled], .boton[aria-disabled="true"] {
   background: var(--fondo-deshabilitado);
   color: var(--texto-deshabilitado);
   border-color: transparent;
   cursor: not-allowed;
 }
+/* Cargando conserva su color (DS): no se ve como deshabilitado aunque no se pueda volver a pulsar */
+.boton--primario[aria-busy="true"] { background: var(--fondo-accion); color: var(--texto-inverso); border-color: var(--fondo-accion); cursor: progress; }
+.boton--secundario[aria-busy="true"] { background: var(--fondo-base); color: var(--texto-accion); border-color: var(--borde-accion); cursor: progress; }
+.boton--terciario[aria-busy="true"] { background: none; color: var(--texto-accion); cursor: progress; }
 
 /* 3.2 · Campo ------------------------------------------------------------- */
 .campo {
@@ -326,6 +343,19 @@ select.campo__control {
   background-repeat: no-repeat;
   background-position: right 14px center;
 }
+/* Estados del DS «Campo de texto» y «Selector»: hover con fondo sutil; solo lectura y deshabilitado.
+   Deshabilitado no se usa para datos que no se editan: esos van como texto (.datos-fijos). */
+.campo__control:hover:not(:disabled):not([readonly]) { background-color: var(--fondo-sutil); }
+.campo__control[readonly] { background-color: var(--fondo-sutil); border-color: var(--borde-sutil); }
+.campo__control:disabled {
+  background-color: var(--fondo-deshabilitado);
+  border-color: var(--borde-sutil);
+  color: var(--texto-deshabilitado);
+  cursor: not-allowed;
+}
+.campo__control:disabled::placeholder { color: var(--texto-deshabilitado); }
+.campo:has(.campo__control:disabled) .campo__etiqueta { color: var(--texto-deshabilitado); }
+.casilla:has(input:disabled) { color: var(--texto-deshabilitado); cursor: not-allowed; }
 .campo__ayuda { font: var(--t-ayuda); color: var(--texto-secundario); }
 .campo__error {
   display: flex;

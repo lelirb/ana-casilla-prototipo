@@ -46,6 +46,62 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 .ds-codigo pre { margin: 8px 0 0; padding: 16px; max-height: 420px; overflow:auto; background: var(--fondo-inverso); color: var(--texto-inverso); border-radius: var(--radio-control); }
 .ds-codigo pre code { background:none; color:inherit; font: var(--t-dato-pequeno); white-space: pre; }
 .ds-copiar { margin-top: 8px; }
+.ds-matriz { display:grid; grid-template-columns: repeat(var(--cols, 3), minmax(0,1fr)); gap: 20px 16px; }
+.ds-celda { margin:0; display:flex; flex-direction:column; gap:8px; min-width:0; }
+.ds-celda__muestra { min-width:0; }
+.ds-celda figcaption { order: -1; font: var(--t-etiqueta); color: var(--texto-secundario); padding-bottom: 4px; border-bottom: 1px solid var(--borde-sutil); }
+@media (max-width: 1100px) { .ds-matriz { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) { .ds-matriz { grid-template-columns: 1fr; } }
+/* Estados forzados para mostrar hover, foco y presionado (generado desde ana.css) */
+a.ds-hover {text-decoration-thickness: 2px;}
+.ds-foco {outline: 2px solid var(--borde-foco);
+  outline-offset: 2px;
+  border-radius: 4px;}
+.saltar.ds-foco {top: var(--esp-s);}
+.boton--primario.ds-hover {background: var(--fondo-accion-hover);}
+.boton--secundario.ds-hover {background: var(--fondo-accion-suave);}
+.boton--enlace.ds-hover {text-decoration-thickness: 2px;}
+.boton--terciario.ds-hover {background: var(--fondo-accion-suave);}
+.boton--icono.ds-hover {background: var(--fondo-accion-suave);}
+.boton--primario.ds-presionado {background: var(--fondo-inverso); border-color: var(--fondo-inverso);}
+.boton--secundario.ds-presionado {background: var(--fondo-accion-suave); border-color: var(--fondo-accion-hover);}
+.boton--terciario.ds-presionado, .boton--icono.ds-presionado {background: var(--fondo-accion-suave);}
+.campo__control.ds-hover {border-color: var(--borde-fuerte);}
+.campo__control.ds-foco, .campo__control--fecha.ds-foco {outline: 2px solid var(--borde-foco);
+  outline-offset: 0;
+  border-color: var(--borde-foco);
+  border-radius: var(--radio-control);}
+.campo__control.ds-hover {background-color: var(--fondo-sutil);}
+.usuario__boton.ds-hover {background: var(--fondo-sutil);}
+.menu__item.ds-hover, .menu__item.ds-foco {background: var(--fondo-accion-suave); outline-offset: -2px;}
+.combo__opcion.ds-hover {background: var(--fondo-accion-suave);}
+.tabla-region.ds-foco {outline-offset: -2px;}
+.tabla__ordenar.ds-hover {background: var(--fondo-accion-suave);}
+.tabla__ordenar.ds-foco {outline-offset: -3px;}
+.accion.ds-hover {background: var(--fondo-accion-suave);}
+.paginador__pagina.ds-hover {background: var(--fondo-accion-suave);}
+.enlace-editar.ds-hover, .enlace-accion.ds-hover {text-decoration: underline; text-underline-offset: 3px;}
+.subir input[type="file"].ds-foco + label {outline: 2px solid var(--borde-foco);
+  outline-offset: 2px;}
+.notificacion .boton--icono.ds-foco {outline-color: var(--texto-inverso);}
+.notificacion .boton--icono.ds-hover {background: rgb(255 255 255 / 0.12);}
+.metodo.ds-hover .metodo__nombre {text-decoration: underline; text-underline-offset: 3px;}
+.contacto__dato.ds-hover span {text-decoration: underline; text-underline-offset: 3px;}
+.paso__titulo.ds-foco {outline: none;}
+.paso__titulo.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 4px;}
+.portada__pantalla.ds-hover {border-color: var(--borde-accion); box-shadow: var(--elevacion-2);}
+.cabecera-detalle__titulo h1.ds-foco {outline: none;}
+.cabecera-detalle__titulo h1.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 4px;}
+.vista__titulo.ds-foco {outline: none;}
+.vista__titulo.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 4px;}
+.perfil-nav__item.ds-hover {background: var(--fondo-sutil);}
+.perfil__h2.ds-foco {outline: none;}
+.perfil__h2.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 4px;}
+.eleccion__opcion.ds-hover {border-color: var(--borde-fuerte);}
+.eleccion__opcion:has(input.ds-foco) {outline: 2px solid var(--borde-foco); outline-offset: 2px;}
+.ruta.ds-hover {border-color: var(--borde-fuerte); background: var(--fondo-accion-suave);}
+.ruta.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 2px;}
+.modal__cuerpo.ds-foco {outline: 2px solid var(--borde-foco); outline-offset: 2px;}
 @media (max-width: 900px) { .ds { grid-template-columns: 1fr; } .ds-indice { position: static; } .ds-indice ol { flex-direction: row; flex-wrap: wrap; } }
 </style>
 </head>
@@ -127,79 +183,154 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 <ul class="ds-iconos" id="ds-lista-iconos"><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#calendario"></use></svg>' aria-label="Copiar ícono calendario"><svg class="icono" aria-hidden="true" focusable="false"><use href="#calendario"></use></svg><span>calendario</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#enviar"></use></svg>' aria-label="Copiar ícono enviar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#enviar"></use></svg><span>enviar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#expediente"></use></svg>' aria-label="Copiar ícono expediente"><svg class="icono" aria-hidden="true" focusable="false"><use href="#expediente"></use></svg><span>expediente</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg>' aria-label="Copiar ícono tramites"><svg class="icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg><span>tramites</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>' aria-label="Copiar ícono buscar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg><span>buscar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>' aria-label="Copiar ícono usuario"><svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg><span>usuario</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>' aria-label="Copiar ícono ayuda"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg><span>ayuda</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg>' aria-label="Copiar ícono check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg><span>check</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>' aria-label="Copiar ícono alerta"><svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span>alerta</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg>' aria-label="Copiar ícono error"><svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg><span>error</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg>' aria-label="Copiar ícono info"><svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg><span>info</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg>' aria-label="Copiar ícono chevron-abajo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg><span>chevron-abajo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-derecha"></use></svg>' aria-label="Copiar ícono chevron-derecha"><svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-derecha"></use></svg><span>chevron-derecha</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg>' aria-label="Copiar ícono cerrar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg><span>cerrar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#clip"></use></svg>' aria-label="Copiar ícono clip"><svg class="icono" aria-hidden="true" focusable="false"><use href="#clip"></use></svg><span>clip</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>' aria-label="Copiar ícono descargar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#descargar"></use></svg><span>descargar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#subir"></use></svg>' aria-label="Copiar ícono subir"><svg class="icono" aria-hidden="true" focusable="false"><use href="#subir"></use></svg><span>subir</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#reloj"></use></svg>' aria-label="Copiar ícono reloj"><svg class="icono" aria-hidden="true" focusable="false"><use href="#reloj"></use></svg><span>reloj</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>' aria-label="Copiar ícono salir"><svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg><span>salir</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg>' aria-label="Copiar ícono filtro"><svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg><span>filtro</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#agregar"></use></svg>' aria-label="Copiar ícono agregar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#agregar"></use></svg><span>agregar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#archivo"></use></svg>' aria-label="Copiar ícono archivo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#archivo"></use></svg><span>archivo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg>' aria-label="Copiar ícono ojo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg><span>ojo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg>' aria-label="Copiar ícono mas-acciones"><svg class="icono" aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg><span>mas-acciones</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre"></use></svg>' aria-label="Copiar ícono sobre"><svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre"></use></svg><span>sobre</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre-abierto"></use></svg>' aria-label="Copiar ícono sobre-abierto"><svg class="icono" aria-hidden="true" focusable="false"><use href="#sobre-abierto"></use></svg><span>sobre-abierto</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg>' aria-label="Copiar ícono orden"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden"></use></svg><span>orden</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-desc"></use></svg>' aria-label="Copiar ícono orden-desc"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-desc"></use></svg><span>orden-desc</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-asc"></use></svg>' aria-label="Copiar ícono orden-asc"><svg class="icono" aria-hidden="true" focusable="false"><use href="#orden-asc"></use></svg><span>orden-asc</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#telefono"></use></svg>' aria-label="Copiar ícono telefono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#telefono"></use></svg><span>telefono</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#whatsapp"></use></svg>' aria-label="Copiar ícono whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#whatsapp"></use></svg><span>whatsapp</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#correo"></use></svg>' aria-label="Copiar ícono correo"><svg class="icono" aria-hidden="true" focusable="false"><use href="#correo"></use></svg><span>correo</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#editar"></use></svg>' aria-label="Copiar ícono editar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#editar"></use></svg><span>editar</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#candado"></use></svg>' aria-label="Copiar ícono candado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#candado"></use></svg><span>candado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo-tachado"></use></svg>' aria-label="Copiar ícono ojo-tachado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo-tachado"></use></svg><span>ojo-tachado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#enlace"></use></svg>' aria-label="Copiar ícono enlace"><svg class="icono" aria-hidden="true" focusable="false"><use href="#enlace"></use></svg><span>enlace</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#dnie"></use></svg>' aria-label="Copiar ícono dnie"><svg class="icono" aria-hidden="true" focusable="false"><use href="#dnie"></use></svg><span>dnie</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#certificado"></use></svg>' aria-label="Copiar ícono certificado"><svg class="icono" aria-hidden="true" focusable="false"><use href="#certificado"></use></svg><span>certificado</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#rostro"></use></svg>' aria-label="Copiar ícono rostro"><svg class="icono" aria-hidden="true" focusable="false"><use href="#rostro"></use></svg><span>rostro</span></button></li><li><button type="button" class="ds-icono" data-copiar-texto='<svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>' aria-label="Copiar ícono copiar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg><span>copiar</span></button></li></ul></section><section class="ds-seccion" id="ilustraciones" aria-labelledby="ilustraciones-t"><h2 class="t-h2" id="ilustraciones-t">Ilustraciones</h2><p>8 ilustraciones de 120 × 120 para estados vacíos y errores, en <code>ilustraciones.svg</code>. Sus colores salen de <code>ana.css</code> (<code>.ilu-t</code>, <code>.ilu-r</code>, <code>.ilu-b</code>, <code>.ilu-p</code>).</p><ul class="ds-iconos ds-iconos--ilu"><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-tramites"></use></svg>' aria-label="Copiar ilustración sin-tramites"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-tramites"></use></svg><span>sin-tramites</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#antes-de-buscar"></use></svg>' aria-label="Copiar ilustración antes-de-buscar"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#antes-de-buscar"></use></svg><span>antes-de-buscar</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-resultados"></use></svg>' aria-label="Copiar ilustración sin-resultados"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sin-resultados"></use></svg><span>sin-resultados</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-404"></use></svg>' aria-label="Copiar ilustración error-404"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-404"></use></svg><span>error-404</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-500"></use></svg>' aria-label="Copiar ilustración error-500"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#error-500"></use></svg><span>error-500</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#acceso-denegado"></use></svg>' aria-label="Copiar ilustración acceso-denegado"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#acceso-denegado"></use></svg><span>acceso-denegado</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sesion-expirada"></use></svg>' aria-label="Copiar ilustración sesion-expirada"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#sesion-expirada"></use></svg><span>sesion-expirada</span></button></li><li><button type="button" class="ds-icono ds-icono--ilu" data-copiar-texto='<svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#servicio-no-disponible"></use></svg>' aria-label="Copiar ilustración servicio-no-disponible"><svg class="vacio__ilustracion" aria-hidden="true" focusable="false"><use href="#servicio-no-disponible"></use></svg><span>servicio-no-disponible</span></button></li></ul></section><section class="ds-seccion" id="g-acciones" aria-labelledby="g-acciones-t"><h2 class="t-h2" id="g-acciones-t">Acciones</h2><article class="ds-comp" id="c-boton" aria-labelledby="c-boton-t"><h3 class="t-h3" id="c-boton-t">Botón</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Botón</strong></p><p>Primario para la acción principal de la pantalla (una sola). Secundario para acciones alternativas. Terciario y Enlace para acciones de bajo peso. Alto mínimo 44 px.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Usa &lt;button&gt; para acciones y &lt;a&gt; para ir a otra página. Si el botón solo tiene ícono, lleva aria-label. Deshabilitado: atributo disabled (no solo color).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Primario</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--primario">Continuar</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-1"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-1">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot;&gt;Continuar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Secundario</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--secundario">Volver</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-2">&lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot;&gt;Volver&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Terciario</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--terciario">Limpiar</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-3"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-3">&lt;button type=&quot;button&quot; class=&quot;boton boton--terciario&quot;&gt;Limpiar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Enlace</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--enlace">Ver detalle</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-4"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-4">&lt;button type=&quot;button&quot; class=&quot;boton boton--enlace&quot;&gt;Ver detalle&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Con ícono</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="submit" class="boton boton--primario boton--buscar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>Buscar</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-5"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-5">&lt;button type=&quot;submit&quot; class=&quot;boton boton--primario boton--buscar&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Buscar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Solo ícono</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--icono" aria-label="Cerrar aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-6"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-6">&lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; aria-label=&quot;Cerrar aviso&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Deshabilitado</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><button type="button" class="boton boton--primario" disabled>Enviar</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-7"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-7">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot; disabled&gt;Enviar&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">A todo el ancho (móvil)</h4>
-<div class="ds-muestra" style="--ancho:328px"><div class="ds-muestra__in"><button type="button" class="boton boton--primario boton--bloque">Buscar</button></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-8"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-8">&lt;button type=&quot;button&quot; class=&quot;boton boton--primario boton--bloque&quot;&gt;Buscar&lt;/button&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-campos" aria-labelledby="g-campos-t"><h2 class="t-h2" id="g-campos-t">Campos</h2><article class="ds-comp" id="c-campo-de-texto" aria-labelledby="c-campo-de-texto-t"><h3 class="t-h3" id="c-campo-de-texto-t">Campo de texto</h3>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:6"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario">Enviar</button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario ds-hover">Enviar</button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario ds-foco">Enviar</button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario ds-presionado">Enviar</button></div><figcaption>Presionado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario" disabled>Enviar</button></div><figcaption>Deshabilitado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario" aria-busy="true" aria-disabled="true">Enviando…</button></div><figcaption>Cargando</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-1"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-1">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot;&gt;Enviar&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot; disabled&gt;Enviar&lt;/button&gt;
+
+&lt;!-- Cargando --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--primario&quot; aria-busy=&quot;true&quot; aria-disabled=&quot;true&quot;&gt;Enviando…&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Secundario</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:6"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario">Volver</button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario ds-hover">Volver</button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario ds-foco">Volver</button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario ds-presionado">Volver</button></div><figcaption>Presionado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario" disabled>Volver</button></div><figcaption>Deshabilitado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--secundario" aria-busy="true" aria-disabled="true">Enviando…</button></div><figcaption>Cargando</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-2">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot;&gt;Volver&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot; disabled&gt;Volver&lt;/button&gt;
+
+&lt;!-- Cargando --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--secundario&quot; aria-busy=&quot;true&quot; aria-disabled=&quot;true&quot;&gt;Enviando…&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Terciario</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:6"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario">Limpiar</button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario ds-hover">Limpiar</button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario ds-foco">Limpiar</button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario ds-presionado">Limpiar</button></div><figcaption>Presionado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario" disabled>Limpiar</button></div><figcaption>Deshabilitado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--terciario" aria-busy="true" aria-disabled="true">Enviando…</button></div><figcaption>Cargando</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-3"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-3">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--terciario&quot;&gt;Limpiar&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--terciario&quot; disabled&gt;Limpiar&lt;/button&gt;
+
+&lt;!-- Cargando --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--terciario&quot; aria-busy=&quot;true&quot; aria-disabled=&quot;true&quot;&gt;Enviando…&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Enlace</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:6"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--enlace">Ver detalle</button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--enlace ds-hover">Ver detalle</button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--enlace ds-foco">Ver detalle</button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--enlace ds-presionado">Ver detalle</button></div><figcaption>Presionado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--enlace" disabled>Ver detalle</button></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-4"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-4">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--enlace&quot;&gt;Ver detalle&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--enlace&quot; disabled&gt;Ver detalle&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Solo ícono</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:6"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--icono" aria-label="Cerrar aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--icono ds-hover" aria-label="Cerrar aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--icono ds-foco" aria-label="Cerrar aviso"><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--icono" aria-label="Cerrar aviso" disabled><svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg></button></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-5"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-5">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; aria-label=&quot;Cerrar aviso&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; aria-label=&quot;Cerrar aviso&quot; disabled&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#cerrar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;/button&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Con ícono y a todo el ancho</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:2"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="submit" class="boton boton--primario boton--buscar"><svg class="icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>Buscar</button></div><figcaption>Con ícono</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="boton boton--primario boton--bloque">Buscar</button></div><figcaption>A todo el ancho (móvil)</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-6"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-6">&lt;!-- Con ícono --&gt;
+&lt;button type=&quot;submit&quot; class=&quot;boton boton--primario boton--buscar&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Buscar&lt;/button&gt;
+
+&lt;!-- A todo el ancho (móvil) --&gt;
+&lt;button type=&quot;button&quot; class=&quot;boton boton--primario boton--bloque&quot;&gt;Buscar&lt;/button&gt;</code></pre></details></div></article><article class="ds-comp" id="c-enlace" aria-labelledby="c-enlace-t"><h3 class="t-h3" id="c-enlace-t">Enlace</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Enlace</strong></p><p>Enlace dentro del texto o para ir a otra página.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Siempre subrayado para que no dependa solo del color (1.4.1).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><a href="#">Descargar el manual</a></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><a href="#" class="ds-hover">Descargar el manual</a></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><a href="#" class="ds-foco">Descargar el manual</a></div><figcaption>Foco</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-7"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-7">&lt;!-- Normal --&gt;
+&lt;a href=&quot;#&quot;&gt;Descargar el manual&lt;/a&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-campos" aria-labelledby="g-campos-t"><h2 class="t-h2" id="g-campos-t">Campos</h2><article class="ds-comp" id="c-campo-de-texto" aria-labelledby="c-campo-de-texto-t"><h3 class="t-h3" id="c-campo-de-texto-t">Campo de texto</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de texto</strong></p><p>Etiqueta arriba, siempre visible. La ayuda va debajo; el error reemplaza el borde y se describe con texto e ícono.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> La etiqueta usa for. La ayuda y el error se enlazan con aria-describedby; el campo con error lleva aria-invalid=&quot;true&quot;. Los opcionales se marcan con texto «(opcional)».</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal, con ayuda</h4>
-<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
-                  <label class="campo__etiqueta" for="m9-r-celular">Celular</label>
-                  <input class="campo__control" id="m9-r-celular" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="m9-r-celular-ayuda m9-r-celular-error" required="">
-                  <p class="campo__ayuda" id="m9-r-celular-ayuda">Si no tienes celular, puedes usar el de un familiar.</p>
-                  <p class="campo__error" id="m9-r-celular-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
-                </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-9"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-9">&lt;div class=&quot;campo col-5&quot;&gt;
-  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-celular&quot;&gt;Celular&lt;/label&gt;
-  &lt;input class=&quot;campo__control&quot; id=&quot;r-celular&quot; type=&quot;tel&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;tel-national&quot; aria-describedby=&quot;r-celular-ayuda r-celular-error&quot; required=&quot;&quot;&gt;
-  &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-celular-ayuda&quot;&gt;Si no tienes celular, puedes usar el de un familiar.&lt;/p&gt;
-  &lt;p class=&quot;campo__error&quot; id=&quot;r-celular-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La etiqueta usa for. La ayuda y el error se enlazan con aria-describedby; el campo con error lleva aria-invalid=&quot;true&quot;. Los opcionales se marcan con texto «(opcional)».</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m30-correo">Correo electrónico</label>
+  <input class="campo__control" id="m96-m30-correo" type="email" placeholder="nombre@ejemplo.com" aria-describedby="m96-m30-correo-ayuda">
+  <p class="campo__ayuda" id="m96-m30-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m31-correo">Correo electrónico</label>
+  <input class="campo__control ds-hover" id="m96-m31-correo" type="email" placeholder="nombre@ejemplo.com" aria-describedby="m96-m31-correo-ayuda">
+  <p class="campo__ayuda" id="m96-m31-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m32-correo">Correo electrónico</label>
+  <input class="campo__control ds-foco" id="m96-m32-correo" type="email" value="ana.quispe@ejemplo.com" placeholder="nombre@ejemplo.com" aria-describedby="m96-m32-correo-ayuda">
+  <p class="campo__ayuda" id="m96-m32-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m33-correo">Correo electrónico</label>
+  <input class="campo__control" id="m96-m33-correo" type="email" value="ana.quispe@ejemplo.com" placeholder="nombre@ejemplo.com" aria-describedby="m96-m33-correo-ayuda">
+  <p class="campo__ayuda" id="m96-m33-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Con valor</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m34-correo">Correo electrónico</label>
+  <input class="campo__control" id="m96-m34-correo" type="email" value="ana.quispe@ejemplo.com" placeholder="nombre@ejemplo.com" aria-describedby="m96-m34-correo-error" aria-invalid="true">
+  <p class="campo__error" id="m96-m34-correo-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Escribe la dirección completa, con @ y el dominio.</span></p>
+</div></div><figcaption>Error</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m35-correo">Correo electrónico</label>
+  <input class="campo__control" id="m96-m35-correo" type="email" value="ana.quispe@ejemplo.com" placeholder="nombre@ejemplo.com" aria-describedby="m96-m35-correo-ayuda" readonly>
+  <p class="campo__ayuda" id="m96-m35-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Solo lectura</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m96-m36-correo">Correo electrónico</label>
+  <input class="campo__control" id="m96-m36-correo" type="email" value="ana.quispe@ejemplo.com" placeholder="nombre@ejemplo.com" aria-describedby="m96-m36-correo-ayuda" disabled>
+  <p class="campo__ayuda" id="m96-m36-correo-ayuda">Aquí te avisamos cuando llega una notificación.</p>
+</div></div><figcaption>Deshabilitado</figcaption></figure></div></div></div><p class="t-ayuda">Hover y Foco se muestran forzados solo en esta página; en uso real los pone el navegador. «Solo lectura» y «Deshabilitado» existen en el DS, pero los datos que no se editan van como texto (ver «Datos que no se editan»).</p>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-8"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-8">&lt;!-- Normal --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;correo&quot; type=&quot;email&quot; placeholder=&quot;nombre@ejemplo.com&quot; aria-describedby=&quot;correo-ayuda&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;correo-ayuda&quot;&gt;Aquí te avisamos cuando llega una notificación.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Con valor --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;correo&quot; type=&quot;email&quot; value=&quot;ana.quispe@ejemplo.com&quot; placeholder=&quot;nombre@ejemplo.com&quot; aria-describedby=&quot;correo-ayuda&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;correo-ayuda&quot;&gt;Aquí te avisamos cuando llega una notificación.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;correo&quot; type=&quot;email&quot; value=&quot;ana.quispe@ejemplo.com&quot; placeholder=&quot;nombre@ejemplo.com&quot; aria-describedby=&quot;correo-error&quot; aria-invalid=&quot;true&quot;&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;correo-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Escribe la dirección completa, con @ y el dominio.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Solo lectura --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;correo&quot; type=&quot;email&quot; value=&quot;ana.quispe@ejemplo.com&quot; placeholder=&quot;nombre@ejemplo.com&quot; aria-describedby=&quot;correo-ayuda&quot; readonly&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;correo-ayuda&quot;&gt;Aquí te avisamos cuando llega una notificación.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;correo&quot;&gt;Correo electrónico&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;correo&quot; type=&quot;email&quot; value=&quot;ana.quispe@ejemplo.com&quot; placeholder=&quot;nombre@ejemplo.com&quot; aria-describedby=&quot;correo-ayuda&quot; disabled&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;correo-ayuda&quot;&gt;Aquí te avisamos cuando llega una notificación.&lt;/p&gt;
 &lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Opcional</h4>
 <div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
-                  <label class="campo__etiqueta" for="m10-r-fijo">Teléfono fijo <span class="campo__opcional">(opcional)</span></label>
-                  <input class="campo__control" id="m10-r-fijo" type="tel" inputmode="numeric" autocomplete="off" aria-describedby="m10-r-fijo-ayuda">
-                  <p class="campo__ayuda" id="m10-r-fijo-ayuda">Si en tu zona hay teléfono comunitario, puedes ponerlo.</p>
+                  <label class="campo__etiqueta" for="m97-r-fijo">Teléfono fijo <span class="campo__opcional">(opcional)</span></label>
+                  <input class="campo__control" id="m97-r-fijo" type="tel" inputmode="numeric" autocomplete="off" aria-describedby="m97-r-fijo-ayuda">
+                  <p class="campo__ayuda" id="m97-r-fijo-ayuda">Si en tu zona hay teléfono comunitario, puedes ponerlo.</p>
                 </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-10"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-10">&lt;div class=&quot;campo col-5&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-9"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-9">&lt;div class=&quot;campo col-5&quot;&gt;
   &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-fijo&quot;&gt;Teléfono fijo &lt;span class=&quot;campo__opcional&quot;&gt;(opcional)&lt;/span&gt;&lt;/label&gt;
   &lt;input class=&quot;campo__control&quot; id=&quot;r-fijo&quot; type=&quot;tel&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;off&quot; aria-describedby=&quot;r-fijo-ayuda&quot;&gt;
   &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-fijo-ayuda&quot;&gt;Si en tu zona hay teléfono comunitario, puedes ponerlo.&lt;/p&gt;
-&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Con error</h4>
-<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo col-5">
-                  <label class="campo__etiqueta" for="m11-r-correo">Correo electrónico</label>
-                  <input class="campo__control" id="m11-r-correo" type="email" autocomplete="email" aria-describedby="m11-r-correo-error" required="" aria-invalid="true">
-                  <p class="campo__error" id="m11-r-correo-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com</span></p>
-                </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-11"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-11">&lt;div class=&quot;campo col-5&quot;&gt;
-  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-correo&quot;&gt;Correo electrónico&lt;/label&gt;
-  &lt;input class=&quot;campo__control&quot; id=&quot;r-correo&quot; type=&quot;email&quot; autocomplete=&quot;email&quot; aria-describedby=&quot;r-correo-error&quot; required=&quot;&quot; aria-invalid=&quot;true&quot;&gt;
-  &lt;p class=&quot;campo__error&quot; id=&quot;r-correo-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-contrasena-con-medidor" aria-labelledby="c-contrasena-con-medidor-t"><h3 class="t-h3" id="c-contrasena-con-medidor-t">Contraseña con medidor</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de contraseña · Medidor de contraseña</strong></p><p>Botón para mostrar u ocultar. El medidor indica la seguridad con barras y con texto, y lista los requisitos.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> El botón de ver contraseña cambia su aria-label. El nivel del medidor también está en texto, no solo en color (1.4.1).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Escribiendo</h4>
 <div class="ds-muestra" style="--ancho:420px"><div class="ds-muestra__in"><div class="campo col-5">
-                  <label class="campo__etiqueta" for="m12-r-clave">Contraseña</label>
+                  <label class="campo__etiqueta" for="m98-r-clave">Contraseña</label>
                   <div class="campo__envoltura">
-                    <input class="campo__control" id="m12-r-clave" type="password" autocomplete="new-password" aria-describedby="m12-medidor-texto m12-requisitos m12-r-clave-error" required="">
-                    <button type="button" class="boton boton--icono" data-ver-clave="r-clave" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="m12-r-clave">
+                    <input class="campo__control" id="m98-r-clave" type="password" autocomplete="new-password" aria-describedby="m98-medidor-texto m98-requisitos m98-r-clave-error" required="">
+                    <button type="button" class="boton boton--icono" data-ver-clave="r-clave" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="m98-r-clave">
                       <svg class="icono" aria-hidden="true" focusable="false"><use href="#ojo"></use></svg>
                     </button>
                   </div>
-                  <p class="campo__error" id="m12-r-clave-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
+                  <p class="campo__error" id="m98-r-clave-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
                 </div>
 <div class="col-5 medidor-zona">
                   <div class="medidor" aria-hidden="true" data-nivel="3"><span></span><span></span><span></span></div>
-                  <p class="medidor__texto" id="m12-medidor-texto">Seguridad: fuerte. Cumple 4 de 4 requisitos.</p>
-                  <ul class="requisitos" id="m12-requisitos">
+                  <p class="medidor__texto" id="m98-medidor-texto">Seguridad: fuerte. Cumple 4 de 4 requisitos.</p>
+                  <ul class="requisitos" id="m98-requisitos">
                     <li data-req="largo" data-estado="cumplido" class="requisitos__item--ok">Al menos 8 caracteres<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
                     <li data-req="caso" data-estado="cumplido" class="requisitos__item--ok">Una mayúscula y una minúscula<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
                     <li data-req="numero" data-estado="cumplido" class="requisitos__item--ok">Un número<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
                     <li data-req="simbolo" data-estado="cumplido" class="requisitos__item--ok">Un símbolo, como # o @<span class="visualmente-oculto js-req-estado">, cumplido</span></li>
                   </ul>
                 </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-12"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-12">&lt;div class=&quot;campo col-5&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-10"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-10">&lt;div class=&quot;campo col-5&quot;&gt;
                   &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-clave&quot;&gt;Contraseña&lt;/label&gt;
                   &lt;div class=&quot;campo__envoltura&quot;&gt;
                     &lt;input class=&quot;campo__control&quot; id=&quot;r-clave&quot; type=&quot;password&quot; autocomplete=&quot;new-password&quot; aria-describedby=&quot;medidor-texto requisitos r-clave-error&quot; required=&quot;&quot;&gt;
@@ -220,68 +351,202 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
                   &lt;/ul&gt;
                 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-busqueda" aria-labelledby="c-busqueda-t"><h3 class="t-h3" id="c-busqueda-t">Búsqueda</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de búsqueda</strong></p><p>Campo con lupa a la izquierda para buscar por ticket, CUT o asunto.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> La lupa es decorativa; el nombre lo da la etiqueta.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style="--ancho:420px"><div class="ds-muestra__in"><div class="campo">
-            <label class="campo__etiqueta" for="m13-f-buscar">Buscar</label>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> La lupa es decorativa; el nombre lo da la etiqueta.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:2"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+            <label class="campo__etiqueta" for="m99-m37-f-buscar">Buscar</label>
             <div class="campo__envoltura campo__envoltura--icono">
               <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
-              <input class="campo__control" id="m13-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+              <input class="campo__control" id="m99-m37-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
             </div>
-          </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-13"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-13">&lt;div class=&quot;campo&quot;&gt;
-  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-buscar&quot;&gt;Buscar&lt;/label&gt;
-  &lt;div class=&quot;campo__envoltura campo__envoltura--icono&quot;&gt;
-    &lt;svg class=&quot;icono campo__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
-    &lt;input class=&quot;campo__control&quot; id=&quot;f-buscar&quot; type=&quot;search&quot; placeholder=&quot;Busca por N° de ticket, CUT o asunto&quot;&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-selector" aria-labelledby="c-selector-t"><h3 class="t-h3" id="c-selector-t">Selector</h3>
+          </div></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+            <label class="campo__etiqueta" for="m99-m38-f-buscar">Buscar</label>
+            <div class="campo__envoltura campo__envoltura--icono">
+              <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
+              <input class="campo__control ds-hover" id="m99-m38-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+            </div>
+          </div></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+            <label class="campo__etiqueta" for="m99-m39-f-buscar">Buscar</label>
+            <div class="campo__envoltura campo__envoltura--icono">
+              <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
+              <input class="campo__control ds-foco" id="m99-m39-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+            </div>
+          </div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+            <label class="campo__etiqueta" for="m99-m40-f-buscar">Buscar</label>
+            <div class="campo__envoltura campo__envoltura--icono">
+              <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
+              <input value="68937-2026" class="campo__control" id="m99-m40-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+            </div>
+          </div></div><figcaption>Con texto</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-11"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-11">&lt;!-- Normal --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+            &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-buscar&quot;&gt;Buscar&lt;/label&gt;
+            &lt;div class=&quot;campo__envoltura campo__envoltura--icono&quot;&gt;
+              &lt;svg class=&quot;icono campo__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+              &lt;input class=&quot;campo__control&quot; id=&quot;f-buscar&quot; type=&quot;search&quot; placeholder=&quot;Busca por N° de ticket, CUT o asunto&quot;&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+&lt;!-- Con texto --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+            &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-buscar&quot;&gt;Buscar&lt;/label&gt;
+            &lt;div class=&quot;campo__envoltura campo__envoltura--icono&quot;&gt;
+              &lt;svg class=&quot;icono campo__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#buscar&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+              &lt;input value=&quot;68937-2026&quot; class=&quot;campo__control&quot; id=&quot;f-buscar&quot; type=&quot;search&quot; placeholder=&quot;Busca por N° de ticket, CUT o asunto&quot;&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-selector" aria-labelledby="c-selector-t"><h3 class="t-h3" id="c-selector-t">Selector</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Selector</strong></p><p>Lista corta de opciones. Para listas largas, usar Combo con buscador.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> Es un &lt;select&gt; nativo: funciona con teclado y lector sin código extra.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
-            <label class="campo__etiqueta" for="m14-f-estado">Estado</label>
-            <select class="campo__control" id="m14-f-estado">
-              <option value="">Todos</option>
-              <option>En revisión</option>
-              <option>Validado</option>
-              <option>Observado</option>
-              <option>Archivado</option>
-              <option>Finalizado</option>
-            </select>
-          </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-14"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-14">&lt;div class=&quot;campo&quot;&gt;
-  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-estado&quot;&gt;Estado&lt;/label&gt;
-  &lt;select class=&quot;campo__control&quot; id=&quot;f-estado&quot;&gt;
-    &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
-    &lt;option&gt;En revisión&lt;/option&gt;
-    &lt;option&gt;Validado&lt;/option&gt;
-    &lt;option&gt;Observado&lt;/option&gt;
-    &lt;option&gt;Archivado&lt;/option&gt;
-    &lt;option&gt;Finalizado&lt;/option&gt;
-  &lt;/select&gt;
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Es un &lt;select&gt; nativo: funciona con teclado y lector sin código extra.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m100-m41-estado">Estado</label>
+  <select class="campo__control" id="m100-m41-estado"><option>Todos</option><option>En revisión</option><option>Validado</option></select>
+</div></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m100-m42-estado">Estado</label>
+  <select class="campo__control ds-hover" id="m100-m42-estado"><option>Todos</option><option>En revisión</option><option>Validado</option></select>
+</div></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m100-m43-estado">Estado</label>
+  <select class="campo__control ds-foco" id="m100-m43-estado"><option>Todos</option><option>En revisión</option><option>Validado</option></select>
+</div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m100-m44-estado">Estado</label>
+  <select class="campo__control" id="m100-m44-estado" aria-describedby="m100-m44-estado-error" aria-invalid="true"><option>Todos</option><option>En revisión</option><option>Validado</option></select>
+  <p class="campo__error" id="m100-m44-estado-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Elige un estado.</span></p>
+</div></div><figcaption>Error</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m100-m45-estado">Estado</label>
+  <select class="campo__control" id="m100-m45-estado" disabled><option>Todos</option><option>En revisión</option><option>Validado</option></select>
+</div></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-12"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-12">&lt;!-- Normal --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;estado&quot;&gt;Estado&lt;/label&gt;
+  &lt;select class=&quot;campo__control&quot; id=&quot;estado&quot;&gt;&lt;option&gt;Todos&lt;/option&gt;&lt;option&gt;En revisión&lt;/option&gt;&lt;option&gt;Validado&lt;/option&gt;&lt;/select&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;estado&quot;&gt;Estado&lt;/label&gt;
+  &lt;select class=&quot;campo__control&quot; id=&quot;estado&quot; aria-describedby=&quot;estado-error&quot; aria-invalid=&quot;true&quot;&gt;&lt;option&gt;Todos&lt;/option&gt;&lt;option&gt;En revisión&lt;/option&gt;&lt;option&gt;Validado&lt;/option&gt;&lt;/select&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;estado-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Elige un estado.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;estado&quot;&gt;Estado&lt;/label&gt;
+  &lt;select class=&quot;campo__control&quot; id=&quot;estado&quot; disabled&gt;&lt;option&gt;Todos&lt;/option&gt;&lt;option&gt;En revisión&lt;/option&gt;&lt;option&gt;Validado&lt;/option&gt;&lt;/select&gt;
 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-fecha" aria-labelledby="c-fecha-t"><h3 class="t-h3" id="c-fecha-t">Fecha</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de fecha</strong></p><p>Selector de fecha del navegador. El formato se explica en la ayuda del formulario (día/mes/año).</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;date&quot; nativo.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
-            <label class="campo__etiqueta" for="m15-f-inicio">Fecha inicio</label>
-            <input class="campo__control campo__control--fecha" id="m15-f-inicio" type="date" aria-describedby="m15-f-inicio-error">
-            <p class="campo__error" id="m15-f-inicio-error" hidden="">
-              <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
-              <span class="campo__error-texto"></span>
-            </p>
-          </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-15"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-15">&lt;div class=&quot;campo&quot;&gt;
+<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;date&quot; nativo.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m46-f-inicio">Fecha inicio</label>
+  <input class="campo__control" id="m101-m46-f-inicio" type="date">
+</div></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m47-f-inicio">Fecha inicio</label>
+  <input class="campo__control ds-hover" id="m101-m47-f-inicio" type="date">
+</div></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m48-f-inicio">Fecha inicio</label>
+  <input class="campo__control ds-foco" id="m101-m48-f-inicio" type="date" value="2026-10-03">
+</div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m49-f-inicio">Fecha inicio</label>
+  <input class="campo__control" id="m101-m49-f-inicio" type="date" value="2026-10-03">
+</div></div><figcaption>Con valor</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m50-f-inicio">Fecha inicio</label>
+  <input class="campo__control" id="m101-m50-f-inicio" type="date" value="2026-10-03" aria-describedby="m101-m50-f-inicio-error" aria-invalid="true">
+  <p class="campo__error" id="m101-m50-f-inicio-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">La fecha de inicio no puede ser posterior a la fecha fin.</span></p>
+</div></div><figcaption>Error</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m101-m51-f-inicio">Fecha inicio</label>
+  <input class="campo__control" id="m101-m51-f-inicio" type="date" value="2026-10-03" disabled>
+</div></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-13"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-13">&lt;!-- Normal --&gt;
+&lt;div class=&quot;campo&quot;&gt;
   &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
-  &lt;input class=&quot;campo__control campo__control--fecha&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; aria-describedby=&quot;fechas-ayuda f-inicio-error&quot;&gt;
-  &lt;p class=&quot;campo__error&quot; id=&quot;f-inicio-error&quot; hidden=&quot;&quot;&gt;
-    &lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
-    &lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;
-  &lt;/p&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;f-inicio&quot; type=&quot;date&quot;&gt;
+&lt;/div&gt;
+
+&lt;!-- Con valor --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; value=&quot;2026-10-03&quot;&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; value=&quot;2026-10-03&quot; aria-describedby=&quot;f-inicio-error&quot; aria-invalid=&quot;true&quot;&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;f-inicio-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;La fecha de inicio no puede ser posterior a la fecha fin.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;f-inicio&quot;&gt;Fecha inicio&lt;/label&gt;
+  &lt;input class=&quot;campo__control&quot; id=&quot;f-inicio&quot; type=&quot;date&quot; value=&quot;2026-10-03&quot; disabled&gt;
+&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-area-de-texto" aria-labelledby="c-area-de-texto-t"><h3 class="t-h3" id="c-area-de-texto-t">Área de texto</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Área de texto</strong></p><p>Texto largo, como la información solicitada en el TUPA 1.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Igual que el campo de texto: etiqueta con for, ayuda y error con aria-describedby.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m69-info">Información solicitada</label>
+  <textarea class="campo__control" id="m102-m69-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m69-info-ayuda">Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m69-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m70-info">Información solicitada</label>
+  <textarea class="campo__control ds-hover" id="m102-m70-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m70-info-ayuda">Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m70-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m71-info">Información solicitada</label>
+  <textarea class="campo__control ds-foco" id="m102-m71-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m71-info-ayuda">Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m71-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m72-info">Información solicitada</label>
+  <textarea class="campo__control" id="m102-m72-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m72-info-ayuda">Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m72-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Con valor</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m73-info">Información solicitada</label>
+  <textarea class="campo__control" id="m102-m73-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m73-info-error" aria-invalid="true">Copia del expediente 104330-2026.</textarea>
+  <p class="campo__error" id="m102-m73-info-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Describe la información que necesitas.</span></p>
+</div></div><figcaption>Error</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m74-info">Información solicitada</label>
+  <textarea class="campo__control" id="m102-m74-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m74-info-ayuda" readonly>Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m74-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Solo lectura</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m102-m75-info">Información solicitada</label>
+  <textarea class="campo__control" id="m102-m75-info" rows="3" placeholder="Describe la información que necesitas" aria-describedby="m102-m75-info-ayuda" disabled>Copia del expediente 104330-2026.</textarea>
+  <p class="campo__ayuda" id="m102-m75-info-ayuda">Sé lo más específico posible.</p>
+</div></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-14"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-14">&lt;!-- Normal --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;info&quot;&gt;Información solicitada&lt;/label&gt;
+  &lt;textarea class=&quot;campo__control&quot; id=&quot;info&quot; rows=&quot;3&quot; placeholder=&quot;Describe la información que necesitas&quot; aria-describedby=&quot;info-ayuda&quot;&gt;Copia del expediente 104330-2026.&lt;/textarea&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;info-ayuda&quot;&gt;Sé lo más específico posible.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Con valor --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;info&quot;&gt;Información solicitada&lt;/label&gt;
+  &lt;textarea class=&quot;campo__control&quot; id=&quot;info&quot; rows=&quot;3&quot; placeholder=&quot;Describe la información que necesitas&quot; aria-describedby=&quot;info-ayuda&quot;&gt;Copia del expediente 104330-2026.&lt;/textarea&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;info-ayuda&quot;&gt;Sé lo más específico posible.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;info&quot;&gt;Información solicitada&lt;/label&gt;
+  &lt;textarea class=&quot;campo__control&quot; id=&quot;info&quot; rows=&quot;3&quot; placeholder=&quot;Describe la información que necesitas&quot; aria-describedby=&quot;info-error&quot; aria-invalid=&quot;true&quot;&gt;Copia del expediente 104330-2026.&lt;/textarea&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;info-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Describe la información que necesitas.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Solo lectura --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;info&quot;&gt;Información solicitada&lt;/label&gt;
+  &lt;textarea class=&quot;campo__control&quot; id=&quot;info&quot; rows=&quot;3&quot; placeholder=&quot;Describe la información que necesitas&quot; aria-describedby=&quot;info-ayuda&quot; readonly&gt;Copia del expediente 104330-2026.&lt;/textarea&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;info-ayuda&quot;&gt;Sé lo más específico posible.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;info&quot;&gt;Información solicitada&lt;/label&gt;
+  &lt;textarea class=&quot;campo__control&quot; id=&quot;info&quot; rows=&quot;3&quot; placeholder=&quot;Describe la información que necesitas&quot; aria-describedby=&quot;info-ayuda&quot; disabled&gt;Copia del expediente 104330-2026.&lt;/textarea&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;info-ayuda&quot;&gt;Sé lo más específico posible.&lt;/p&gt;
 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-combo-con-buscador" aria-labelledby="c-combo-con-buscador-t"><h3 class="t-h3" id="c-combo-con-buscador-t">Combo con buscador</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Combo con buscador</strong></p><p>Para listas largas, como los 46 procedimientos TUPA. Escribir filtra; las opciones pueden ir en grupos.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Patrón combobox de ARIA 1.2. Se escribe un &lt;select&gt; normal con data-combo-auto (o se llama crearCombo(select) en app.js) y el script arma el combo: flechas recorren, Enter elige, Escape cierra y la cantidad de resultados se anuncia.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Funcional (prueba escribir «licencia»)</h4>
 <div class="ds-muestra" style="--ancho:480px;min-height:380px"><div class="ds-muestra__in"><div class="campo">
-  <label class="campo__etiqueta" for="m16-procedimiento">Procedimiento</label>
-  <select class="campo__control" id="m16-procedimiento" data-combo-auto>
+  <label class="campo__etiqueta" for="m103-procedimiento">Procedimiento</label>
+  <select class="campo__control" id="m103-procedimiento" data-combo-auto>
     <option value="">Todos</option>
     <optgroup label="TUPA">
       <option value="1">1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control</option>
@@ -295,7 +560,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
     </optgroup>
   </select>
 </div></div></div><p class="t-ayuda">Código de partida: el &lt;select&gt;. El combo lo arma app.js.</p>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-16"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-16">&lt;div class=&quot;campo&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-15"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-15">&lt;div class=&quot;campo&quot;&gt;
   &lt;label class=&quot;campo__etiqueta&quot; for=&quot;procedimiento&quot;&gt;Procedimiento&lt;/label&gt;
   &lt;select class=&quot;campo__control&quot; id=&quot;procedimiento&quot; data-combo-auto&gt;
     &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
@@ -312,18 +577,43 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
   &lt;/select&gt;
 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-codigo-de-verificacion" aria-labelledby="c-codigo-de-verificacion-t"><h3 class="t-h3" id="c-codigo-de-verificacion-t">Código de verificación</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Campo de código</strong></p><p>Código de 6 dígitos que llega por SMS o correo.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> inputmode=&quot;numeric&quot; y autocomplete=&quot;one-time-code&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style="--ancho:360px"><div class="ds-muestra__in"><div class="campo">
-                  <label class="campo__etiqueta" for="m17-r-codigo">Código de verificación</label>
-                  <input class="campo__control campo__control--codigo" id="m17-r-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-describedby="m17-r-codigo-ayuda m17-r-codigo-error">
-                  <p class="campo__ayuda" id="m17-r-codigo-ayuda">Se lo enviamos al 987 *** 321. Vence en 10 minutos. En este prototipo sirve cualquier código de 6 dígitos.</p>
-                  <p class="campo__error" id="m17-r-codigo-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></p>
-                </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-17"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-17">&lt;div class=&quot;campo&quot;&gt;
-  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;r-codigo&quot;&gt;Código de verificación&lt;/label&gt;
-  &lt;input class=&quot;campo__control campo__control--codigo&quot; id=&quot;r-codigo&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; maxlength=&quot;6&quot; aria-describedby=&quot;r-codigo-ayuda r-codigo-error&quot;&gt;
-  &lt;p class=&quot;campo__ayuda&quot; id=&quot;r-codigo-ayuda&quot;&gt;Se lo enviamos al 987 *** 321. Vence en 10 minutos. En este prototipo sirve cualquier código de 6 dígitos.&lt;/p&gt;
-  &lt;p class=&quot;campo__error&quot; id=&quot;r-codigo-error&quot; hidden=&quot;&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+<p class="ds-a11y"><strong>Accesibilidad:</strong> inputmode=&quot;numeric&quot; y autocomplete=&quot;one-time-code&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:2"><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m104-m52-codigo">Código de verificación</label>
+  <input class="campo__control campo__control--codigo" id="m104-m52-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-describedby="m104-m52-codigo-ayuda">
+  <p class="campo__ayuda" id="m104-m52-codigo-ayuda">Vence en 10 minutos.</p>
+</div></div><figcaption>Vacío</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m104-m53-codigo">Código de verificación</label>
+  <input class="campo__control campo__control--codigo ds-foco" id="m104-m53-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="1234" aria-describedby="m104-m53-codigo-ayuda">
+  <p class="campo__ayuda" id="m104-m53-codigo-ayuda">Vence en 10 minutos.</p>
+</div></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m104-m54-codigo">Código de verificación</label>
+  <input class="campo__control campo__control--codigo" id="m104-m54-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="123456" aria-describedby="m104-m54-codigo-ayuda">
+  <p class="campo__ayuda" id="m104-m54-codigo-ayuda">Vence en 10 minutos.</p>
+</div></div><figcaption>Completo</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo">
+  <label class="campo__etiqueta" for="m104-m55-codigo">Código de verificación</label>
+  <input class="campo__control campo__control--codigo" id="m104-m55-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="12345" aria-invalid="true" aria-describedby="m104-m55-codigo-error">
+  <p class="campo__error" id="m104-m55-codigo-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">El código tiene 6 dígitos.</span></p>
+</div></div><figcaption>Error</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-16"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-16">&lt;!-- Vacío --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;codigo&quot;&gt;Código de verificación&lt;/label&gt;
+  &lt;input class=&quot;campo__control campo__control--codigo&quot; id=&quot;codigo&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; maxlength=&quot;6&quot; aria-describedby=&quot;codigo-ayuda&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;codigo-ayuda&quot;&gt;Vence en 10 minutos.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Completo --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;codigo&quot;&gt;Código de verificación&lt;/label&gt;
+  &lt;input class=&quot;campo__control campo__control--codigo&quot; id=&quot;codigo&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; maxlength=&quot;6&quot; value=&quot;123456&quot; aria-describedby=&quot;codigo-ayuda&quot;&gt;
+  &lt;p class=&quot;campo__ayuda&quot; id=&quot;codigo-ayuda&quot;&gt;Vence en 10 minutos.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class=&quot;campo&quot;&gt;
+  &lt;label class=&quot;campo__etiqueta&quot; for=&quot;codigo&quot;&gt;Código de verificación&lt;/label&gt;
+  &lt;input class=&quot;campo__control campo__control--codigo&quot; id=&quot;codigo&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; maxlength=&quot;6&quot; value=&quot;12345&quot; aria-invalid=&quot;true&quot; aria-describedby=&quot;codigo-error&quot;&gt;
+  &lt;p class=&quot;campo__error&quot; id=&quot;codigo-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;El código tiene 6 dígitos.&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-datos-que-no-se-editan" aria-labelledby="c-datos-que-no-se-editan-t"><h3 class="t-h3" id="c-datos-que-no-se-editan-t">Datos que no se editan</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Dato de solo lectura</strong></p><p>Datos que vienen de RENIEC o SUNAT: van como texto (etiqueta + valor) dentro de un recuadro con su origen. Nunca como campo deshabilitado.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Es texto: el lector lo lee completo y no aparece como un control que no se puede usar.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
@@ -331,45 +621,110 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
                 <div class="dato-fijo col-5"><dt class="js-etq-doc">RUC</dt><dd class="js-val-doc">20512345678</dd></div>
                 <div class="dato-fijo col-5"><dt class="js-etq-nombre">Razón social</dt><dd class="js-val-nombre">Empresa Minera Buenafe S.A.C.</dd></div>
               </dl></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-18"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-18">&lt;dl class=&quot;reticula datos-fijos&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-17"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-17">&lt;dl class=&quot;reticula datos-fijos&quot;&gt;
   &lt;div class=&quot;dato-fijo col-5&quot;&gt;&lt;dt class=&quot;js-etq-doc&quot;&gt;RUC&lt;/dt&gt;&lt;dd class=&quot;js-val-doc&quot;&gt;20512345678&lt;/dd&gt;&lt;/div&gt;
   &lt;div class=&quot;dato-fijo col-5&quot;&gt;&lt;dt class=&quot;js-etq-nombre&quot;&gt;Razón social&lt;/dt&gt;&lt;dd class=&quot;js-val-nombre&quot;&gt;Empresa Minera Buenafe S.A.C.&lt;/dd&gt;&lt;/div&gt;
 &lt;/dl&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-seleccion" aria-labelledby="g-seleccion-t"><h2 class="t-h2" id="g-seleccion-t">Selección</h2><article class="ds-comp" id="c-casilla-de-verificacion" aria-labelledby="c-casilla-de-verificacion-t"><h3 class="t-h3" id="c-casilla-de-verificacion-t">Casilla de verificación</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Casilla de verificación</strong></p><p>Para aceptar o marcar una opción independiente.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;checkbox&quot; real dentro de su label; área de clic de 24 px o más.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style="--ancho:520px"><div class="ds-muestra__in"><label class="casilla"><input type="checkbox" id="m19-r-declaro" >
-                    <span>Declaro bajo juramento que los datos que entregué son ciertos</span></label></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-19"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-19">&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;r-declaro&quot; aria-describedby=&quot;r-declaro-ayuda r-declaro-error&quot;&gt;
-&lt;span&gt;Declaro bajo juramento que los datos que entregué son ciertos&lt;/span&gt;&lt;/label&gt;</code></pre></details></div></article><article class="ds-comp" id="c-opcion-en-tarjeta" aria-labelledby="c-opcion-en-tarjeta-t"><h3 class="t-h3" id="c-opcion-en-tarjeta-t">Opción en tarjeta</h3>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> input type=&quot;checkbox&quot; real dentro de su label; área de clic de 24 px o más.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="checkbox" id="m106-m56-acepto">
+  <span>Acepto los Términos y condiciones</span></label></div><figcaption>Sin marcar</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="checkbox" id="m106-m57-acepto" checked>
+  <span>Acepto los Términos y condiciones</span></label></div><figcaption>Marcada</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="checkbox" id="m106-m58-acepto" class="ds-foco">
+  <span>Acepto los Términos y condiciones</span></label></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="checkbox" id="m106-m59-acepto" disabled>
+  <span>Acepto los Términos y condiciones</span></label></div><figcaption>Deshabilitada</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div class="campo"><label class="casilla"><input type="checkbox" id="m106-m60-acepto" aria-describedby="m106-m60-acepto-error" aria-invalid="true">
+  <span>Declaro que los datos son ciertos</span></label>
+<p class="campo__error" id="m106-m60-acepto-error"><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto">Marca la declaración para continuar.</span></p></div></div><figcaption>Con error</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-18"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-18">&lt;!-- Sin marcar --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;acepto&quot;&gt;
+  &lt;span&gt;Acepto los Términos y condiciones&lt;/span&gt;&lt;/label&gt;
+
+&lt;!-- Marcada --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;acepto&quot; checked&gt;
+  &lt;span&gt;Acepto los Términos y condiciones&lt;/span&gt;&lt;/label&gt;
+
+&lt;!-- Deshabilitada --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;acepto&quot; disabled&gt;
+  &lt;span&gt;Acepto los Términos y condiciones&lt;/span&gt;&lt;/label&gt;
+
+&lt;!-- Con error --&gt;
+&lt;div class=&quot;campo&quot;&gt;&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;acepto&quot; aria-describedby=&quot;acepto-error&quot; aria-invalid=&quot;true&quot;&gt;
+  &lt;span&gt;Declaro que los datos son ciertos&lt;/span&gt;&lt;/label&gt;
+&lt;p class=&quot;campo__error&quot; id=&quot;acepto-error&quot;&gt;&lt;svg class=&quot;icono icono--16&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;span class=&quot;campo__error-texto&quot;&gt;Marca la declaración para continuar.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-radio" aria-labelledby="c-radio-t"><h3 class="t-h3" id="c-radio-t">Radio</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Radio · Grupo de opciones</strong></p><p>Una opción entre varias, cuando las opciones son cortas.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Inputs radio reales con el mismo name, dentro de &lt;fieldset&gt; con &lt;legend&gt;. Las flechas mueven la selección.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:4"><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="radio" name="modalidad-c65">
+  <span>Casilla electrónica</span></label></div><figcaption>Sin marcar</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="radio" name="modalidad-c66" checked>
+  <span>Casilla electrónica</span></label></div><figcaption>Marcado</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="radio" name="modalidad-c67" class="ds-foco">
+  <span>Casilla electrónica</span></label></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><label class="casilla"><input type="radio" name="modalidad-c68" disabled>
+  <span>Casilla electrónica</span></label></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-19"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-19">&lt;!-- Sin marcar --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;modalidad&quot;&gt;
+  &lt;span&gt;Casilla electrónica&lt;/span&gt;&lt;/label&gt;
+
+&lt;!-- Marcado --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;modalidad&quot; checked&gt;
+  &lt;span&gt;Casilla electrónica&lt;/span&gt;&lt;/label&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;label class=&quot;casilla&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;modalidad&quot; disabled&gt;
+  &lt;span&gt;Casilla electrónica&lt;/span&gt;&lt;/label&gt;</code></pre></details></div></article><article class="ds-comp" id="c-opcion-en-tarjeta" aria-labelledby="c-opcion-en-tarjeta-t"><h3 class="t-h3" id="c-opcion-en-tarjeta-t">Opción en tarjeta</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Opción en tarjeta</strong></p><p>Una sola opción entre pocas alternativas, con explicación. Toda la tarjeta es clicable.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> Cada tarjeta es un &lt;label&gt; con un input radio real; el grupo va en &lt;fieldset&gt; con &lt;legend&gt;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Grupo</h4>
-<div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><fieldset class="eleccion">
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Cada tarjeta es un &lt;label&gt; con un input radio real; el grupo va en &lt;fieldset&gt; con &lt;legend&gt;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Estados</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:2"><figure class="ds-celda"><div class="ds-celda__muestra"><fieldset class="eleccion">
                 <legend class="visualmente-oculto">¿Quién va a usar esta casilla?</legend>
-                <label class="eleccion__opcion"><input type="radio" name="quien" value="persona" checked="">
+                <label class="eleccion__opcion"><input type="radio" name="quien-c61" value="persona" >
                   <span class="eleccion__texto"><span class="eleccion__titulo">Yo, como persona</span><span class="eleccion__ayuda">Las notificaciones llegan a tu nombre.</span></span></label>
-                <label class="eleccion__opcion"><input type="radio" name="quien" value="empresa">
+                <label class="eleccion__opcion"><input type="radio" name="quien-c61" value="empresa">
                   <span class="eleccion__texto"><span class="eleccion__titulo">Una empresa o institución</span><span class="eleccion__ayuda">Tú la representas.</span></span></label>
-              </fieldset></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-20"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-20">&lt;fieldset class=&quot;eleccion&quot;&gt;
-  &lt;legend class=&quot;visualmente-oculto&quot;&gt;¿Quién va a usar esta casilla?&lt;/legend&gt;
-  &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;persona&quot; checked=&quot;&quot;&gt;
-    &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Yo, como persona&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Las notificaciones llegan a tu nombre.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
-  &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;empresa&quot;&gt;
-    &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Una empresa o institución&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Tú la representas.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
-&lt;/fieldset&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-archivos" aria-labelledby="g-archivos-t"><h2 class="t-h2" id="g-archivos-t">Archivos</h2><article class="ds-comp" id="c-subir-archivo" aria-labelledby="c-subir-archivo-t"><h3 class="t-h3" id="c-subir-archivo-t">Subir archivo</h3>
+              </fieldset></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><fieldset class="eleccion">
+                <legend class="visualmente-oculto">¿Quién va a usar esta casilla?</legend>
+                <label class="eleccion__opcion ds-hover"><input type="radio" name="quien-c62" value="persona" >
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Yo, como persona</span><span class="eleccion__ayuda">Las notificaciones llegan a tu nombre.</span></span></label>
+                <label class="eleccion__opcion"><input type="radio" name="quien-c62" value="empresa">
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Una empresa o institución</span><span class="eleccion__ayuda">Tú la representas.</span></span></label>
+              </fieldset></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><fieldset class="eleccion">
+                <legend class="visualmente-oculto">¿Quién va a usar esta casilla?</legend>
+                <label class="eleccion__opcion"><input type="radio" name="quien-c63" value="persona"  checked>
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Yo, como persona</span><span class="eleccion__ayuda">Las notificaciones llegan a tu nombre.</span></span></label>
+                <label class="eleccion__opcion"><input type="radio" name="quien-c63" value="empresa">
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Una empresa o institución</span><span class="eleccion__ayuda">Tú la representas.</span></span></label>
+              </fieldset></div><figcaption>Seleccionada</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><fieldset class="eleccion">
+                <legend class="visualmente-oculto">¿Quién va a usar esta casilla?</legend>
+                <label class="eleccion__opcion"><input type="radio" class="ds-foco" name="quien-c64" value="persona" >
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Yo, como persona</span><span class="eleccion__ayuda">Las notificaciones llegan a tu nombre.</span></span></label>
+                <label class="eleccion__opcion"><input type="radio" name="quien-c64" value="empresa">
+                  <span class="eleccion__texto"><span class="eleccion__titulo">Una empresa o institución</span><span class="eleccion__ayuda">Tú la representas.</span></span></label>
+              </fieldset></div><figcaption>Foco</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-20"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-20">&lt;!-- Normal --&gt;
+&lt;fieldset class=&quot;eleccion&quot;&gt;
+                &lt;legend class=&quot;visualmente-oculto&quot;&gt;¿Quién va a usar esta casilla?&lt;/legend&gt;
+                &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;persona&quot; &gt;
+                  &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Yo, como persona&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Las notificaciones llegan a tu nombre.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+                &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;empresa&quot;&gt;
+                  &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Una empresa o institución&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Tú la representas.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+              &lt;/fieldset&gt;
+
+&lt;!-- Seleccionada --&gt;
+&lt;fieldset class=&quot;eleccion&quot;&gt;
+                &lt;legend class=&quot;visualmente-oculto&quot;&gt;¿Quién va a usar esta casilla?&lt;/legend&gt;
+                &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;persona&quot;  checked&gt;
+                  &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Yo, como persona&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Las notificaciones llegan a tu nombre.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+                &lt;label class=&quot;eleccion__opcion&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;quien&quot; value=&quot;empresa&quot;&gt;
+                  &lt;span class=&quot;eleccion__texto&quot;&gt;&lt;span class=&quot;eleccion__titulo&quot;&gt;Una empresa o institución&lt;/span&gt;&lt;span class=&quot;eleccion__ayuda&quot;&gt;Tú la representas.&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;
+              &lt;/fieldset&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-archivos" aria-labelledby="g-archivos-t"><h2 class="t-h2" id="g-archivos-t">Archivos</h2><article class="ds-comp" id="c-subir-archivo" aria-labelledby="c-subir-archivo-t"><h3 class="t-h3" id="c-subir-archivo-t">Subir archivo</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Control de adjunto</strong></p><p>Botón que abre el selector de archivos del sistema.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> El input file es real y enfocable (visualmente oculto); el label lleva el nombre del requisito para el lector.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><span class="subir"><input type="file" id="m21-rq1" accept="application/pdf,.pdf" data-req="1" >
-           <label for="m21-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span></div></div>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><span class="subir"><input type="file" id="m109-rq1" accept="application/pdf,.pdf" data-req="1" >
+           <label for="m109-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span></div></div>
 <details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-21"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-21">&lt;span class=&quot;subir&quot;&gt;&lt;input type=&quot;file&quot; id=&quot;rq1&quot; accept=&quot;application/pdf,.pdf&quot; data-req=&quot;1&quot; aria-describedby=&quot;rq1-motivo rq1-error&quot;&gt;
 &lt;label for=&quot;rq1&quot; class=&quot;boton boton--secundario&quot;&gt;Reemplazar archivo&lt;span class=&quot;visualmente-oculto&quot;&gt;: Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;&lt;/label&gt;&lt;/span&gt;</code></pre></details></div></article></section><section class="ds-seccion" id="g-proceso" aria-labelledby="g-proceso-t"><h2 class="t-h2" id="g-proceso-t">Proceso</h2><article class="ds-comp" id="c-avance-por-pasos" aria-labelledby="c-avance-por-pasos-t"><h3 class="t-h3" id="c-avance-por-pasos-t">Avance por pasos</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Avance del formulario · Paso</strong></p><p>Recorrido del formulario: paso actual, pasos hechos con resumen y enlace Editar, pasos pendientes.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Lista ordenada; el paso actual lleva aria-current=&quot;step&quot;. Al cambiar de paso el foco va al título.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Paso 1 de 5</h4>
-<div class="ds-muestra" style="--ancho:340px"><div class="ds-muestra__in"><aside class="avance" aria-labelledby="m22-avance-titulo">
-        <h2 class="avance__titulo" id="m22-avance-titulo">Tu avance</h2>
-        <p class="visualmente-oculto" id="m22-avance-texto">Paso 1 de 5</p>
-        <div class="avance__barra" aria-hidden="true"><div class="avance__relleno" id="m22-avance-relleno" style="width: 0%;"></div></div>
-        <ol class="avance__lista" id="m22-avance-lista"><li class="avance__paso avance__paso--activo" aria-current="step">
+<div class="ds-muestra" style="--ancho:340px"><div class="ds-muestra__in"><aside class="avance" aria-labelledby="m110-avance-titulo">
+        <h2 class="avance__titulo" id="m110-avance-titulo">Tu avance</h2>
+        <p class="visualmente-oculto" id="m110-avance-texto">Paso 1 de 5</p>
+        <div class="avance__barra" aria-hidden="true"><div class="avance__relleno" id="m110-avance-relleno" style="width: 0%;"></div></div>
+        <ol class="avance__lista" id="m110-avance-lista"><li class="avance__paso avance__paso--activo" aria-current="step">
           <span class="marcador marcador--chico marcador--actual" aria-hidden="true">1</span>
           <span class="avance__texto">
             <span class="avance__nombre">¿Qué quieres hacer?<span class="visualmente-oculto">, paso actual</span></span>
@@ -456,7 +811,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
       </a>
       <p class="barra-superior__servicio">Sistema de Notificación Electrónica</p>
       <div class="usuario">
-        <button type="button" class="usuario__boton" aria-haspopup="menu" aria-expanded="false" aria-controls="m23-menu-usuario" aria-label="Ana Quispe Mamani, DNI 46810236, menú de tu cuenta">
+        <button type="button" class="usuario__boton" aria-haspopup="menu" aria-expanded="false" aria-controls="m111-menu-usuario" aria-label="Ana Quispe Mamani, DNI 46810236, menú de tu cuenta">
           <span class="usuario__avatar" aria-hidden="true">AQ</span>
           <span class="usuario__datos" aria-hidden="true">
             <span class="usuario__nombre">Ana Quispe Mamani</span>
@@ -464,7 +819,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
           </span>
           <svg class="icono" aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg>
         </button>
-        <ul class="menu" role="menu" id="m23-menu-usuario" aria-label="Tu cuenta" hidden="">
+        <ul class="menu" role="menu" id="m111-menu-usuario" aria-label="Tu cuenta" hidden="">
           <li role="none" class="menu__cabecera" aria-hidden="true">
             <span class="usuario__avatar">AQ</span>
             <span><span class="menu__cabecera-nombre usuario__nombre">Ana Quispe Mamani</span><span class="usuario__doc">DNI 46810236</span></span>
@@ -528,13 +883,65 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
   &lt;/div&gt;
 &lt;/header&gt;</code></pre></details></div></article><article class="ds-comp" id="c-menu-de-cuenta" aria-labelledby="c-menu-de-cuenta-t"><h3 class="t-h3" id="c-menu-de-cuenta-t">Menú de cuenta</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Menú de cuenta</strong></p><p>Se abre desde el avatar. Escritorio: desplegable de 300 px. Móvil (≤ 520 px): panel a todo el alto con quién está en la cuenta. «Cerrar sesión» va aparte, en gris.</p>
-<p class="ds-a11y"><strong>Accesibilidad:</strong> Botón con aria-expanded y aria-controls; menú con role=&quot;menu&quot;, flechas para recorrer, Escape cierra y devuelve el foco.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Ver en «Barra superior · Con sesión»</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><p class="t-ayuda">El menú vive dentro de la barra superior: ábrelo en la muestra de arriba.</p></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-25"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-25">&lt;p class=&quot;t-ayuda&quot;&gt;El menú vive dentro de la barra superior: ábrelo en la muestra de arriba.&lt;/p&gt;</code></pre></details></div></article><article class="ds-comp" id="c-migas" aria-labelledby="c-migas-t"><h3 class="t-h3" id="c-migas-t">Migas</h3>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Botón con aria-expanded y aria-controls; menú con role=&quot;menu&quot;, flechas para recorrer, Escape cierra y devuelve el foco.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Abierto (escritorio)</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:2"><figure class="ds-celda"><div class="ds-celda__muestra"><div style="position:relative;height:210px"><div style="position:absolute;right:0;top:-6px"><ul class="menu" role="menu" id="m113-m84-menu-usuario" aria-label="Tu cuenta">
+          <li role="none" class="menu__cabecera" aria-hidden="true">
+            <span class="usuario__avatar">AQ</span>
+            <span><span class="menu__cabecera-nombre usuario__nombre">Ana Quispe Mamani</span><span class="usuario__doc">DNI 46810236</span></span>
+          </li>
+          <li role="none"><a class="menu__item ds-foco" role="menuitem" href="perfil.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>Mi perfil</a></li>
+          <li role="none"><a class="menu__item" role="menuitem" href="ayuda.html" data-fuera-de-alcance="Ayuda y preguntas frecuentes no forma parte de este prototipo.">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>Ayuda y preguntas frecuentes</a></li>
+          <li role="separator" class="menu__separador"></li>
+          <li role="none"><a class="menu__item menu__item--secundario" role="menuitem" href="ingreso.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>Cerrar sesión</a></li>
+        </ul></div></div></div><figcaption>Opción con foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><div style="position:relative;height:210px"><div style="position:absolute;right:0;top:-6px"><ul class="menu" role="menu" id="m113-m85-menu-usuario" aria-label="Tu cuenta">
+          <li role="none" class="menu__cabecera" aria-hidden="true">
+            <span class="usuario__avatar">AQ</span>
+            <span><span class="menu__cabecera-nombre usuario__nombre">Ana Quispe Mamani</span><span class="usuario__doc">DNI 46810236</span></span>
+          </li>
+          <li role="none"><a class="menu__item" role="menuitem" href="perfil.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#usuario"></use></svg>Mi perfil</a></li>
+          <li role="none"><a class="menu__item ds-hover" role="menuitem" href="ayuda.html" data-fuera-de-alcance="Ayuda y preguntas frecuentes no forma parte de este prototipo.">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#ayuda"></use></svg>Ayuda y preguntas frecuentes</a></li>
+          <li role="separator" class="menu__separador"></li>
+          <li role="none"><a class="menu__item menu__item--secundario" role="menuitem" href="ingreso.html">
+            <svg class="icono" aria-hidden="true" focusable="false"><use href="#salir"></use></svg>Cerrar sesión</a></li>
+        </ul></div></div></div><figcaption>Opción en hover</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-25"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-25">&lt;!-- Opción con foco --&gt;
+&lt;div style=&quot;position:relative;height:210px&quot;&gt;&lt;div style=&quot;position:absolute;right:0;top:-6px&quot;&gt;&lt;ul class=&quot;menu&quot; role=&quot;menu&quot; id=&quot;menu-usuario&quot; aria-label=&quot;Tu cuenta&quot;&gt;
+          &lt;li role=&quot;none&quot; class=&quot;menu__cabecera&quot; aria-hidden=&quot;true&quot;&gt;
+            &lt;span class=&quot;usuario__avatar&quot;&gt;AQ&lt;/span&gt;
+            &lt;span&gt;&lt;span class=&quot;menu__cabecera-nombre usuario__nombre&quot;&gt;Ana Quispe Mamani&lt;/span&gt;&lt;span class=&quot;usuario__doc&quot;&gt;DNI 46810236&lt;/span&gt;&lt;/span&gt;
+          &lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;perfil.html&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#usuario&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Mi perfil&lt;/a&gt;&lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;ayuda.html&quot; data-fuera-de-alcance=&quot;Ayuda y preguntas frecuentes no forma parte de este prototipo.&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ayuda&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Ayuda y preguntas frecuentes&lt;/a&gt;&lt;/li&gt;
+          &lt;li role=&quot;separator&quot; class=&quot;menu__separador&quot;&gt;&lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item menu__item--secundario&quot; role=&quot;menuitem&quot; href=&quot;ingreso.html&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#salir&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Cerrar sesión&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;!-- Opción en hover --&gt;
+&lt;div style=&quot;position:relative;height:210px&quot;&gt;&lt;div style=&quot;position:absolute;right:0;top:-6px&quot;&gt;&lt;ul class=&quot;menu&quot; role=&quot;menu&quot; id=&quot;menu-usuario&quot; aria-label=&quot;Tu cuenta&quot;&gt;
+          &lt;li role=&quot;none&quot; class=&quot;menu__cabecera&quot; aria-hidden=&quot;true&quot;&gt;
+            &lt;span class=&quot;usuario__avatar&quot;&gt;AQ&lt;/span&gt;
+            &lt;span&gt;&lt;span class=&quot;menu__cabecera-nombre usuario__nombre&quot;&gt;Ana Quispe Mamani&lt;/span&gt;&lt;span class=&quot;usuario__doc&quot;&gt;DNI 46810236&lt;/span&gt;&lt;/span&gt;
+          &lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;perfil.html&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#usuario&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Mi perfil&lt;/a&gt;&lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item&quot; role=&quot;menuitem&quot; href=&quot;ayuda.html&quot; data-fuera-de-alcance=&quot;Ayuda y preguntas frecuentes no forma parte de este prototipo.&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#ayuda&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Ayuda y preguntas frecuentes&lt;/a&gt;&lt;/li&gt;
+          &lt;li role=&quot;separator&quot; class=&quot;menu__separador&quot;&gt;&lt;/li&gt;
+          &lt;li role=&quot;none&quot;&gt;&lt;a class=&quot;menu__item menu__item--secundario&quot; role=&quot;menuitem&quot; href=&quot;ingreso.html&quot;&gt;
+            &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#salir&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Cerrar sesión&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-migas" aria-labelledby="c-migas-t"><h3 class="t-h3" id="c-migas-t">Migas</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Migas</strong></p><p>En todas las pantallas internas, antes del título. Enlace en azul subrayado, a 15 px; la página actual en negro.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> &lt;nav aria-label=&quot;Estás en&quot;&gt; con lista ordenada; la página actual lleva aria-current=&quot;page&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">1 nivel</h4>
 <div class="ds-muestra" style=""><div class="ds-muestra__in"><nav class="migas" aria-label="Estás en">
-      <ol id="m26-migas-lista">
+      <ol id="m114-migas-lista">
         <li><span aria-current="page">Mis trámites</span></li>
       </ol>
     </nav></div></div>
@@ -542,19 +949,30 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
   &lt;ol id=&quot;migas-lista&quot;&gt;
     &lt;li&gt;&lt;span aria-current=&quot;page&quot;&gt;Mis trámites&lt;/span&gt;&lt;/li&gt;
   &lt;/ol&gt;
-&lt;/nav&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">2 niveles</h4>
-<div class="ds-muestra" style=""><div class="ds-muestra__in"><nav class="migas" aria-label="Estás en">
+&lt;/nav&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Enlace de las migas</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:3"><figure class="ds-celda"><div class="ds-celda__muestra"><nav class="migas" aria-label="Estás en">
       <ol>
         <li><a href="bandeja.html">Mis trámites</a></li>
         <li><span aria-current="page">Nuevo documento</span></li>
       </ol>
-    </nav></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-27"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-27">&lt;nav class=&quot;migas&quot; aria-label=&quot;Estás en&quot;&gt;
-  &lt;ol&gt;
-    &lt;li&gt;&lt;a href=&quot;bandeja.html&quot;&gt;Mis trámites&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span aria-current=&quot;page&quot;&gt;Nuevo documento&lt;/span&gt;&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/nav&gt;</code></pre></details></div></article><article class="ds-comp" id="c-navegacion-de-perfil" aria-labelledby="c-navegacion-de-perfil-t"><h3 class="t-h3" id="c-navegacion-de-perfil-t">Navegación de perfil</h3>
+    </nav></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><nav class="migas" aria-label="Estás en">
+      <ol>
+        <li><a class="ds-hover" href="bandeja.html">Mis trámites</a></li>
+        <li><span aria-current="page">Nuevo documento</span></li>
+      </ol>
+    </nav></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><nav class="migas" aria-label="Estás en">
+      <ol>
+        <li><a class="ds-foco" href="bandeja.html">Mis trámites</a></li>
+        <li><span aria-current="page">Nuevo documento</span></li>
+      </ol>
+    </nav></div><figcaption>Foco</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-27"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-27">&lt;!-- Normal --&gt;
+&lt;nav class=&quot;migas&quot; aria-label=&quot;Estás en&quot;&gt;
+      &lt;ol&gt;
+        &lt;li&gt;&lt;a href=&quot;bandeja.html&quot;&gt;Mis trámites&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;span aria-current=&quot;page&quot;&gt;Nuevo documento&lt;/span&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/nav&gt;</code></pre></details></div></article><article class="ds-comp" id="c-navegacion-de-perfil" aria-labelledby="c-navegacion-de-perfil-t"><h3 class="t-h3" id="c-navegacion-de-perfil-t">Navegación de perfil</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Ítem de navegación</strong></p><p>Secciones de Mi perfil.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> La sección actual lleva aria-current=&quot;page&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
 <div class="ds-muestra" style="--ancho:280px"><div class="ds-muestra__in"><nav class="perfil-nav" aria-label="Secciones de Mi perfil">
@@ -583,15 +1001,15 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 <details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-31"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-31">&lt;div style=&quot;display:flex;gap:8px&quot;&gt;&lt;span class=&quot;estado estado--validado&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Activo&lt;/span&gt;&lt;span class=&quot;estado estado--archivado&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#archivo&quot;&gt;&lt;/use&gt;&lt;/svg&gt;Inactivo&lt;/span&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-fila-de-requisito" aria-labelledby="c-fila-de-requisito-t"><h3 class="t-h3" id="c-fila-de-requisito-t">Fila de requisito</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Fila de requisito</strong></p><p>Requisito del trámite en la subsanación: requiere subsanación (con motivo y botón) o conforme.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> El motivo y el error se enlazan al input con aria-describedby.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Requiere subsanación</h4>
-<div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><ul class="req-lista"><li class="req-obs" id="m32-fila-rq1">
-      <span class="req-obs__texto"><span class="req-obs__nombre" id="m32-rq1-nombre">1. Solicitud dirigida al Administrador Local de Agua</span>
-        <span class="req-obs__motivo" id="m32-rq1-motivo">Motivo: el archivo adjunto es una carta, no la solicitud.</span>
+<div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><ul class="req-lista"><li class="req-obs" id="m120-fila-rq1">
+      <span class="req-obs__texto"><span class="req-obs__nombre" id="m120-rq1-nombre">1. Solicitud dirigida al Administrador Local de Agua</span>
+        <span class="req-obs__motivo" id="m120-rq1-motivo">Motivo: el archivo adjunto es una carta, no la solicitud.</span>
         <span class="req-obs__archivo">Archivo actual: solicitud.pdf</span>
-        <span class="campo__error" id="m32-rq1-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></span>
+        <span class="campo__error" id="m120-rq1-error" hidden=""><svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><span class="campo__error-texto"></span></span>
       </span>
       <span class="pildora pildora--observado">Requiere subsanación</span>
-      <span class="subir"><input type="file" id="m32-rq1" accept="application/pdf,.pdf" data-req="1" aria-describedby="m32-rq1-motivo m32-rq1-error">
-           <label for="m32-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span>
+      <span class="subir"><input type="file" id="m120-rq1" accept="application/pdf,.pdf" data-req="1" aria-describedby="m120-rq1-motivo m120-rq1-error">
+           <label for="m120-rq1" class="boton boton--secundario">Reemplazar archivo<span class="visualmente-oculto">: Solicitud dirigida al Administrador Local de Agua</span></label></span>
     </li></ul></div></div>
 <details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-32"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-32">&lt;ul class=&quot;req-lista&quot;&gt;&lt;li class=&quot;req-obs&quot; id=&quot;fila-rq1&quot;&gt;
   &lt;span class=&quot;req-obs__texto&quot;&gt;&lt;span class=&quot;req-obs__nombre&quot; id=&quot;rq1-nombre&quot;&gt;1. Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;
@@ -604,7 +1022,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
        &lt;label for=&quot;rq1&quot; class=&quot;boton boton--secundario&quot;&gt;Reemplazar archivo&lt;span class=&quot;visualmente-oculto&quot;&gt;: Solicitud dirigida al Administrador Local de Agua&lt;/span&gt;&lt;/label&gt;&lt;/span&gt;
 &lt;/li&gt;&lt;/ul&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Conforme</h4>
 <div class="ds-muestra" style="--ancho:760px"><div class="ds-muestra__in"><ul class="req-lista"><li class="req-obs req-obs--conforme">
-        <span class="req-obs__texto"><span class="req-obs__nombre" id="m33-rq4-nombre">4. Copia del documento que acredite obras de aprovechamiento hídrico</span><span class="req-obs__archivo">obras.pdf · 0,05 MB</span></span>
+        <span class="req-obs__texto"><span class="req-obs__nombre" id="m121-rq4-nombre">4. Copia del documento que acredite obras de aprovechamiento hídrico</span><span class="req-obs__archivo">obras.pdf · 0,05 MB</span></span>
         <span class="pildora pildora--conforme">Conforme</span>
       </li></ul></div></div>
 <details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-33"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-33">&lt;ul class=&quot;req-lista&quot;&gt;&lt;li class=&quot;req-obs req-obs--conforme&quot;&gt;
@@ -617,7 +1035,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
               <svg class="icono documento__icono" aria-hidden="true" focusable="false"><use href="#tramites"></use></svg>
               <span class="documento__texto"><span class="documento__nombre">anexo1</span><span class="documento__sub">Enlace externo</span></span>
               <span class="pildora pildora--conforme">Conforme</span>
-              <button type="button" class="boton boton--secundario" id="m34-doc-anexo1" data-abrir="anexo1">Abrir enlace<span class="visualmente-oculto"> de anexo1 (se abre en otra pestaña)</span></button>
+              <button type="button" class="boton boton--secundario" id="m122-doc-anexo1" data-abrir="anexo1">Abrir enlace<span class="visualmente-oculto"> de anexo1 (se abre en otra pestaña)</span></button>
             </li></div></div></div>
 <details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-34"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-34">&lt;div class=&quot;documentos&quot;&gt;&lt;li class=&quot;documento&quot;&gt;
   &lt;svg class=&quot;icono documento__icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#tramites&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
@@ -664,12 +1082,12 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
     &lt;span class=&quot;hito__nombre&quot;&gt;Subsanado&lt;span class=&quot;visualmente-oculto&quot;&gt;. Pendiente.&lt;/span&gt;&lt;/span&gt;
     &lt;span class=&quot;hito__fecha&quot;&gt;Pendiente&lt;/span&gt;
   &lt;/li&gt;
-&lt;/ol&gt;</code></pre></details></div></article><article class="ds-comp" id="c-tabla-y-paginador" aria-labelledby="c-tabla-y-paginador-t"><h3 class="t-h3" id="c-tabla-y-paginador-t">Tabla y paginador</h3>
-<p class="ds-comp__figma t-ayuda">En Figma: <strong>Tabla · Paginador</strong></p><p>Mis trámites en escritorio. Las acciones van al inicio de la fila.</p>
+&lt;/ol&gt;</code></pre></details></div></article><article class="ds-comp" id="c-tabla" aria-labelledby="c-tabla-t"><h3 class="t-h3" id="c-tabla-t">Tabla</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Tabla</strong></p><p>Mis trámites en escritorio. Las acciones van al inicio de la fila.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> &lt;table&gt; real con &lt;caption&gt; oculto, encabezados con scope y botones para ordenar con aria-sort.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Dos filas</h4>
-<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="tabla-tarjeta" aria-labelledby="m36-tabla-titulo">
-      <h2 class="visualmente-oculto" id="m36-tabla-titulo" tabindex="-1">Lista de trámites</h2>
-      <div class="tabla-region" role="region" aria-labelledby="m36-tabla-titulo" tabindex="0">
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="tabla-tarjeta" aria-labelledby="m124-tabla-titulo">
+      <h2 class="visualmente-oculto" id="m124-tabla-titulo" tabindex="-1">Lista de trámites</h2>
+      <div class="tabla-region" role="region" aria-labelledby="m124-tabla-titulo" tabindex="0">
         <table class="tabla">
           <caption class="visualmente-oculto">Mis trámites. Las columnas con botón se pueden ordenar.</caption>
           <colgroup>
@@ -689,13 +1107,13 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
               <th scope="col">Archivos</th>
             </tr>
           </thead>
-          <tbody id="m36-tabla-cuerpo"><tr class="fila--nueva" data-ticket="68927-2026">
+          <tbody id="m124-tabla-cuerpo"><tr class="fila--nueva" data-ticket="68927-2026">
         <td>
           <div class="tabla__acciones">
             <a class="accion accion--ver" href="detalle.html#68927-2026" aria-label="Ver trámite 68927-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#ojo"></use></svg></a>
             <div class="acciones-fila">
-              <button type="button" class="accion" aria-label="Más acciones del trámite 68927-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m36-menu-68927-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
-              <ul class="menu" role="menu" id="m36-menu-68927-2026" aria-label="Acciones del trámite 68927-2026" hidden="">
+              <button type="button" class="accion" aria-label="Más acciones del trámite 68927-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m124-menu-68927-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
+              <ul class="menu" role="menu" id="m124-menu-68927-2026" aria-label="Acciones del trámite 68927-2026" hidden="">
                 <li role="none"><button type="button" role="menuitem" class="menu__item" data-hoja=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>Descargar hoja de envío</button></li>
                 <li role="none"><button type="button" role="menuitem" class="menu__item" data-copiar=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar N° de ticket</button></li>
               </ul>
@@ -715,8 +1133,8 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
           <div class="tabla__acciones">
             <a class="accion accion--ver" href="detalle.html#68942-2026" aria-label="Ver trámite 68942-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#ojo"></use></svg></a>
             <div class="acciones-fila">
-              <button type="button" class="accion" aria-label="Más acciones del trámite 68942-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m36-menu-68942-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
-              <ul class="menu" role="menu" id="m36-menu-68942-2026" aria-label="Acciones del trámite 68942-2026" hidden="">
+              <button type="button" class="accion" aria-label="Más acciones del trámite 68942-2026" aria-haspopup="menu" aria-expanded="false" aria-controls="m124-menu-68942-2026"><svg class="icono " aria-hidden="true" focusable="false"><use href="#mas-acciones"></use></svg></button>
+              <ul class="menu" role="menu" id="m124-menu-68942-2026" aria-label="Acciones del trámite 68942-2026" hidden="">
                 <li role="none"><button type="button" role="menuitem" class="menu__item" data-hoja=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#descargar"></use></svg>Descargar hoja de envío</button></li>
                 <li role="none"><button type="button" role="menuitem" class="menu__item" data-copiar=""><svg class="icono " aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar N° de ticket</button></li>
               </ul>
@@ -736,17 +1154,17 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
       </div>
 
       <nav class="paginador" aria-label="Paginación de trámites">
-        <p class="paginador__resumen" id="m36-paginador-resumen">Mostrando 1–10 de 19 trámites</p>
+        <p class="paginador__resumen" id="m124-paginador-resumen">Mostrando 1–10 de 19 trámites</p>
         <div class="paginador__grupo">
           <div class="paginador__por-pagina">
-            <label for="m36-por-pagina">Filas por página</label>
-            <select class="campo__control" id="m36-por-pagina">
+            <label for="m124-por-pagina">Filas por página</label>
+            <select class="campo__control" id="m124-por-pagina">
               <option>10</option>
               <option>20</option>
               <option>50</option>
             </select>
           </div>
-          <ul class="paginador__paginas" id="m36-paginador-paginas"><li><button type="button" class="paginador__pagina" data-ir="0" disabled="">Anterior</button></li><li><button type="button" class="paginador__pagina" data-ir="1" aria-current="page" aria-label="Página 1">1</button></li><li><button type="button" class="paginador__pagina" data-ir="2" aria-label="Página 2">2</button></li><li><button type="button" class="paginador__pagina" data-ir="2">Siguiente</button></li></ul>
+          <ul class="paginador__paginas" id="m124-paginador-paginas"><li><button type="button" class="paginador__pagina" data-ir="0" disabled="">Anterior</button></li><li><button type="button" class="paginador__pagina" data-ir="1" aria-current="page" aria-label="Página 1">1</button></li><li><button type="button" class="paginador__pagina" data-ir="2" aria-label="Página 2">2</button></li><li><button type="button" class="paginador__pagina" data-ir="2">Siguiente</button></li></ul>
         </div>
       </nav>
     </section></div></div>
@@ -832,46 +1250,85 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
       &lt;ul class=&quot;paginador__paginas&quot; id=&quot;paginador-paginas&quot;&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;0&quot; disabled=&quot;&quot;&gt;Anterior&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;1&quot; aria-current=&quot;page&quot; aria-label=&quot;Página 1&quot;&gt;1&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot; aria-label=&quot;Página 2&quot;&gt;2&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot;&gt;Siguiente&lt;/button&gt;&lt;/li&gt;&lt;/ul&gt;
     &lt;/div&gt;
   &lt;/nav&gt;
-&lt;/section&gt;</code></pre></details></div></article><article class="ds-comp" id="c-panel-de-filtros" aria-labelledby="c-panel-de-filtros-t"><h3 class="t-h3" id="c-panel-de-filtros-t">Panel de filtros</h3>
+&lt;/section&gt;</code></pre></details></div></article><article class="ds-comp" id="c-paginador" aria-labelledby="c-paginador-t"><h3 class="t-h3" id="c-paginador-t">Paginador</h3>
+<p class="ds-comp__figma t-ayuda">En Figma: <strong>Botón de paginación · Paginador</strong></p><p>Debajo de la tabla. La página actual va resaltada; Anterior se deshabilita en la primera.</p>
+<p class="ds-a11y"><strong>Accesibilidad:</strong> Botones reales; la página actual lleva aria-current=&quot;page&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Normal</h4>
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><nav class="paginador" aria-label="Paginación de trámites">
+        <p class="paginador__resumen" id="m125-paginador-resumen">Mostrando 1–10 de 19 trámites</p>
+        <div class="paginador__grupo">
+          <div class="paginador__por-pagina">
+            <label for="m125-por-pagina">Filas por página</label>
+            <select class="campo__control" id="m125-por-pagina">
+              <option>10</option>
+              <option>20</option>
+              <option>50</option>
+            </select>
+          </div>
+          <ul class="paginador__paginas" id="m125-paginador-paginas"><li><button type="button" class="paginador__pagina" data-ir="0" disabled="">Anterior</button></li><li><button type="button" class="paginador__pagina" data-ir="1" aria-current="page" aria-label="Página 1">1</button></li><li><button type="button" class="paginador__pagina" data-ir="2" aria-label="Página 2">2</button></li><li><button type="button" class="paginador__pagina" data-ir="2">Siguiente</button></li></ul>
+        </div>
+      </nav></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-37"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-37">&lt;nav class=&quot;paginador&quot; aria-label=&quot;Paginación de trámites&quot;&gt;
+  &lt;p class=&quot;paginador__resumen&quot; id=&quot;paginador-resumen&quot;&gt;Mostrando 1–10 de 19 trámites&lt;/p&gt;
+  &lt;div class=&quot;paginador__grupo&quot;&gt;
+    &lt;div class=&quot;paginador__por-pagina&quot;&gt;
+      &lt;label for=&quot;por-pagina&quot;&gt;Filas por página&lt;/label&gt;
+      &lt;select class=&quot;campo__control&quot; id=&quot;por-pagina&quot;&gt;
+        &lt;option&gt;10&lt;/option&gt;
+        &lt;option&gt;20&lt;/option&gt;
+        &lt;option&gt;50&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+    &lt;ul class=&quot;paginador__paginas&quot; id=&quot;paginador-paginas&quot;&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;0&quot; disabled=&quot;&quot;&gt;Anterior&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;1&quot; aria-current=&quot;page&quot; aria-label=&quot;Página 1&quot;&gt;1&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot; aria-label=&quot;Página 2&quot;&gt;2&lt;/button&gt;&lt;/li&gt;&lt;li&gt;&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; data-ir=&quot;2&quot;&gt;Siguiente&lt;/button&gt;&lt;/li&gt;&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Botón de página</h4>
+<div class="ds-muestra" style=""><div class="ds-muestra__in"><div class="ds-matriz" style="--cols:5"><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="paginador__pagina">2</button></div><figcaption>Normal</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="paginador__pagina ds-hover">2</button></div><figcaption>Hover</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="paginador__pagina ds-foco">2</button></div><figcaption>Foco</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="paginador__pagina" aria-current="page">1</button></div><figcaption>Actual</figcaption></figure><figure class="ds-celda"><div class="ds-celda__muestra"><button type="button" class="paginador__pagina" disabled>Anterior</button></div><figcaption>Deshabilitado</figcaption></figure></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-38"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-38">&lt;!-- Normal --&gt;
+&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot;&gt;2&lt;/button&gt;
+
+&lt;!-- Actual --&gt;
+&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; aria-current=&quot;page&quot;&gt;1&lt;/button&gt;
+
+&lt;!-- Deshabilitado --&gt;
+&lt;button type=&quot;button&quot; class=&quot;paginador__pagina&quot; disabled&gt;Anterior&lt;/button&gt;</code></pre></details></div></article><article class="ds-comp" id="c-panel-de-filtros" aria-labelledby="c-panel-de-filtros-t"><h3 class="t-h3" id="c-panel-de-filtros-t">Panel de filtros</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Panel de filtros</strong></p><p>Tres columnas iguales en escritorio. Procedimiento depende del tipo de trámite. En móvil abre en su propia vista.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Formulario con título; «Buscar» envía.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Escritorio</h4>
-<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="filtros" id="m37-panel-filtros" aria-labelledby="m37-filtros-titulo">
-      <form class="filtros__form" id="m37-form-filtros" role="search" aria-labelledby="m37-filtros-titulo" novalidate="">
-        <h2 class="filtros__titulo" id="m37-filtros-titulo" tabindex="-1">
+<div class="ds-muestra" style="--ancho:100%"><div class="ds-muestra__in"><section class="filtros" id="m127-panel-filtros" aria-labelledby="m127-filtros-titulo">
+      <form class="filtros__form" id="m127-form-filtros" role="search" aria-labelledby="m127-filtros-titulo" novalidate="">
+        <h2 class="filtros__titulo" id="m127-filtros-titulo" tabindex="-1">
           <svg class="icono" aria-hidden="true" focusable="false"><use href="#filtro"></use></svg>
           <span>Filtros<span class="filtros__titulo-resto"> de búsqueda</span></span>
         </h2>
 
         <div class="filtros__fila">
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-buscar">Buscar</label>
+            <label class="campo__etiqueta" for="m127-f-buscar">Buscar</label>
             <div class="campo__envoltura campo__envoltura--icono">
               <svg class="icono campo__icono" aria-hidden="true" focusable="false"><use href="#buscar"></use></svg>
-              <input class="campo__control" id="m37-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
+              <input class="campo__control" id="m127-f-buscar" type="search" placeholder="Busca por N° de ticket, CUT o asunto">
             </div>
           </div>
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-tipo">Tipo de trámite</label>
-            <select class="campo__control" id="m37-f-tipo">
+            <label class="campo__etiqueta" for="m127-f-tipo">Tipo de trámite</label>
+            <select class="campo__control" id="m127-f-tipo">
               <option value="">Todos</option>
               <option value="TUPA">TUPA</option>
               <option value="NO TUPA">NO TUPA</option>
             </select>
           </div>
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-proc-entrada" id="m37-f-proc-etiqueta">Procedimiento</label>
-            <select class="campo__control" id="m37-f-proc" data-combo="1" hidden="" tabindex="-1"><option value="">Todos</option><optgroup label="TUPA · 46"><option value="1">1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control</option><option value="2">2. Permiso de uso de agua para épocas de superávit hídrico</option><option value="3">3. Permiso de uso de aguas residuales</option><option value="4">4. Autorización de uso de agua</option><option value="5">5. Autorización de uso de agua con acreditación de disponibilidad hídrica aprobada</option><option value="6">6. Prórroga de autorización de uso de agua</option><option value="7">7. Constitución o modificación de servidumbre de agua forzosa</option><option value="8">8. Autorización para la ejecución de obras en los bienes naturales asociados al agua y en la infraestructura hidráulica multisectorial</option><option value="9">9. Reconocimiento administrativo de junta de usuarios</option><option value="11">11. Autorización de ejecución de estudios de disponibilidad hídrica para obtención de licencia de uso de agua superficial o subterránea</option><option value="12">12. Autorización para la ejecución de estudios de aprovechamiento hídrico con perforación de pozos exploratorios o para instalación de piezómetros</option><option value="13">13. Acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua</option><option value="14">14. Modificación de acreditación de disponibilidad hídrica en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="15">15. Prórroga de acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="16">16. Autorización para la ejecución de obras de aprovechamiento hídrico destinadas a la obtención de derechos de uso de agua</option><option value="17">17. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="18">18. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua, en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas, con opinión técnica favorable al instrumento de gestión ambiental</option><option value="19">19. Prórroga de autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="20">20. Licencia de uso de agua provisional</option><option value="21">21. Otorgamiento de licencia de uso de agua</option><option value="22">22. Otorgamiento de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="23">23. Autorización de ejecución de presas integrantes de la infraestructura hidráulica mayor de carácter multisectorial</option><option value="24">24. Autorización al titular de derecho de uso de agua para brindar servicio de suministro de agua subterránea a favor de terceros</option><option value="25">25. Autorización para la prestación del servicio de agua desalinizada a favor de terceros</option><option value="26">26. Autorización de ejecución de obras de aprovechamiento hídrico para la instalación de plantas desalinizadoras</option><option value="27">27. Autorización para el uso temporal de las fajas marginales y de las riberas de los ríos amazónicos para la siembra de cultivos</option><option value="28">28. Autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="29">29. Modificación de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua, por cambio de características técnicas</option><option value="30">30. Prórroga de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="31">31. Prórroga del plazo de descarga o rebose de las aguas residuales a un cuerpo natural de agua desde los sistemas de saneamiento</option><option value="32">32. Autorización de reúso de aguas residuales tratadas</option><option value="33">33. Modificación de autorización de reúso de aguas residuales tratadas por cambio de características técnicas</option><option value="34">34. Prórroga de autorización de reúso de agua residual tratada</option><option value="35">35. Reserva de recursos hídricos</option><option value="36">36. Prórroga de reserva de recursos hídricos</option><option value="37">37. Acreditación de disponibilidad hídrica para actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="38">38. Autorización de ejecución de obras de aprovechamiento hídrico para usos acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="39">39. Licencia de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="40">40. Permiso de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="41">41. Inspección ocular – a distancias de hasta 10 km</option><option value="42">42. Inspección ocular – a distancias mayores de 10 km hasta 50 km</option><option value="43">43. Inspección ocular – a distancias mayores de 50 km hasta 100 km</option><option value="44">44. Inspección ocular – a distancias mayores de 100 km</option><option value="45">45. Otorgamiento de licencia de uso de agua en el marco de la formalización del uso de agua</option><option value="46">46. Reconocimiento administrativo de las comisiones de usuarios</option><option value="47">47. Reconocimiento administrativo de comités de usuarios</option></optgroup><optgroup label="NO TUPA · 5"><option value="bienes">Bienes y servicios menores a 8 UIT</option><option value="iga">Opinión técnica vinculante · IGA</option><option value="otros">Otros</option><option value="minera">Opinión técnica vinculante de proyecto de exploración minera</option><option value="congreso">Congreso</option></optgroup></select><div class="combo">
-      <input class="campo__control combo__entrada" id="m37-f-proc-entrada" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="m37-f-proc-lista" autocomplete="off" aria-describedby="m37-f-proc-instruccion">
+            <label class="campo__etiqueta" for="m127-f-proc-entrada" id="m127-f-proc-etiqueta">Procedimiento</label>
+            <select class="campo__control" id="m127-f-proc" data-combo="1" hidden="" tabindex="-1"><option value="">Todos</option><optgroup label="TUPA · 46"><option value="1">1. Acceso a la información pública creada u obtenida por la entidad, que se encuentre en su posesión o bajo su control</option><option value="2">2. Permiso de uso de agua para épocas de superávit hídrico</option><option value="3">3. Permiso de uso de aguas residuales</option><option value="4">4. Autorización de uso de agua</option><option value="5">5. Autorización de uso de agua con acreditación de disponibilidad hídrica aprobada</option><option value="6">6. Prórroga de autorización de uso de agua</option><option value="7">7. Constitución o modificación de servidumbre de agua forzosa</option><option value="8">8. Autorización para la ejecución de obras en los bienes naturales asociados al agua y en la infraestructura hidráulica multisectorial</option><option value="9">9. Reconocimiento administrativo de junta de usuarios</option><option value="11">11. Autorización de ejecución de estudios de disponibilidad hídrica para obtención de licencia de uso de agua superficial o subterránea</option><option value="12">12. Autorización para la ejecución de estudios de aprovechamiento hídrico con perforación de pozos exploratorios o para instalación de piezómetros</option><option value="13">13. Acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua</option><option value="14">14. Modificación de acreditación de disponibilidad hídrica en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="15">15. Prórroga de acreditación de disponibilidad hídrica para el otorgamiento de derechos de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="16">16. Autorización para la ejecución de obras de aprovechamiento hídrico destinadas a la obtención de derechos de uso de agua</option><option value="17">17. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="18">18. Autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua, en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas, con opinión técnica favorable al instrumento de gestión ambiental</option><option value="19">19. Prórroga de autorización para la ejecución de obras de aprovechamiento hídrico para la obtención de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="20">20. Licencia de uso de agua provisional</option><option value="21">21. Otorgamiento de licencia de uso de agua</option><option value="22">22. Otorgamiento de licencia de uso de agua en procedimiento simplificado para ejecución de proyectos de saneamiento y pequeños proyectos agrícolas</option><option value="23">23. Autorización de ejecución de presas integrantes de la infraestructura hidráulica mayor de carácter multisectorial</option><option value="24">24. Autorización al titular de derecho de uso de agua para brindar servicio de suministro de agua subterránea a favor de terceros</option><option value="25">25. Autorización para la prestación del servicio de agua desalinizada a favor de terceros</option><option value="26">26. Autorización de ejecución de obras de aprovechamiento hídrico para la instalación de plantas desalinizadoras</option><option value="27">27. Autorización para el uso temporal de las fajas marginales y de las riberas de los ríos amazónicos para la siembra de cultivos</option><option value="28">28. Autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="29">29. Modificación de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua, por cambio de características técnicas</option><option value="30">30. Prórroga de autorización de vertimiento de aguas residuales tratadas a los cuerpos naturales de agua</option><option value="31">31. Prórroga del plazo de descarga o rebose de las aguas residuales a un cuerpo natural de agua desde los sistemas de saneamiento</option><option value="32">32. Autorización de reúso de aguas residuales tratadas</option><option value="33">33. Modificación de autorización de reúso de aguas residuales tratadas por cambio de características técnicas</option><option value="34">34. Prórroga de autorización de reúso de agua residual tratada</option><option value="35">35. Reserva de recursos hídricos</option><option value="36">36. Prórroga de reserva de recursos hídricos</option><option value="37">37. Acreditación de disponibilidad hídrica para actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="38">38. Autorización de ejecución de obras de aprovechamiento hídrico para usos acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="39">39. Licencia de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="40">40. Permiso de uso de agua para las actividades acuícolas en las categorías productivas de Acuicultura de Recursos Limitados (AREL) y Acuicultura de Micro y Pequeña Empresa (AMYPE)</option><option value="41">41. Inspección ocular – a distancias de hasta 10 km</option><option value="42">42. Inspección ocular – a distancias mayores de 10 km hasta 50 km</option><option value="43">43. Inspección ocular – a distancias mayores de 50 km hasta 100 km</option><option value="44">44. Inspección ocular – a distancias mayores de 100 km</option><option value="45">45. Otorgamiento de licencia de uso de agua en el marco de la formalización del uso de agua</option><option value="46">46. Reconocimiento administrativo de las comisiones de usuarios</option><option value="47">47. Reconocimiento administrativo de comités de usuarios</option></optgroup><optgroup label="NO TUPA · 5"><option value="bienes">Bienes y servicios menores a 8 UIT</option><option value="iga">Opinión técnica vinculante · IGA</option><option value="otros">Otros</option><option value="minera">Opinión técnica vinculante de proyecto de exploración minera</option><option value="congreso">Congreso</option></optgroup></select><div class="combo">
+      <input class="campo__control combo__entrada" id="m127-f-proc-entrada" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="m127-f-proc-lista" autocomplete="off" aria-describedby="m127-f-proc-instruccion">
       <span class="combo__flecha" aria-hidden="true"><svg class="icono " aria-hidden="true" focusable="false"><use href="#chevron-abajo"></use></svg></span>
       <div class="combo__panel" hidden="">
-        <p class="combo__cantidad" id="m37-f-proc-cantidad"></p>
-        <div class="combo__lista" id="m37-f-proc-lista" role="listbox" aria-labelledby="m37-f-proc-etiqueta"></div>
+        <p class="combo__cantidad" id="m127-f-proc-cantidad"></p>
+        <div class="combo__lista" id="m127-f-proc-lista" role="listbox" aria-labelledby="m127-f-proc-etiqueta"></div>
       </div>
-      <span class="visualmente-oculto" id="m37-f-proc-instruccion">Escribe para filtrar la lista. Usa las flechas para recorrerla y Enter para elegir.</span></div>
+      <span class="visualmente-oculto" id="m127-f-proc-instruccion">Escribe para filtrar la lista. Usa las flechas para recorrerla y Enter para elegir.</span></div>
           </div>
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-estado">Estado</label>
-            <select class="campo__control" id="m37-f-estado">
+            <label class="campo__etiqueta" for="m127-f-estado">Estado</label>
+            <select class="campo__control" id="m127-f-estado">
               <option value="">Todos</option>
               <option>En revisión</option>
               <option>Validado</option>
@@ -881,17 +1338,17 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
             </select>
           </div>
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-inicio">Fecha inicio</label>
-            <input class="campo__control campo__control--fecha" id="m37-f-inicio" type="date" aria-describedby="m37-fechas-ayuda m37-f-inicio-error">
-            <p class="campo__error" id="m37-f-inicio-error" hidden="">
+            <label class="campo__etiqueta" for="m127-f-inicio">Fecha inicio</label>
+            <input class="campo__control campo__control--fecha" id="m127-f-inicio" type="date" aria-describedby="m127-fechas-ayuda m127-f-inicio-error">
+            <p class="campo__error" id="m127-f-inicio-error" hidden="">
               <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
               <span class="campo__error-texto"></span>
             </p>
           </div>
           <div class="campo">
-            <label class="campo__etiqueta" for="m37-f-fin">Fecha fin</label>
-            <input class="campo__control campo__control--fecha" id="m37-f-fin" type="date" aria-describedby="m37-fechas-ayuda m37-f-fin-error">
-            <p class="campo__error" id="m37-f-fin-error" hidden="">
+            <label class="campo__etiqueta" for="m127-f-fin">Fecha fin</label>
+            <input class="campo__control campo__control--fecha" id="m127-f-fin" type="date" aria-describedby="m127-fechas-ayuda m127-f-fin-error">
+            <p class="campo__error" id="m127-f-fin-error" hidden="">
               <svg class="icono icono--16" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg>
               <span class="campo__error-texto"></span>
             </p>
@@ -899,7 +1356,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
         </div>
 
         <div class="filtros__pie">
-          <p class="t-ayuda" id="m37-fechas-ayuda">Las fechas van en día/mes/año.</p>
+          <p class="t-ayuda" id="m127-fechas-ayuda">Las fechas van en día/mes/año.</p>
           <div class="filtros__botones">
             <button type="reset" class="boton boton--terciario">Limpiar</button>
             <button type="submit" class="boton boton--primario boton--buscar">
@@ -908,7 +1365,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
         </div>
       </form>
     </section></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-37"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-37">&lt;section class=&quot;filtros&quot; id=&quot;panel-filtros&quot; aria-labelledby=&quot;filtros-titulo&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-39"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-39">&lt;section class=&quot;filtros&quot; id=&quot;panel-filtros&quot; aria-labelledby=&quot;filtros-titulo&quot;&gt;
   &lt;form class=&quot;filtros__form&quot; id=&quot;form-filtros&quot; role=&quot;search&quot; aria-labelledby=&quot;filtros-titulo&quot; novalidate=&quot;&quot;&gt;
     &lt;h2 class=&quot;filtros__titulo&quot; id=&quot;filtros-titulo&quot; tabindex=&quot;-1&quot;&gt;
       &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#filtro&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
@@ -984,7 +1441,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Estado vacío</strong></p><p>Sin trámites, sin resultados y páginas de error, con su ilustración (sprite ilustraciones.svg).</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> La ilustración es decorativa (aria-hidden).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Sección</h4>
 <div class="ds-muestra" style="--ancho:640px"><div class="ds-muestra__in"><div class="vacio vacio--seccion"><svg class="vacio__ilustracion" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true" focusable="false"><path class="ilu-t ilu-r" d="M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z"></path><path class="ilu-t ilu-b" d="M70 18v18h18"></path><path class="ilu-t" d="M40 46L62 46"></path><path class="ilu-t" d="M40 56L76 56"></path><path class="ilu-t" d="M40 66L70 66"></path><circle class="ilu-t ilu-b" cx="84" cy="86" r="14"></circle><path class="ilu-t" d="M84 79L84 93"></path><path class="ilu-t" d="M77 86L91 86"></path></svg><p class="vacio__texto"><strong class="vacio__titulo vacio__titulo--seccion">Aún no tienes trámites</strong>Aquí verás el listado de tus trámites. Puedes empezar presentando un nuevo documento.</p></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-38"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-38">&lt;div class=&quot;vacio vacio--seccion&quot;&gt;&lt;svg class=&quot;vacio__ilustracion&quot; viewBox=&quot;0 0 120 120&quot; width=&quot;120&quot; height=&quot;120&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;path class=&quot;ilu-t ilu-r&quot; d=&quot;M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t ilu-b&quot; d=&quot;M70 18v18h18&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 46L62 46&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 56L76 56&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 66L70 66&quot;&gt;&lt;/path&gt;&lt;circle class=&quot;ilu-t ilu-b&quot; cx=&quot;84&quot; cy=&quot;86&quot; r=&quot;14&quot;&gt;&lt;/circle&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M84 79L84 93&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M77 86L91 86&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;p class=&quot;vacio__texto&quot;&gt;&lt;strong class=&quot;vacio__titulo vacio__titulo--seccion&quot;&gt;Aún no tienes trámites&lt;/strong&gt;Aquí verás el listado de tus trámites. Puedes empezar presentando un nuevo documento.&lt;/p&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Página (404)</h4>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-40"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-40">&lt;div class=&quot;vacio vacio--seccion&quot;&gt;&lt;svg class=&quot;vacio__ilustracion&quot; viewBox=&quot;0 0 120 120&quot; width=&quot;120&quot; height=&quot;120&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;path class=&quot;ilu-t ilu-r&quot; d=&quot;M34 18h36l18 18v62a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t ilu-b&quot; d=&quot;M70 18v18h18&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 46L62 46&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 56L76 56&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M40 66L70 66&quot;&gt;&lt;/path&gt;&lt;circle class=&quot;ilu-t ilu-b&quot; cx=&quot;84&quot; cy=&quot;86&quot; r=&quot;14&quot;&gt;&lt;/circle&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M84 79L84 93&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M77 86L91 86&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;p class=&quot;vacio__texto&quot;&gt;&lt;strong class=&quot;vacio__titulo vacio__titulo--seccion&quot;&gt;Aún no tienes trámites&lt;/strong&gt;Aquí verás el listado de tus trámites. Puedes empezar presentando un nuevo documento.&lt;/p&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Página (404)</h4>
 <div class="ds-muestra" style="--ancho:640px"><div class="ds-muestra__in"><div class="vacio vacio--pagina">
       <svg class="vacio__ilustracion" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true" focusable="false"><path class="ilu-t ilu-r" d="M14 40l28-10 32 10 32-10v56l-32 10-32-10-28 10z"></path><path class="ilu-t" d="M42 30L42 86"></path><path class="ilu-t" d="M74 40L74 96"></path><path class="ilu-t" stroke-dasharray="4 4" d="M24 74c8-6 16 4 26-2s16-8 24 0"></path><path class="ilu-t ilu-b" d="M60 64c-10-12-16-20-16-28a16 16 0 0 1 32 0c0 8-6 16-16 28z"></path><path class="ilu-t" d="M55 32a5 5 0 1 1 7 5c-2 1-2 2-2 4"></path><circle class="ilu-p" cx="60" cy="47" r="1.5"></circle></svg>
       <p class="vacio__titulo">No encontramos esta página</p>
@@ -994,7 +1451,7 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
         <button type="button" class="boton boton--secundario" data-atras="">Volver a la página anterior</button>
       </div>
     </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-39"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-39">&lt;div class=&quot;vacio vacio--pagina&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-41"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-41">&lt;div class=&quot;vacio vacio--pagina&quot;&gt;
   &lt;svg class=&quot;vacio__ilustracion&quot; viewBox=&quot;0 0 120 120&quot; width=&quot;120&quot; height=&quot;120&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;path class=&quot;ilu-t ilu-r&quot; d=&quot;M14 40l28-10 32 10 32-10v56l-32 10-32-10-28 10z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M42 30L42 86&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M74 40L74 96&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; stroke-dasharray=&quot;4 4&quot; d=&quot;M24 74c8-6 16 4 26-2s16-8 24 0&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t ilu-b&quot; d=&quot;M60 64c-10-12-16-20-16-28a16 16 0 0 1 32 0c0 8-6 16-16 28z&quot;&gt;&lt;/path&gt;&lt;path class=&quot;ilu-t&quot; d=&quot;M55 32a5 5 0 1 1 7 5c-2 1-2 2-2 4&quot;&gt;&lt;/path&gt;&lt;circle class=&quot;ilu-p&quot; cx=&quot;60&quot; cy=&quot;47&quot; r=&quot;1.5&quot;&gt;&lt;/circle&gt;&lt;/svg&gt;
   &lt;h1 class=&quot;vacio__titulo&quot;&gt;No encontramos esta página&lt;/h1&gt;
   &lt;p class=&quot;vacio__texto&quot;&gt;Puede que el enlace esté mal escrito, o que la página ya no exista. Tus trámites y tus notificaciones siguen en su sitio.&lt;/p&gt;
@@ -1006,27 +1463,27 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Aviso</strong></p><p>Mensaje fijo dentro de la página, en cuatro tonos.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> role=&quot;note&quot; para avisos fijos; ícono decorativo; el tono también está en el título.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Informativo</h4>
 <div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--info" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg><div><p class="aviso__titulo">Tu sesión se cierra en 5 minutos</p><p>Guarda lo que estás haciendo.</p></div></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-40"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-40">&lt;div class=&quot;aviso aviso--info&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#info&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Tu sesión se cierra en 5 minutos&lt;/p&gt;&lt;p&gt;Guarda lo que estás haciendo.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Alerta</h4>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-42"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-42">&lt;div class=&quot;aviso aviso--info&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#info&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Tu sesión se cierra en 5 minutos&lt;/p&gt;&lt;p&gt;Guarda lo que estás haciendo.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Alerta</h4>
 <div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--alerta" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><div><p class="aviso__titulo">Revisa tus datos de contacto</p><p>Ahí te llegan los avisos de cada notificación.</p></div></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-41"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-41">&lt;div class=&quot;aviso aviso--alerta&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Revisa tus datos de contacto&lt;/p&gt;&lt;p&gt;Ahí te llegan los avisos de cada notificación.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Error</h4>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-43"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-43">&lt;div class=&quot;aviso aviso--alerta&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Revisa tus datos de contacto&lt;/p&gt;&lt;p&gt;Ahí te llegan los avisos de cada notificación.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Error</h4>
 <div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--error" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#error"></use></svg><div><p class="aviso__titulo">No pudimos enviar tu solicitud</p><p>Vuelve a intentar en unos minutos.</p></div></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-42"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-42">&lt;div class=&quot;aviso aviso--error&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#error&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;No pudimos enviar tu solicitud&lt;/p&gt;&lt;p&gt;Vuelve a intentar en unos minutos.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Éxito</h4>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-44"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-44">&lt;div class=&quot;aviso aviso--error&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#error&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;No pudimos enviar tu solicitud&lt;/p&gt;&lt;p&gt;Vuelve a intentar en unos minutos.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-estado"><h4 class="ds-estado__nombre">Éxito</h4>
 <div class="ds-muestra" style="--ancho:560px"><div class="ds-muestra__in"><div class="aviso aviso--exito" role="note"><svg class="icono" aria-hidden="true" focusable="false"><use href="#check"></use></svg><div><p class="aviso__titulo">Enviaste tu solicitud</p><p>Te avisaremos por correo cuando la ANA la revise.</p></div></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-43"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-43">&lt;div class=&quot;aviso aviso--exito&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Enviaste tu solicitud&lt;/p&gt;&lt;p&gt;Te avisaremos por correo cuando la ANA la revise.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-resumen-de-errores" aria-labelledby="c-resumen-de-errores-t"><h3 class="t-h3" id="c-resumen-de-errores-t">Resumen de errores</h3>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-45"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-45">&lt;div class=&quot;aviso aviso--exito&quot; role=&quot;note&quot;&gt;&lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#check&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Enviaste tu solicitud&lt;/p&gt;&lt;p&gt;Te avisaremos por correo cuando la ANA la revise.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-resumen-de-errores" aria-labelledby="c-resumen-de-errores-t"><h3 class="t-h3" id="c-resumen-de-errores-t">Resumen de errores</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Resumen de errores</strong></p><p>Aparece arriba del formulario al enviar con errores. Cada error es un enlace al campo.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> Recibe el foco al aparecer (tabindex=&quot;-1&quot;).</p><div class="ds-estado"><h4 class="ds-estado__nombre">Tres errores</h4>
-<div class="ds-muestra" style="--ancho:600px"><div class="ds-muestra__in"><div class="aviso aviso--error" id="m44-errores-contacto" tabindex="-1"><svg class="icono " aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><div><p class="aviso__titulo">Hay 3 datos por corregir</p><ul><li><a href="#r-correo">Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com</a></li><li><a href="#r-correo2">Confirma tu correo: debe ser igual al correo electrónico.</a></li><li><a href="#r-celular">Celular: tiene 9 dígitos y empieza con 9.</a></li></ul></div></div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-44"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-44">&lt;div class=&quot;aviso aviso--error&quot; id=&quot;errores-contacto&quot; tabindex=&quot;-1&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Hay 3 datos por corregir&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#r-correo&quot;&gt;Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-correo2&quot;&gt;Confirma tu correo: debe ser igual al correo electrónico.&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-celular&quot;&gt;Celular: tiene 9 dígitos y empieza con 9.&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-aviso-temporal" aria-labelledby="c-aviso-temporal-t"><h3 class="t-h3" id="c-aviso-temporal-t">Aviso temporal</h3>
+<div class="ds-muestra" style="--ancho:600px"><div class="ds-muestra__in"><div class="aviso aviso--error" id="m134-errores-contacto" tabindex="-1"><svg class="icono " aria-hidden="true" focusable="false"><use href="#alerta"></use></svg><div><p class="aviso__titulo">Hay 3 datos por corregir</p><ul><li><a href="#r-correo">Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com</a></li><li><a href="#r-correo2">Confirma tu correo: debe ser igual al correo electrónico.</a></li><li><a href="#r-celular">Celular: tiene 9 dígitos y empieza con 9.</a></li></ul></div></div></div></div>
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-46"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-46">&lt;div class=&quot;aviso aviso--error&quot; id=&quot;errores-contacto&quot; tabindex=&quot;-1&quot;&gt;&lt;svg class=&quot;icono &quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#alerta&quot;&gt;&lt;/use&gt;&lt;/svg&gt;&lt;div&gt;&lt;p class=&quot;aviso__titulo&quot;&gt;Hay 3 datos por corregir&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#r-correo&quot;&gt;Correo electrónico: escribe la dirección completa, con @ y el dominio. Por ejemplo: nombre@gmail.com&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-correo2&quot;&gt;Confirma tu correo: debe ser igual al correo electrónico.&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#r-celular&quot;&gt;Celular: tiene 9 dígitos y empieza con 9.&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div></article><article class="ds-comp" id="c-aviso-temporal" aria-labelledby="c-aviso-temporal-t"><h3 class="t-h3" id="c-aviso-temporal-t">Aviso temporal</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Aviso temporal</strong></p><p>Confirmación breve que aparece abajo. Se pausa con el mouse o el foco y se cierra con Escape.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> El texto también se anuncia en una región role=&quot;status&quot;.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Visible</h4>
-<div class="ds-muestra" style="--ancho:520px;min-height:120px"><div class="ds-muestra__in"><aside class="notificacion" id="m45-notificacion" aria-label="Aviso">
+<div class="ds-muestra" style="--ancho:520px;min-height:120px"><div class="ds-muestra__in"><aside class="notificacion" id="m135-notificacion" aria-label="Aviso">
     <svg class="icono" aria-hidden="true" focusable="false"><use href="#info"></use></svg>
     <p class="notificacion__texto">Guardamos tus cambios.</p>
     <button type="button" class="boton boton--icono" data-cerrar="" aria-label="Cerrar aviso">
       <svg class="icono" aria-hidden="true" focusable="false"><use href="#cerrar"></use></svg>
     </button>
   </aside></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-45"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-45">&lt;aside class=&quot;notificacion&quot; id=&quot;notificacion&quot; aria-label=&quot;Aviso&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-47"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-47">&lt;aside class=&quot;notificacion&quot; id=&quot;notificacion&quot; aria-label=&quot;Aviso&quot;&gt;
   &lt;svg class=&quot;icono&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;&lt;use href=&quot;#info&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
   &lt;p class=&quot;notificacion__texto&quot;&gt;Guardamos tus cambios.&lt;/p&gt;
   &lt;button type=&quot;button&quot; class=&quot;boton boton--icono&quot; data-cerrar=&quot;&quot; aria-label=&quot;Cerrar aviso&quot;&gt;
@@ -1035,17 +1492,17 @@ code { font: var(--t-dato-pequeno); background: var(--fondo-sutil); padding: 1px
 &lt;/aside&gt;</code></pre></details></div></article><article class="ds-comp" id="c-modal" aria-labelledby="c-modal-t"><h3 class="t-h3" id="c-modal-t">Modal</h3>
 <p class="ds-comp__figma t-ayuda">En Figma: <strong>Modal</strong></p><p>Confirmación de una acción que no se deshace fácilmente.</p>
 <p class="ds-a11y"><strong>Accesibilidad:</strong> role=&quot;dialog&quot; con aria-modal; foco atrapado, Escape cierra y el foco vuelve al botón que lo abrió.</p><div class="ds-estado"><h4 class="ds-estado__nombre">Desactivar representante</h4>
-<div class="ds-muestra" style="--ancho:100%;min-height:360px"><div class="ds-muestra__in"><div class="modal-capa" id="m46-modal-desactivar">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m46-modal-titulo" aria-describedby="m46-modal-texto">
-      <h2 class="modal__titulo" id="m46-modal-titulo">¿Desactivar a Carlos Huamán Ríos?</h2>
-      <p class="modal__texto" id="m46-modal-texto">Ya no podrá presentar trámites en nombre de la empresa ni recibirá avisos. Sus trámites anteriores se mantienen. Puedes volver a activarlo cuando quieras.</p>
+<div class="ds-muestra" style="--ancho:100%;min-height:360px"><div class="ds-muestra__in"><div class="modal-capa" id="m136-modal-desactivar">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m136-modal-titulo" aria-describedby="m136-modal-texto">
+      <h2 class="modal__titulo" id="m136-modal-titulo">¿Desactivar a Carlos Huamán Ríos?</h2>
+      <p class="modal__texto" id="m136-modal-texto">Ya no podrá presentar trámites en nombre de la empresa ni recibirá avisos. Sus trámites anteriores se mantienen. Puedes volver a activarlo cuando quieras.</p>
       <div class="modal__botones">
-        <button type="button" class="boton boton--primario" id="m46-modal-confirmar">Desactivar</button>
-        <button type="button" class="boton boton--secundario" id="m46-modal-cancelar">Cancelar</button>
+        <button type="button" class="boton boton--primario" id="m136-modal-confirmar">Desactivar</button>
+        <button type="button" class="boton boton--secundario" id="m136-modal-cancelar">Cancelar</button>
       </div>
     </div>
   </div></div></div>
-<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-46"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-46">&lt;div class=&quot;modal-capa&quot; id=&quot;modal-desactivar&quot;&gt;
+<details class="ds-codigo"><summary>Código</summary><button type="button" class="boton boton--terciario ds-copiar" data-copiar="cod-48"><svg class="icono" aria-hidden="true" focusable="false"><use href="#copiar"></use></svg>Copiar</button><pre><code id="cod-48">&lt;div class=&quot;modal-capa&quot; id=&quot;modal-desactivar&quot;&gt;
   &lt;div class=&quot;modal&quot; role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;modal-titulo&quot; aria-describedby=&quot;modal-texto&quot;&gt;
     &lt;h2 class=&quot;modal__titulo&quot; id=&quot;modal-titulo&quot;&gt;¿Desactivar a Carlos Huamán Ríos?&lt;/h2&gt;
     &lt;p class=&quot;modal__texto&quot; id=&quot;modal-texto&quot;&gt;Ya no podrá presentar trámites en nombre de la empresa ni recibirá avisos. Sus trámites anteriores se mantienen. Puedes volver a activarlo cuando quieras.&lt;/p&gt;
